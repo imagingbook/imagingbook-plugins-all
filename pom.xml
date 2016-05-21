@@ -93,13 +93,4 @@
 		</plugins>
 	</build>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.imagingbook</groupId>
-				<artifactId>imagingbook-common</artifactId>
-				<version>FIXED</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>
