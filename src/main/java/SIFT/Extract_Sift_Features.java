@@ -19,6 +19,7 @@ import ij.gui.ShapeRoi;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.IjLogStream;
 import imagingbook.pub.sift.SiftDescriptor;
 import imagingbook.pub.sift.SiftDetector;
 import imagingbook.pub.sift.util.Colors;
@@ -37,6 +38,10 @@ import java.util.List;
  */
 
 public class Extract_Sift_Features implements PlugInFilter {
+	
+	static {
+		IjLogStream.redirectSystem();
+	}
 
 	static double FeatureScale = 1.0; // 1.5;
 	static double FeatureStrokewidth = 1.0;
