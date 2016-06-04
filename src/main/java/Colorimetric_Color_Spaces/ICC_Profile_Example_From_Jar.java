@@ -23,7 +23,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
 import imagingbook.lib.ij.IjLogStream;
 import imagingbook.lib.math.Matrix;
-import imagingbook.lib.util.FileUtils;
+import imagingbook.lib.util.ResourceUtils;
 
 public class ICC_Profile_Example_From_Jar implements PlugIn {
 	
@@ -39,7 +39,7 @@ public class ICC_Profile_Example_From_Jar implements PlugIn {
 	public void run(String arg) {
 		Class<?> clazz = imagingbook.lib.color.CssColor.class;
 		List<String> profileList = new ArrayList<String>();
-		Path[] paths = FileUtils.listResources(clazz, ProfileDirectory);
+		Path[] paths = ResourceUtils.listResources(clazz, ProfileDirectory);
 		for (Path p : paths) {
 			String name = p.getFileName().toString();
 			profileList.add(name);
@@ -58,7 +58,8 @@ public class ICC_Profile_Example_From_Jar implements PlugIn {
 		
 		ICC_Profile profile = null;
 		try {
-			InputStream strm = FileUtils.getResourceStream(clazz, ProfileDirectory + "/" + theChoice);
+//			InputStream strm = ResourceUtils.getResourceStream(clazz, ProfileDirectory + "/" + theChoice);
+			InputStream strm = clazz.getResourceAsStream(ProfileDirectory + "/" + theChoice);
 			if (strm != null)
 				profile = ICC_Profile.getInstance(strm);
 		} catch (IOException e) { }
