@@ -25,13 +25,21 @@ import imagingbook.lib.ij.IjLogStream;
 import imagingbook.lib.math.Matrix;
 import imagingbook.lib.util.ResourceUtils;
 
+
+/**
+ * This plugin lists a user-selected ICC profile that is retrieved
+ * from a Java resource.
+ * 
+ * @author W. Burger
+ *
+ */
 public class ICC_Profile_Example_From_Jar implements PlugIn {
 	
 	static {
 		IjLogStream.redirectSystem();
 	}
 	
-	static final String ProfileDirectory = "sample-icc-profiles";
+	static final String ProfileDirectory = "sample-icc-profiles/";
 
 	String[] choices;
 	String theChoice;
@@ -53,13 +61,10 @@ public class ICC_Profile_Example_From_Jar implements PlugIn {
 		
 		System.out.println("selected ICC profile: " + theChoice);
 		
-//		URL url = clazz.getResource("sample-icc-profiles" + "/" + theChoice);
-//		System.out.println(theChoice + ": url = " + url.toString());
-		
 		ICC_Profile profile = null;
 		try {
 //			InputStream strm = ResourceUtils.getResourceStream(clazz, ProfileDirectory + "/" + theChoice);
-			InputStream strm = clazz.getResourceAsStream(ProfileDirectory + "/" + theChoice);
+			InputStream strm = clazz.getResourceAsStream(ProfileDirectory + theChoice);
 			if (strm != null)
 				profile = ICC_Profile.getInstance(strm);
 		} catch (IOException e) { }
@@ -104,7 +109,8 @@ public class ICC_Profile_Example_From_Jar implements PlugIn {
 					float[] devCol = {ri * 0.1f, gi * 0.1f, bi * 0.1f};
 					float[] sRGB = iccColorSpace.toRGB(devCol);
 					float[] devColCheck = iccColorSpace.fromRGB(sRGB);
-					IJ.log(Matrix.toString(devCol) + " -> " + Matrix.toString(sRGB) + " -> " + Matrix.toString(devColCheck) + warning(devCol, devColCheck));
+					IJ.log(Matrix.toString(devCol) + " -> " + Matrix.toString(sRGB) + " -> " 
+							+ Matrix.toString(devColCheck) + warning(devCol, devColCheck));
 				}
 			}
 		}

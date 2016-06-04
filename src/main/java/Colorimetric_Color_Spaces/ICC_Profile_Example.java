@@ -20,6 +20,14 @@ import imagingbook.lib.ij.IjUtils;
 import imagingbook.lib.math.Matrix;
 import imagingbook.lib.settings.PrintPrecision;
 
+
+/**
+ * This plugin lists a user-selected ICC profile file
+ * to the console.
+ * 
+ * @author W. Burger
+ *
+ */
 public class ICC_Profile_Example implements PlugIn {
 
 	public void run(String arg0) {
