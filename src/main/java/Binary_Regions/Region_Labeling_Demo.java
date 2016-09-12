@@ -122,7 +122,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	double mu11 = 0;					// moment
     	
     	// iterate through all pixels of regions r:
-    	for (Point p : r.getRegionPoints()) {
+    	for (Point p : r) {
     		mu11 = mu11 + (p.x - xc) * (p.y - yc);
     	}
     	return mu11;
