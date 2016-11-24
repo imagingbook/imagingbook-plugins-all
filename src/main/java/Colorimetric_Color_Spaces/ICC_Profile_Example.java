@@ -30,7 +30,7 @@ import imagingbook.lib.settings.PrintPrecision;
 public class ICC_Profile_Example implements PlugIn {
 
 	public void run(String arg0) {
-		// TODO Auto-generated method stub
+		
 		String path = IjUtils.askForOpenPath("Select an ICC profile file (.icc or .icm)");
 		if (path == null) return;
 		
