@@ -22,6 +22,8 @@ import ij.process.ImageProcessor;
 
 
 /**
+ * http://www.javased.com/index.php?source_dir=BDSup2Sub/src/main/java/bdsup2sub/tools/QuantizeFilter.java
+ * 
  * Works somehow. Results look strange.
  * Problems with small color counts.
  * 

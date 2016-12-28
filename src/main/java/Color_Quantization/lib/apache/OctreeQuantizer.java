@@ -12,6 +12,7 @@ import ij.process.ColorProcessor;
  *          $) $Date: 10-nov-2005.19:05:19 $
  * @since 0.1.4
  * @see OctreeNode
+ *  http://svn.apache.org/repos/asf/myfaces/trinidad/trunk/trinidad-impl/src/main/java/org/apache/myfaces/trinidadinternal/image/encode/OctreeQuantizer.java.
  */
 
 public class OctreeQuantizer {

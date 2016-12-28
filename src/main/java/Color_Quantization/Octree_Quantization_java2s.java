@@ -21,6 +21,8 @@ import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 
 /**
+ * // http://www.java2s.com/Code/Java/2D-Graphics-GUI/Anefficientcolorquantizationalgorithm.ht
+ * 
  * UNFINISHED!
  *
  */

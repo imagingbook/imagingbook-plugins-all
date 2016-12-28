@@ -21,6 +21,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 
 /**
+ * https://github.com/frohoff/jdk8u-jdk/blob/master/src/share/classes/com/sun/imageio/plugins/common/PaletteBuilder.java
  * Uses sun/imageio/plugins/common/PaletteBuilder (openjdk-8)
  * 
  * WORKS GREAT, but not for small number of colors!

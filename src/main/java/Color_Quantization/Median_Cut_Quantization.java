@@ -16,8 +16,16 @@ import ij.process.ImageProcessor;
 import imagingbook.pub.color.quantize.ColorQuantizer;
 import imagingbook.pub.color.quantize.MedianCutQuantizer;
 
+/**
+ * ImageJ plugin demonstrating the use of the {@link MedianCutQuantizer} class.
+ * 
+ * 
+ * @author WB
+ *
+ */
 public class Median_Cut_Quantization implements PlugInFilter {
-	static int NCOLORS = 32;
+	
+	static int NCOLORS = 32;	// number of quantized color (make user input)
 	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_RGB + NO_CHANGES;
@@ -40,6 +48,5 @@ public class Median_Cut_Quantization implements PlugInFilter {
 		int[] rgbPix = q.quantize((int[]) cp.getPixels());
 		ImageProcessor rgbIp = new ColorProcessor(w, h, rgbPix);
 		(new ImagePlus("Quantized RGB Image (" + nCols + " colors)" , rgbIp)).show();
-		
 	}
 }

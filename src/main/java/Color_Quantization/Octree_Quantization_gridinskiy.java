@@ -19,7 +19,9 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjLogStream;
 
 /**
- * DOES NOT SEM TO WORK - makes garbage
+ * https://bitbucket.org/grimm/work/MultiFinal/src/quantize.java
+ * 
+ * DOES NOT SEEM TO WORK - makes garbage
 
  * @author WB
  *

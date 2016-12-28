@@ -12,11 +12,12 @@ import Color_Quantization.lib.apache.OctreeQuantizer;
 
 
 /**
+ *  http://svn.apache.org/repos/asf/myfaces/trinidad/trunk/trinidad-impl/src/main/java/org/apache/myfaces/trinidadinternal/image/encode/OctreeQuantizer.java.
  * Works, but bad results!
  * @author WB
  *
  */
-public class Octree_Quantization_Apache implements PlugInFilter {
+public class Octree_Quantization_apache implements PlugInFilter {
 	
 	static int NCOLORS = 16;
 	
