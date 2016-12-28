@@ -26,7 +26,7 @@ public class Octree_Quantization implements PlugInFilter {
 
 	public void run(ImageProcessor ip) {
 		
-		IJ.error("This implementation of octree quantization is currently defunct!");
+		IJ.error("Octree quantization not yet implemented!");
 		/*
 		ColorProcessor cp = (ColorProcessor) ip;
 		IJ.log("creating octree quantizer");
