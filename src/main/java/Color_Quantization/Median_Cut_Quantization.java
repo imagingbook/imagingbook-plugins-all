@@ -9,44 +9,83 @@
 package Color_Quantization;
 
 import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.IjLogStream;
 import imagingbook.pub.color.quantize.ColorQuantizer;
 import imagingbook.pub.color.quantize.MedianCutQuantizer;
 
 /**
  * ImageJ plugin demonstrating the use of the {@link MedianCutQuantizer} class.
  * 
- * 
  * @author WB
- *
+ * @version 2017/01/03
  */
 public class Median_Cut_Quantization implements PlugInFilter {
 	
-	static int NCOLORS = 32;	// number of quantized color (make user input)
+	private static int NCOLORS = 16;
+	private static boolean CREATE_INDEXED_IMAGE = true; 
+	private static boolean CREATE_RGB_IMAGE = false;
+	private static boolean LIST_COLOR_TABLE = false;
+	
+	static {
+		IjLogStream.redirectSystem();
+	}
 	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_RGB + NO_CHANGES;
 	}
 	
 	public void run(ImageProcessor ip) {
-		ColorProcessor cp = ip.convertToColorProcessor();
-		int w = ip.getWidth();
-		int h = ip.getHeight();
+		if (!showDialog())
+			return;
+		
+		ColorProcessor cp = (ColorProcessor) ip;
+		int[] pixels = (int[]) cp.getPixels();
 		
 		// create a quantizer object
-		ColorQuantizer q = new MedianCutQuantizer(cp, NCOLORS);
-		int nCols = q.countQuantizedColors();
+		ColorQuantizer quantizer = new MedianCutQuantizer(pixels, NCOLORS);
+		int nCols = quantizer.getColorMap().length;
 		
-		// quantize to an indexed image
-		ByteProcessor idxIp = q.quantize(cp);
-		(new ImagePlus("Quantized Index Image (" + nCols + " colors)", idxIp)).show();
+		if (CREATE_INDEXED_IMAGE) {
+			// quantize to an indexed color image
+			ByteProcessor idxIp = quantizer.quantize(cp);
+			(new ImagePlus("Quantized Index Color Image (" + nCols + " colors)", idxIp)).show();
+		}
 		
-		// quantize to an RGB image
-		int[] rgbPix = q.quantize((int[]) cp.getPixels());
-		ImageProcessor rgbIp = new ColorProcessor(w, h, rgbPix);
-		(new ImagePlus("Quantized RGB Image (" + nCols + " colors)" , rgbIp)).show();
+		if (CREATE_RGB_IMAGE) {
+			// quantize to a full-color RGB image
+			int[] rgbPix = quantizer.quantize(pixels);
+			ColorProcessor rgbIp = new ColorProcessor(cp.getWidth(), cp.getHeight(), rgbPix);
+			(new ImagePlus("Quantized RGB Image (" + nCols + " colors)" , rgbIp)).show();
+		}
+		
+		if (LIST_COLOR_TABLE) {
+			quantizer.listColorMap();
+		}
+	}
+	
+	private boolean showDialog() {
+		GenericDialog gd = new GenericDialog(Median_Cut_Quantization.class.getSimpleName());
+		gd.addNumericField("No. of colors (2,..,256)", 16, 0);
+		gd.addCheckbox("Create indexed color image", CREATE_INDEXED_IMAGE);
+		gd.addCheckbox("Create quantized RGB image", CREATE_RGB_IMAGE);
+		gd.addCheckbox("List quantized color table", LIST_COLOR_TABLE);
+		
+		gd.showDialog();
+		if (gd.wasCanceled())
+			return false;
+		
+		int nc = (int) gd.getNextNumber();
+		nc = Math.min(nc, 255);
+		nc = Math.max(2, nc);
+		NCOLORS = nc;
+		CREATE_INDEXED_IMAGE = gd.getNextBoolean();
+		CREATE_RGB_IMAGE = gd.getNextBoolean();
+		LIST_COLOR_TABLE = gd.getNextBoolean();
+		return true;
 	}
 }
