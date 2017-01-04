@@ -15,9 +15,13 @@ import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjLogStream;
+import imagingbook.lib.util.Enums;
 import imagingbook.pub.color.quantize.ColorQuantizer;
+import imagingbook.pub.color.quantize.KMeansClusteringQuantizer;
+import imagingbook.pub.color.quantize.KMeansClusteringQuantizer.Parameters;
+import imagingbook.pub.color.quantize.KMeansClusteringQuantizer.SamplingMethod;
 import imagingbook.pub.color.quantize.MedianCutQuantizer;
-import imagingbook.pub.color.quantize.MedianCutQuantizer.Parameters;
+
 
 /**
  * ImageJ plugin demonstrating the use of the {@link MedianCutQuantizer} class.
@@ -25,7 +29,7 @@ import imagingbook.pub.color.quantize.MedianCutQuantizer.Parameters;
  * @author WB
  * @version 2017/01/03
  */
-public class Median_Cut_Quantization implements PlugInFilter {
+public class KMeans_Quantization implements PlugInFilter {
 	
 	private static boolean CREATE_INDEXED_IMAGE = true; 
 	private static boolean CREATE_RGB_IMAGE = false;
@@ -41,7 +45,7 @@ public class Median_Cut_Quantization implements PlugInFilter {
 	
 	public void run(ImageProcessor ip) {
 		Parameters params = new Parameters();
-		
+	
 		if (!showDialog(params))
 			return;
 		
@@ -49,7 +53,7 @@ public class Median_Cut_Quantization implements PlugInFilter {
 		int[] pixels = (int[]) cp.getPixels();
 		
 		// create a quantizer object
-		ColorQuantizer quantizer = new MedianCutQuantizer(pixels, params);
+		ColorQuantizer quantizer = new KMeansClusteringQuantizer(pixels, params);
 		int nCols = quantizer.getColorMap().length;
 		
 		if (CREATE_INDEXED_IMAGE) {
@@ -71,8 +75,13 @@ public class Median_Cut_Quantization implements PlugInFilter {
 	}
 	
 	private boolean showDialog(Parameters params) {
-		GenericDialog gd = new GenericDialog(Median_Cut_Quantization.class.getSimpleName());
+		GenericDialog gd = new GenericDialog(KMeans_Quantization.class.getSimpleName());
 		gd.addNumericField("No. of colors (2,..,256)", params.maxColors, 0);
+		gd.addNumericField("Max. iterations", params.maxIterations, 0);
+		
+		String[] mNames = Enums.getEnumNames(SamplingMethod.class);
+		gd.addChoice("Sampling method", mNames, params.samplMethod.name());
+		
 		gd.addCheckbox("Create indexed color image", CREATE_INDEXED_IMAGE);
 		gd.addCheckbox("Create quantized RGB image", CREATE_RGB_IMAGE);
 		gd.addCheckbox("List quantized color table", LIST_COLOR_TABLE);
@@ -84,8 +93,11 @@ public class Median_Cut_Quantization implements PlugInFilter {
 		int nc = (int) gd.getNextNumber();
 		nc = Math.min(nc, 255);
 		nc = Math.max(2, nc);
-		
+
 		params.maxColors = nc;
+		params.maxIterations = (int) gd.getNextNumber();
+		params.samplMethod = SamplingMethod.valueOf(gd.getNextChoice());
+		
 		CREATE_INDEXED_IMAGE = gd.getNextBoolean();
 		CREATE_RGB_IMAGE = gd.getNextBoolean();
 		LIST_COLOR_TABLE = gd.getNextBoolean();

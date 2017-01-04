@@ -14,6 +14,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.util.Enums;
 import imagingbook.pub.regions.BreadthFirstLabeling;
 import imagingbook.pub.regions.DepthFirstLabeling;
 import imagingbook.pub.regions.RecursiveLabeling;
@@ -39,7 +40,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
 	
 	public enum LabelingMethod {
 			BreadthFirst, DepthFirst, Recursive, Sequential, RegionAndContours
-		};
+	};
 
 	static LabelingMethod method = LabelingMethod.BreadthFirst;
 	static boolean recolor = false;
@@ -92,11 +93,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
     
 	boolean getUserInput() {
 		GenericDialog gd = new GenericDialog("Binary Region Labeling");
-		LabelingMethod[] methods = LabelingMethod.values();
-		String[] mNames = new String[methods.length];
-		for (int i=0; i<methods.length; i++) {
-			mNames[i] = methods[i].name();
-		}
+		String[] mNames = Enums.getEnumNames(LabelingMethod.class);
 		gd.addChoice("Labeling method", mNames, mNames[0]);
 		gd.addCheckbox("Color result", recolor);
 		gd.addCheckbox("List regions", listRegions);
@@ -104,8 +101,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
 		if (gd.wasCanceled()) {
 			return false;
 		}
-		String mName = gd.getNextChoice();
-		method = LabelingMethod.valueOf(mName);
+		method = LabelingMethod.valueOf(gd.getNextChoice());
 		recolor = gd.getNextBoolean();
 		listRegions = gd.getNextBoolean();
 		return true;
