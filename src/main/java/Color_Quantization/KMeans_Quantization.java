@@ -20,11 +20,10 @@ import imagingbook.pub.color.quantize.ColorQuantizer;
 import imagingbook.pub.color.quantize.KMeansClusteringQuantizer;
 import imagingbook.pub.color.quantize.KMeansClusteringQuantizer.Parameters;
 import imagingbook.pub.color.quantize.KMeansClusteringQuantizer.SamplingMethod;
-import imagingbook.pub.color.quantize.MedianCutQuantizer;
 
 
 /**
- * ImageJ plugin demonstrating the use of the {@link MedianCutQuantizer} class.
+ * ImageJ plugin demonstrating the use of the {@link KMeansClusteringQuantizer} class.
  * 
  * @author WB
  * @version 2017/01/03

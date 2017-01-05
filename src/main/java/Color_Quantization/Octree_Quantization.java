@@ -18,6 +18,7 @@ import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjLogStream;
 import imagingbook.pub.color.quantize.OctreeQuantizer;
+import imagingbook.pub.color.quantize.OctreeQuantizer.Parameters;
 
 /**
  * ImageJ plugin demonstrating the use of the {@link OctreeQuantizer} class.
@@ -27,8 +28,6 @@ import imagingbook.pub.color.quantize.OctreeQuantizer;
  */
 public class Octree_Quantization implements PlugInFilter {
 	
-	private static int NCOLORS = 16;
-	private static boolean QUICK_QUANTIZATION = false;
 	private static boolean CREATE_INDEXED_IMAGE = true; 
 	private static boolean CREATE_RGB_IMAGE = false;
 	private static boolean LIST_COLOR_TABLE = false;
@@ -42,18 +41,18 @@ public class Octree_Quantization implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
-		if (!showDialog())
+		Parameters params = new Parameters();
+		
+		if (!showDialog(params))
 			return;
 
 		ColorProcessor cp = (ColorProcessor) ip;
 		int[] pixels = (int[]) cp.getPixels();
 
-		OctreeQuantizer quantizer = new OctreeQuantizer(pixels, NCOLORS);
+		OctreeQuantizer quantizer = new OctreeQuantizer(pixels, params);
 		int nCols = quantizer.getColorMap().length;
 		
-		quantizer.setQuickQuantization(QUICK_QUANTIZATION);
-		
-		String qck = QUICK_QUANTIZATION ? " quick" : "";
+		String qck = params.quickQuantization ? " quick" : "";
 		
 		if (CREATE_INDEXED_IMAGE) {
 			// quantize to an indexed color image
@@ -73,10 +72,10 @@ public class Octree_Quantization implements PlugInFilter {
 		}
 	}
 	
-	private boolean showDialog() {
+	private boolean showDialog(Parameters params) {
 		GenericDialog gd = new GenericDialog(Median_Cut_Quantization.class.getSimpleName());
-		gd.addNumericField("No. of colors (2,..,256)", 16, 0);
-		gd.addCheckbox("Use quick quantization", QUICK_QUANTIZATION);
+		gd.addNumericField("No. of colors (2,..,256)", params.maxColors, 0);
+		gd.addCheckbox("Use quick quantization", params.quickQuantization);
 		gd.addCheckbox("Create indexed color image", CREATE_INDEXED_IMAGE);
 		gd.addCheckbox("Create quantized RGB image", CREATE_RGB_IMAGE);
 		gd.addCheckbox("List quantized color table", LIST_COLOR_TABLE);
@@ -88,8 +87,10 @@ public class Octree_Quantization implements PlugInFilter {
 		int nc = (int) gd.getNextNumber();
 		nc = Math.min(nc, 255);
 		nc = Math.max(2, nc);
-		NCOLORS = nc;
-		QUICK_QUANTIZATION = gd.getNextBoolean();
+		
+		params.maxColors = nc;
+		params.quickQuantization = gd.getNextBoolean();
+		
 		CREATE_INDEXED_IMAGE = gd.getNextBoolean();
 		CREATE_RGB_IMAGE = gd.getNextBoolean();
 		LIST_COLOR_TABLE = gd.getNextBoolean();
