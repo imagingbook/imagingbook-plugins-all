@@ -59,7 +59,7 @@
 								<artifactItem>
 									<groupId>net.imagej</groupId>
 									<artifactId>ij</artifactId>
-									<overWrite>false</overWrite>
+									<overWrite>true</overWrite>
 									<outputDirectory>${project.basedir}/ImageJ</outputDirectory>
 									<destFileName>ij.jar</destFileName>
 								</artifactItem>
@@ -68,7 +68,7 @@
 								<artifactItem>
 									<groupId>com.imagingbook</groupId>
 									<artifactId>imagingbook-common</artifactId>
-									<overWrite>false</overWrite>
+									<overWrite>true</overWrite>
 									<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
 									<destFileName>imagingbook-common.jar</destFileName>
 								</artifactItem>
