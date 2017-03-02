@@ -7,8 +7,11 @@ import java.util.Random;
 
 import org.apache.commons.math3.linear.RealMatrix;
 
+import Extras.geom.points.IterativeClosestPointMatcher;
+import Extras.geom.points.IterativeClosestPointMatcher.IterationListener;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.plugin.PlugIn;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
@@ -17,7 +20,7 @@ import imagingbook.lib.math.Matrix;
 import imagingbook.pub.geometry.mappings.linear.AffineMapping;
 import imagingbook.pub.geometry.mappings.linear.Rotation;
 import imagingbook.pub.geometry.mappings.linear.Translation;
-import imagingbook.pub.geometry.points.IterativeClosestPointMatcher;
+
 
 public class ICP_Test implements PlugIn {
 	
@@ -39,6 +42,7 @@ public class ICP_Test implements PlugIn {
 	Random rnd = new Random(11);
 	
 	ImagePlus im = null;
+	ImageStack stack = null;
 
 	@Override
 	public void run(String arg0) {
@@ -49,16 +53,10 @@ public class ICP_Test implements PlugIn {
 		makeSamplePointsX();
 		makeSamplePointsY();
 		
-		ImageProcessor ip = new ColorProcessor(size, size);
-		ip.setColor(Color.white); ip.fill();
-		im = new ImagePlus(this.getClass().getSimpleName(), ip);
-		drawPoints(X, Color.blue);
-		drawPoints(Y, Color.green);
+		stack = new ImageStack(size, size);
+			
+		IterativeClosestPointMatcher icp = new IterativeClosestPointMatcher(X, Y, tau, kMax, new Listener());
 		
-		
-		IterativeClosestPointMatcher icp = 
-				new IterativeClosestPointMatcher(X, Y, tau, kMax);
-	
 		IJ.log("ICP has converged: " + icp.hasConverged());
 
 //		if (!icp.hasConverged())
@@ -68,17 +66,21 @@ public class ICP_Test implements PlugIn {
 //		List<double[]> XX = mapPoints(X, M);
 //		drawPoints(XX, Color.red);
 		
-		int[] Assoc = icp.getA();
-		drawAssociations(X, Y, Assoc, Color.gray);
+//		int[] Assoc = icp.getA();
+//		drawAssociations(X, Y, Assoc, Color.gray);
 		
-		im.show();
+		(new ImagePlus("point associations", stack)).show();
 		
 	}
 	
+	private void clearPlot(ImageProcessor ip) {
+		//ImageProcessor ip = im.getProcessor();
+		ip.setColor(Color.white); 
+		ip.fill();
+	}
 
-
-	private void drawPoints(List<double[]> pnts, Color col) {
-		ImageProcessor ip = im.getProcessor();
+	private void drawPoints(ImageProcessor ip, List<double[]> pnts, Color col) {
+//		ImageProcessor ip = im.getProcessor();
 		ip.setColor(col);
 		for (double[] p : pnts) {
 			int u = (int) Math.round(p[0]);
@@ -88,8 +90,8 @@ public class ICP_Test implements PlugIn {
 		}
 	}
 	
-	private void drawAssociations(List<double[]> pX, List<double[]> pY, int[] Assoc, Color col) {
-		ImageProcessor ip = im.getProcessor();
+	private void drawAssociations(ImageProcessor ip, List<double[]> pX, List<double[]> pY, int[] Assoc, Color col) {
+//		ImageProcessor ip = im.getProcessor();
 		ip.setColor(col);
 		int i = 0;
 		for (double[] px : pX) {
@@ -152,6 +154,37 @@ public class ICP_Test implements PlugIn {
 		return XX;
 	}
 	
+	
+	/**
+	 * An instance of this class may be passed to the constructor
+	 * of {@link IterativeClosestPointMatcher}; its {@code notify()} method
+	 * is invoked after every iteration of the matcher for debugging
+	 * or visualizing intermediate results.
+	 */
+	private class Listener implements IterationListener {
+
+		@Override
+		public void notify(IterativeClosestPointMatcher matcher) {
+			ImageProcessor ip = new ColorProcessor(size, size);
+			//im = new ImagePlus(this.getClass().getSimpleName(), ip);
+			
+//			clearPlot(ip);
+//			drawPoints(X, Color.blue);
+//			drawPoints(Y, Color.green);
+			//im.show();
+			
+			IJ.log("Iteration " + matcher.getIteration() + ": converged = " + matcher.hasConverged());
+			clearPlot(ip);
+			drawPoints(ip, X, Color.blue);
+			drawPoints(ip, Y, Color.green);
+			int[] Assoc = matcher.getA();
+			drawAssociations(ip, X, Y, Assoc, Color.gray);
+			//im.updateAndDraw();
+			stack.addSlice(ip);
+			//IJ.wait(1000);
+		}
+		
+	}
 
 
 }
