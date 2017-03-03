@@ -25,7 +25,7 @@ import imagingbook.pub.geometry.mappings.linear.Translation;
 public class ICP_Test implements PlugIn {
 	
 	static int m = 150;
-	static int size = 200;
+	static int size = 800;
 	static double theta = 0.2;
 	static double dx = 0;
 	static double dy = 0;
@@ -55,7 +55,7 @@ public class ICP_Test implements PlugIn {
 		
 		stack = new ImageStack(size, size);
 			
-		IterativeClosestPointMatcher icp = new IterativeClosestPointMatcher(X, Y, tau, kMax, new Listener());
+		IterativeClosestPointMatcher icp = new IterativeClosestPointMatcher(X, Y, tau, kMax, null, new Listener());
 		
 		IJ.log("ICP has converged: " + icp.hasConverged());
 
@@ -80,13 +80,14 @@ public class ICP_Test implements PlugIn {
 	}
 
 	private void drawPoints(ImageProcessor ip, List<double[]> pnts, Color col) {
+		int w = 2;
 //		ImageProcessor ip = im.getProcessor();
 		ip.setColor(col);
 		for (double[] p : pnts) {
 			int u = (int) Math.round(p[0]);
 			int v = (int) Math.round(p[1]);
-			ip.drawLine(u-1, v, u+1, v);
-			ip.drawLine(u, v-1, u, v+1);
+			ip.drawLine(u-w, v, u+w, v);
+			ip.drawLine(u, v-w, u, v+w);
 		}
 	}
 	
@@ -145,7 +146,7 @@ public class ICP_Test implements PlugIn {
 		}
 	}
 	
-	private List<double[]> mapPoints(List<double[]> x2, RealMatrix M) {
+	private List<double[]> mapPoints(RealMatrix M, List<double[]> X) {
 		List<double[]> XX = new ArrayList<double[]>(m);
 		for (double[] xi : X) {
 			double[] xxi = M.operate(Matrix.toHomogeneous(xi));
@@ -174,11 +175,16 @@ public class ICP_Test implements PlugIn {
 			//im.show();
 			
 			IJ.log("Iteration " + matcher.getIteration() + ": converged = " + matcher.hasConverged());
-			clearPlot(ip);
-			drawPoints(ip, X, Color.blue);
-			drawPoints(ip, Y, Color.green);
+			RealMatrix T = matcher.getT();
+			List<double[]> TX = mapPoints(T, X);
+			
 			int[] Assoc = matcher.getA();
-			drawAssociations(ip, X, Y, Assoc, Color.gray);
+			
+			clearPlot(ip);
+			drawPoints(ip, TX, Color.blue);
+			drawPoints(ip, Y, Color.green);
+			
+			drawAssociations(ip, TX, Y, Assoc, Color.gray);
 			//im.updateAndDraw();
 			stack.addSlice(ip);
 			//IJ.wait(1000);

@@ -23,7 +23,7 @@ import imagingbook.pub.geometry.mappings.linear.AffineMapping;
  * @version 2017/03/01
  *
  */
-public class ProcrustesFit {
+public class ProcrustesFitter implements LinearFitter {
 	
 	final boolean allowTranslation;
 	final boolean allowScaling;
@@ -45,7 +45,7 @@ public class ProcrustesFit {
 	 * @param X Sequence of n-dimensional points
 	 * @param Y Sequence of n-dimensional points (reference)
 	 */
-	public ProcrustesFit(List<double[]> X, List<double[]> Y) {
+	public ProcrustesFitter(List<double[]> X, List<double[]> Y) {
 		this(X, Y, true, true, true);
 	}
 	
@@ -61,7 +61,7 @@ public class ProcrustesFit {
 	 * @param forceRotation If {@code true}, the orthogonal part of the transformation (Q)
 	 * 		is forced to a true rotation and no reflection is allowed.
 	 */
-	public ProcrustesFit(List<double[]> X, List<double[]> Y, 
+	public ProcrustesFitter(List<double[]> X, List<double[]> Y, 
 			boolean allowTranslation, boolean allowScaling, boolean forceRotation) {
 		if (X.size() != Y.size())
 			throw new IllegalArgumentException("point sequences xA, xB must have same length");
