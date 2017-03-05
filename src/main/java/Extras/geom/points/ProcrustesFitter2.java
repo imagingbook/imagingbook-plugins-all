@@ -23,7 +23,7 @@ import imagingbook.pub.geometry.mappings.linear.AffineMapping;
  * @version 2017/03/01
  *
  */
-public class ProcrustesFitter {
+public class ProcrustesFitter2 implements LeastSquaresFitter {
 	
 	final boolean allowTranslation;
 	final boolean allowScaling;
@@ -45,7 +45,7 @@ public class ProcrustesFitter {
 	 * @param X Sequence of n-dimensional points
 	 * @param Y Sequence of n-dimensional points (reference)
 	 */
-	public ProcrustesFitter(List<double[]> X, List<double[]> Y) {
+	public ProcrustesFitter2(List<double[]> X, List<double[]> Y) {
 		this(X, Y, true, true, true);
 	}
 	
@@ -61,7 +61,7 @@ public class ProcrustesFitter {
 	 * @param forceRotation If {@code true}, the orthogonal part of the transformation (Q)
 	 * 		is forced to a true rotation and no reflection is allowed.
 	 */
-	public ProcrustesFitter(List<double[]> X, List<double[]> Y, 
+	public ProcrustesFitter2(List<double[]> X, List<double[]> Y, 
 			boolean allowTranslation, boolean allowScaling, boolean forceRotation) {
 		if (X.size() != Y.size())
 			throw new IllegalArgumentException("point sequences xA, xB must have same length");
@@ -115,6 +115,14 @@ public class ProcrustesFitter {
 		}
 		
 		err = sqr(normQ) - sqr(S.multiply(D).getTrace() / normP);
+	}
+	
+	// -----------------------------------------------------------------
+	
+	@Override
+	public void fit(List<double[]> X, List<double[]> Y) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	// -----------------------------------------------------------------
@@ -258,6 +266,8 @@ public class ProcrustesFitter {
 		System.out.println("V = " + Matrix.toString(V.getData()));
 		System.out.println("--------------------------");
 	}
+
+
 
 }
 

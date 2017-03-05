@@ -41,10 +41,10 @@ public class IterativeClosestPointMatcher {
 	
 	private final IterationListener cb;
 	private final List<double[]> X, Y;
-	private final LinearFitter fitter;
+	private final LeastSquaresFitter fitter;
 	
 	public IterativeClosestPointMatcher(List<double[]> X, List<double[]> Y, 
-			double tau, int kMax, LinearFitter fitter, IterationListener cb) {
+			double tau, int kMax, LeastSquaresFitter fitter, IterationListener cb) {
 		this.X = X;
 		this.Y = Y;
 		this.tau = tau;
@@ -114,7 +114,7 @@ public class IterativeClosestPointMatcher {
 			YY.add(Y.get(A[i]));
 		}
 		
-		ProcrustesFitter pf = new ProcrustesFitter(X, YY, true, false, true);
+		ProcrustesFitter2 pf = new ProcrustesFitter2(X, YY, true, false, true);
 		
 		T = pf.getTransformationMatrix();
 		System.out.println("EuclideanError = " + pf.getEuclideanError(X, Y));

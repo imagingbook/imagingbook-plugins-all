@@ -1,5 +1,13 @@
 package Extras.geom.points;
 
-public class AffineFitter implements LinearFitter {
+import java.util.List;
+
+public class AffineFitter implements LeastSquaresFitter {
+
+	@Override
+	public void fit(List<double[]> X, List<double[]> Y) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
