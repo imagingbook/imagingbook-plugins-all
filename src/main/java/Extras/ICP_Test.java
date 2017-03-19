@@ -24,6 +24,9 @@ import imagingbook.pub.geometry.mappings.linear.Translation;
 
 public class ICP_Test implements PlugIn {
 	
+	static Color colorX = Color.blue;
+	static Color colorY = Color.green.darker();
+	
 	static int m = 150;
 	static int size = 800;
 	static double theta = 0.2;
@@ -52,6 +55,18 @@ public class ICP_Test implements PlugIn {
 		A = makeTransformation();
 		makeSamplePointsX();
 		makeSamplePointsY();
+		
+		ImageProcessor ipX = new ColorProcessor(size, size); ipX.setColor(Color.white); ipX.fill();
+		drawPoints(ipX, X, colorX);
+		ImageProcessor ipY = new ColorProcessor(size, size); ipY.setColor(Color.white); ipY.fill();
+		drawPoints(ipY, Y, colorY);
+		ImageProcessor ipXY = new ColorProcessor(size, size); ipXY.setColor(Color.white); ipXY.fill();
+		drawPoints(ipXY, X, colorX);
+		drawPoints(ipXY, Y, colorY);
+		
+		new ImagePlus("X", ipX).show();
+		new ImagePlus("Y", ipY).show();
+		new ImagePlus("XY", ipXY).show();
 		
 		stack = new ImageStack(size, size);
 			
@@ -83,6 +98,7 @@ public class ICP_Test implements PlugIn {
 		int w = 2;
 //		ImageProcessor ip = im.getProcessor();
 		ip.setColor(col);
+		ip.setLineWidth(2);
 		for (double[] p : pnts) {
 			int u = (int) Math.round(p[0]);
 			int v = (int) Math.round(p[1]);
@@ -94,6 +110,7 @@ public class ICP_Test implements PlugIn {
 	private void drawAssociations(ImageProcessor ip, List<double[]> pX, List<double[]> pY, int[] Assoc, Color col) {
 //		ImageProcessor ip = im.getProcessor();
 		ip.setColor(col);
+		ip.setLineWidth(1);
 		int i = 0;
 		for (double[] px : pX) {
 			int j = Assoc[i];
@@ -181,8 +198,8 @@ public class ICP_Test implements PlugIn {
 			int[] Assoc = matcher.getA();
 			
 			clearPlot(ip);
-			drawPoints(ip, TX, Color.blue);
-			drawPoints(ip, Y, Color.green);
+			drawPoints(ip, TX, colorX);
+			drawPoints(ip, Y, colorY);
 			
 			drawAssociations(ip, TX, Y, Assoc, Color.gray);
 			//im.updateAndDraw();
@@ -191,6 +208,8 @@ public class ICP_Test implements PlugIn {
 		}
 		
 	}
+	
+
 
 
 }
