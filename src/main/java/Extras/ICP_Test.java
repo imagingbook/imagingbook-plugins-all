@@ -7,8 +7,7 @@ import java.util.Random;
 
 import org.apache.commons.math3.linear.RealMatrix;
 
-import Extras.geom.points.IterativeClosestPointMatcher;
-import Extras.geom.points.IterativeClosestPointMatcher.IterationListener;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -17,6 +16,8 @@ import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjLogStream;
 import imagingbook.lib.math.Matrix;
+import imagingbook.pub.geometry.icp.IterativeClosestPointMatcher;
+import imagingbook.pub.geometry.icp.IterativeClosestPointMatcher.IterationListener;
 import imagingbook.pub.geometry.mappings.linear.AffineMapping;
 import imagingbook.pub.geometry.mappings.linear.Rotation;
 import imagingbook.pub.geometry.mappings.linear.Translation;

@@ -15,7 +15,7 @@ import imagingbook.lib.math.Matrix;
  * n-dimensional samples.
  * 
  * @author W. Burger
- *
+ * @deprecated
  */
 public class IterativeClosestPointMatcher {
 	

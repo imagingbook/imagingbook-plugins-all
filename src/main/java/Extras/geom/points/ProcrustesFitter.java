@@ -21,7 +21,7 @@ import imagingbook.pub.geometry.mappings.linear.AffineMapping;
  * 
  * @author W. Burger
  * @version 2017/03/01
- *
+ * @deprecated
  */
 public class ProcrustesFitter {
 	
