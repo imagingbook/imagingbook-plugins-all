@@ -10,16 +10,9 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<!-- <myproject.root>${basedir}/../..</myproject.root> -->
-		<!-- <javadoc-doctitle>ImageJ Plugins for Burger/Burge books (all)</javadoc-doctitle> -->
-		<!-- <imagingbook.webdir>${project.basedir}/docs/javadoc</imagingbook.webdir> -->
 	</properties>
 
 	<dependencies>
-		<dependency>
-				<groupId>net.imagej</groupId>
-				<artifactId>ij</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook-common</artifactId>
