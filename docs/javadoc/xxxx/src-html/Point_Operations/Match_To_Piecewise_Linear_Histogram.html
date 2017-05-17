@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*******************************************************************************<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * This software is provided as a supplement to the authors' textbooks on digital<a name="line.2"></a>
+<span class="sourceLineNo">003</span> *  image processing published by Springer-Verlag in various languages and editions.<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * Permission to use and distribute this software is granted under the BSD 2-Clause <a name="line.4"></a>
+<span class="sourceLineNo">005</span> * "Simplified" License (see http://opensource.org/licenses/BSD-2-Clause). <a name="line.5"></a>
+<span class="sourceLineNo">006</span> * Copyright (c) 2006-2016 Wilhelm Burger, Mark J. Burge. All rights reserved. <a name="line.6"></a>
+<span class="sourceLineNo">007</span> * Visit http://imagingbook.com for additional details.<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *******************************************************************************/<a name="line.8"></a>
+<span class="sourceLineNo">009</span>package Point_Operations;<a name="line.9"></a>
+<span class="sourceLineNo">010</span><a name="line.10"></a>
+<span class="sourceLineNo">011</span>import ij.ImagePlus;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import ij.plugin.filter.PlugInFilter;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import ij.process.ImageProcessor;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import imagingbook.pub.histogram.HistogramMatcher;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import imagingbook.pub.histogram.HistogramPlot;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import imagingbook.pub.histogram.PiecewiseLinearCdf;<a name="line.16"></a>
+<span class="sourceLineNo">017</span>import imagingbook.pub.histogram.Util;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>public class Match_To_Piecewise_Linear_Histogram implements PlugInFilter { <a name="line.19"></a>
+<span class="sourceLineNo">020</span>        <a name="line.20"></a>
+<span class="sourceLineNo">021</span>        public int setup(String arg0, ImagePlus im) {<a name="line.21"></a>
+<span class="sourceLineNo">022</span>                return DOES_8G;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>        }<a name="line.23"></a>
+<span class="sourceLineNo">024</span>        <a name="line.24"></a>
+<span class="sourceLineNo">025</span>        public void run(ImageProcessor ipA) {<a name="line.25"></a>
+<span class="sourceLineNo">026</span>                // get histogram of original image<a name="line.26"></a>
+<span class="sourceLineNo">027</span>                int[] hA = ipA.getHistogram();<a name="line.27"></a>
+<span class="sourceLineNo">028</span>                <a name="line.28"></a>
+<span class="sourceLineNo">029</span>                (new HistogramPlot(hA, "Histogram A")).show();<a name="line.29"></a>
+<span class="sourceLineNo">030</span>                (new HistogramPlot(Util.Cdf(hA), "Cumulative Histogram A")).show();<a name="line.30"></a>
+<span class="sourceLineNo">031</span>                <a name="line.31"></a>
+<span class="sourceLineNo">032</span>                // -------------------------<a name="line.32"></a>
+<span class="sourceLineNo">033</span>                int[] ik = {28, 75, 150, 210};<a name="line.33"></a>
+<span class="sourceLineNo">034</span>                double[] Pk = {.05, .25, .75, .95};<a name="line.34"></a>
+<span class="sourceLineNo">035</span>                PiecewiseLinearCdf pLCdf = new PiecewiseLinearCdf(256, ik, Pk);<a name="line.35"></a>
+<span class="sourceLineNo">036</span>                // -------------------------<a name="line.36"></a>
+<span class="sourceLineNo">037</span>                <a name="line.37"></a>
+<span class="sourceLineNo">038</span>                double[] nhB = pLCdf.getPdf();<a name="line.38"></a>
+<span class="sourceLineNo">039</span>                nhB = Util.normalizeHistogram(nhB);<a name="line.39"></a>
+<span class="sourceLineNo">040</span>                (new HistogramPlot(nhB, "Piecewise Linear")).show();<a name="line.40"></a>
+<span class="sourceLineNo">041</span>                (new HistogramPlot(pLCdf, "Piecewise Linear Cumulative")).show();<a name="line.41"></a>
+<span class="sourceLineNo">042</span>                <a name="line.42"></a>
+<span class="sourceLineNo">043</span>                HistogramMatcher m = new HistogramMatcher();<a name="line.43"></a>
+<span class="sourceLineNo">044</span>                int[] F = m.matchHistograms(hA, pLCdf);<a name="line.44"></a>
+<span class="sourceLineNo">045</span>                <a name="line.45"></a>
+<span class="sourceLineNo">046</span>//              for (int i = 0; i &lt; F.length; i++) {<a name="line.46"></a>
+<span class="sourceLineNo">047</span>//                      IJ.log(i + " -&gt; " + F[i]);<a name="line.47"></a>
+<span class="sourceLineNo">048</span>//              }<a name="line.48"></a>
+<span class="sourceLineNo">049</span>                <a name="line.49"></a>
+<span class="sourceLineNo">050</span>                ipA.applyTable(F);<a name="line.50"></a>
+<span class="sourceLineNo">051</span>                int[] hAm = ipA.getHistogram();<a name="line.51"></a>
+<span class="sourceLineNo">052</span>                (new HistogramPlot(hAm, "Histogram A (mod)")).show();<a name="line.52"></a>
+<span class="sourceLineNo">053</span>                (new HistogramPlot(Util.Cdf(hAm), "Cumulative Histogram A (mod)")).show();<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        }<a name="line.54"></a>
+<span class="sourceLineNo">055</span><a name="line.55"></a>
+<span class="sourceLineNo">056</span>}<a name="line.56"></a>
+<span class="sourceLineNo">057</span><a name="line.57"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
