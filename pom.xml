@@ -12,6 +12,7 @@
 	<properties>
 		<myproject.root>${basedir}/../..</myproject.root>
 		<!-- <javadoc-doctitle>ImageJ Plugins for Burger/Burge books (all)</javadoc-doctitle> -->
+		<imagingbook.webdir>${project.basedir}/docs/javadoc</imagingbook.webdir>
 	</properties>
 
 	<dependencies>
