@@ -2,10 +2,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.imagingbook</groupId>
-		<artifactId>imagingbook-public-pom</artifactId>
-		<version>1.5</version>
-		<relativePath>../_pom-public</relativePath>
+		<artifactId>imagingbook-plugins-pom</artifactId>
+		<version>1.6-SNAPSHOT</version>
+		<relativePath>../_pom-plugins</relativePath>
 	</parent>
+	<!-- <parent>
+		<groupId>com.imagingbook</groupId>
+		<artifactId>imagingbook-public-pom</artifactId>
+		<version>1.6-SNAPSHOT</version>
+		<relativePath>../_pom-public</relativePath>
+	</parent> -->
 	<artifactId>imagingbook_plugins_all</artifactId>
 	<packaging>jar</packaging>
 
