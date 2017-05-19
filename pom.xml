@@ -2,16 +2,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.imagingbook</groupId>
-		<artifactId>imagingbook-plugins-pom</artifactId>
-		<version>1.6-SNAPSHOT</version>
-		<relativePath>../_pom-plugins</relativePath>
-	</parent>
-	<!-- <parent>
-		<groupId>com.imagingbook</groupId>
 		<artifactId>imagingbook-public-pom</artifactId>
 		<version>1.6-SNAPSHOT</version>
 		<relativePath>../_pom-public</relativePath>
-	</parent> -->
+	</parent>
 	<artifactId>imagingbook_plugins_all</artifactId>
 	<packaging>jar</packaging>
 
@@ -40,7 +34,8 @@
 				</configuration>
 			</plugin>
 
-			<!-- make a local copy of the current ij.jar for development, see https://maven.apache.org/plugins/maven-dependency-plugin/examples/copying-artifacts.html -->
+			<!-- Copy required jar files into IJ environment to be available at runtime. 
+				 See https://maven.apache.org/plugins/maven-dependency-plugin/examples/copying-artifacts.html -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -64,7 +59,7 @@
 									<destFileName>ij.jar</destFileName>
 								</artifactItem>
 
-								<!-- copy the current imagingbook-common.jar into ImageJ/jars/ -->
+								<!-- copy the imagingbook-common.jar into ImageJ/jars/ -->
 								<artifactItem>
 									<groupId>com.imagingbook</groupId>
 									<artifactId>imagingbook-common</artifactId>
