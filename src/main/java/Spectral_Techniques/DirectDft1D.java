@@ -8,6 +8,8 @@
  *******************************************************************************/
 package Spectral_Techniques;
 
+import java.util.Locale;
+
 import imagingbook.lib.math.Complex;
 
 /** 
@@ -23,7 +25,7 @@ import imagingbook.lib.math.Complex;
 	-1.41421 - 1.41421 i, 
 	-1.41421 - 3.41421 i}
 */
-class DirectDft1D {
+public abstract class DirectDft1D {
 
 	//direct DFT implementation 
 	static Complex[] DFT(Complex[] g, boolean forward) {
@@ -35,8 +37,8 @@ class DirectDft1D {
 			double sumIm = 0;
 			double phim = 2 * Math.PI * m / M;
 			for (int u = 0; u < M; u++) {
-				double gRe = g[u].re();
-				double gIm = g[u].im();
+				double gRe = g[u].re;
+				double gIm = g[u].im;
 				double cosw = Math.cos(phim * u);
 				double sinw = Math.sin(phim * u);
 				if (!forward) // inverse transform
@@ -50,20 +52,47 @@ class DirectDft1D {
 		return G;
 	}
 	
+	public static Complex[] makeComplexVector(double[] signal) {
+		int M = signal.length;
+		Complex[] g = new Complex[M];
+		for (int i = 0; i < M; i++) {
+			g[i] = new Complex(signal[i], 0);
+		}
+		return g;
+	}
+	
+	public static void printComplexVector(Complex[] g, String title) {
+    	System.out.println("Listing of " + title);
+		for (int i = 0; i < g.length; i++) {
+			if (g[i] == null)
+				System.out.println(String.format("%d: ********", i));
+			else {
+				double gr = g[i].re;
+				double gi = g[i].im;
+				if (gi >= 0) {
+					System.out.println(String.format(Locale.US, "%d: %6.2f + %6.2fi", i, gr, Math.abs(gi)));
+				}
+				else {
+					System.out.println(String.format(Locale.US, "%d: %6.2f - %6.2fi", i, gr, Math.abs(gi)));
+				}
+			}
+		}
+	}
+	
 	//test example
 	public static void main(String[] args) {
 		double[] signal = { 1, 2, 3, 4, 5, 6, 7, 8 };
-		Complex[] g = Complex.makeComplexVector(signal);
+		Complex[] g = makeComplexVector(signal);
 
-		Complex.printComplexVector(g, "Signal");
+		printComplexVector(g, "Signal");
 		
 		//compute forward DFT
 		Complex[] G = DFT(g, true);
-		Complex.printComplexVector(G, "Spectrum");
+		printComplexVector(G, "Spectrum");
 
 		//compute inverse DFT
 		Complex[] iG = DFT(G, false);
-		Complex.printComplexVector(iG, "Reconstructed signal");
+		printComplexVector(iG, "Reconstructed signal");
 	}
 }
 

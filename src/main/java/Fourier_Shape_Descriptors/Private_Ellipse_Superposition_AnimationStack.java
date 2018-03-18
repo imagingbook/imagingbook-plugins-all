@@ -207,7 +207,7 @@ public class Private_Ellipse_Superposition_AnimationStack implements PlugInFilte
 				Color color = csq.nextColor();
 				Complex c1 = fd.getCoefficient(-m);
 				Complex c2 = fd.getCoefficient(m);
-				Path2D path = fd.makeEllipse(c1, c2, m, cc.re() + 0.5, cc.im() + 0.5);
+				Path2D path = fd.makeEllipse(c1, c2, m, cc.re + 0.5, cc.im + 0.5);
 				ShapeRoi rpoly = new ShapeRoi(path);
 				rpoly.setStrokeColor(color);
 				rpoly.setStrokeWidth(ReconstructionStrokeWidth/2);
@@ -218,7 +218,7 @@ public class Private_Ellipse_Superposition_AnimationStack implements PlugInFilte
 				//IJ.log("re: " + c12.re + " im: " + c12.im);
 				double rad = ReconstructionRadius;
 				Ellipse2D oval = 
-						new Ellipse2D.Double(c12.re() + cc.re() - rad + 0.5, c12.im() + cc.im() - rad + 0.5, 2 * rad, 2 * rad);
+						new Ellipse2D.Double(c12.re + cc.re - rad + 0.5, c12.im + cc.im - rad + 0.5, 2 * rad, 2 * rad);
 				Roi roi = new ShapeRoi(oval);
 				roi.setFillColor(color);
 				//roi.setStrokeWidth(ReconstructionStrokeWidth/2);
@@ -254,7 +254,7 @@ public class Private_Ellipse_Superposition_AnimationStack implements PlugInFilte
 	void drawSamples(Overlay oly, Complex[] samples, double dx, double dy) {
 		double rad = SampleRadius;
 		for (Complex c : samples) {
-			Ellipse2D oval = new Ellipse2D.Double(c.re() + dx - rad, c.im() + dy - rad, 2 * rad, 2 * rad);
+			Ellipse2D oval = new Ellipse2D.Double(c.re + dx - rad, c.im + dy - rad, 2 * rad, 2 * rad);
 			Roi roi = new ShapeRoi(oval);
 			roi.setFillColor(SampleColor);
 			roi.setStrokeColor(SampleColor);
@@ -294,8 +294,8 @@ public class Private_Ellipse_Superposition_AnimationStack implements PlugInFilte
 	ShapeRoi makeCentroidShape(FourierDescriptor fd) { 
 		int crossSize = 2;
 		Complex G0 = fd.getCoefficient(0);
-		double xc = G0.re();
-		double yc = G0.im();
+		double xc = G0.re;
+		double yc = G0.im;
 		Path2D path = new Path2D.Double();
 		path.moveTo(xc-crossSize, yc);
 		path.lineTo(xc+crossSize, yc);

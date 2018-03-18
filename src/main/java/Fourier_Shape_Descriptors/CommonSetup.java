@@ -74,8 +74,8 @@ abstract class CommonSetup {
 			Path2D path = new Path2D.Float();
 			for (int i = 0; i < points.length; i++) {
 				Complex pt = points[i];
-				double xt = pt.re() + dx; 
-				double yt = pt.im() + dy; 
+				double xt = pt.re + dx; 
+				double yt = pt.im + dy; 
 				if (i == 0) {
 					path.moveTo(xt, yt);
 				}
@@ -89,15 +89,15 @@ abstract class CommonSetup {
 		
 		ShapeRoi makeCircleShape(Complex c, double r, double dx, double dy) {
 			double d = 2 * r;
-			double x = c.re() + dx;
-			double y = c.im() + dy;
+			double x = c.re + dx;
+			double y = c.im + dy;
 			Ellipse2D oval = new Ellipse2D.Double(x - r, y - r, d, d);
 			return new ShapeRoi(oval);
 		}
 		
 		ShapeRoi makeCrossShape(Complex c, int crossSize, double dx, double dy) {
-			double xc = c.re() + dx;
-			double yc = c.im() + dy;
+			double xc = c.re + dx;
+			double yc = c.im + dy;
 			Path2D path = new Path2D.Double();
 			path.moveTo(xc - crossSize, yc);
 			path.lineTo(xc + crossSize, yc);

@@ -26,22 +26,22 @@ This DFT uses the same definition as Mathematica. Example:
 	-1.41421 - 1.41421 i, 
 	-1.41421 - 3.41421 i}
 */
-class DirectDft1DTab {
+public abstract class DirectDft1DTab {
 
 	//test example
 	public static void main(String[] args) {
 		double[] signal = { 1, 2, 3, 4, 5, 6, 7, 8 };
-		Complex[] g = Complex.makeComplexVector(signal);
+		Complex[] g = DirectDft1D.makeComplexVector(signal);
 
-		Complex.printComplexVector(g, "Signal");
+		DirectDft1D.printComplexVector(g, "Signal");
 		
 		//compute forward DFT
 		Complex[] G = DFT(g, true);
-		Complex.printComplexVector(G, "Spectrum");
+		DirectDft1D.printComplexVector(G, "Spectrum");
 
 		//compute inverse DFT
 		Complex[] iG = DFT(G, false);
-		Complex.printComplexVector(iG, "Reconstructed signal");
+		DirectDft1D.printComplexVector(iG, "Reconstructed signal");
 	}
 
 	//direct DFT implementation using tabulated sin/cos-values (more efficient)
@@ -55,8 +55,8 @@ class DirectDft1DTab {
 			double sumRe = 0;
 			double sumIm = 0;
 			for (int m = 0; m < M; m++) {
-				double gRe = g[m].re();
-				double gIm = g[m].im();
+				double gRe = g[m].re;
+				double gIm = g[m].im;
 				int k = (u * m) % M;
 				double cosPhi = cosTable[k];
 				double sinPhi = sinTable[k];
