@@ -6,6 +6,7 @@
 		<version>1.6-SNAPSHOT</version>
 		<relativePath>../_pom-public</relativePath>
 	</parent>
+	
 	<artifactId>imagingbook_plugins_all</artifactId>
 	<packaging>jar</packaging>
 
@@ -16,7 +17,6 @@
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook-common</artifactId>
-			<version>${imagingbook.version}</version>
 		</dependency>
 	</dependencies>
 
