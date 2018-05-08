@@ -185,7 +185,7 @@ public class LucasKanade_Demo implements PlugInFilter {
 		double h = r.getHeight();
 		Point2D[] pts = new Point2D[4];
 		pts[0] = new Point2D.Double(x, y);
-		pts[1] = new Point2D.Double(x + w - 1, y);	// does -1 matter? YES!!!
+		pts[1] = new Point2D.Double(x + w - 1, y);	// TODO: does -1 matter? YES - it seems WRONG!!!
 		pts[2] = new Point2D.Double(x + w - 1, y + h - 1);
 		pts[3] = new Point2D.Double(x, y + h - 1);
 		//IJ.log("getpoints2:  p1-4 = " + pts[0] + ", " + pts[1] + ", " + pts[2] + ", " + pts[3]);
