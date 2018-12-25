@@ -15,7 +15,7 @@ import imagingbook.lib.math.Complex;
 /** 
  * Direct implementation of the one-dimensional DFT for arbitrary signal lengths.
  * This DFT uses the same definition as Mathematica. Example:
-	> Fourier[{1, 2, 3, 4, 5, 6, 7, 8}, FourierParameters -> {0, -1}]
+ * Fourier[{1, 2, 3, 4, 5, 6, 7, 8}, FourierParameters = {0, -1}]:
 	{12.7279 + 0. i, 
 	-1.41421 + 3.41421 i, 
 	-1.41421 + 1.41421 i, 

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="de">
+<html lang="en">
 <head>
 <title>Source code</title>
 <link rel="stylesheet" type="text/css" href="../../stylesheet.css" title="Style">
@@ -199,7 +199,7 @@
 <span class="sourceLineNo">191</span>                                        Color color = csq.nextColor();<a name="line.191"></a>
 <span class="sourceLineNo">192</span>                                        Complex c1 = fd.getCoefficient(-m);<a name="line.192"></a>
 <span class="sourceLineNo">193</span>                                        Complex c2 = fd.getCoefficient(m);<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                                        Path2D path = fd.makeEllipse(c1, c2, m, cc.re() + 0.5, cc.im() + 0.5);<a name="line.194"></a>
+<span class="sourceLineNo">194</span>                                        Path2D path = fd.makeEllipse(c1, c2, m, cc.re + 0.5, cc.im + 0.5);<a name="line.194"></a>
 <span class="sourceLineNo">195</span>                                        ShapeRoi rpoly = new ShapeRoi(path);<a name="line.195"></a>
 <span class="sourceLineNo">196</span>                                        rpoly.setStrokeColor(color);<a name="line.196"></a>
 <span class="sourceLineNo">197</span>                                        rpoly.setStrokeWidth(ReconstructionStrokeWidth/2);<a name="line.197"></a>
@@ -210,7 +210,7 @@
 <span class="sourceLineNo">202</span>                                        //IJ.log("re: " + c12.re + " im: " + c12.im);<a name="line.202"></a>
 <span class="sourceLineNo">203</span>                                        double rad = ReconstructionRadius;<a name="line.203"></a>
 <span class="sourceLineNo">204</span>                                        Ellipse2D oval = <a name="line.204"></a>
-<span class="sourceLineNo">205</span>                                                        new Ellipse2D.Double(c12.re() + cc.re() - rad + 0.5, c12.im() + cc.im() - rad + 0.5, 2 * rad, 2 * rad);<a name="line.205"></a>
+<span class="sourceLineNo">205</span>                                                        new Ellipse2D.Double(c12.re + cc.re - rad + 0.5, c12.im + cc.im - rad + 0.5, 2 * rad, 2 * rad);<a name="line.205"></a>
 <span class="sourceLineNo">206</span>                                        Roi roi = new ShapeRoi(oval);<a name="line.206"></a>
 <span class="sourceLineNo">207</span>                                        roi.setFillColor(color);<a name="line.207"></a>
 <span class="sourceLineNo">208</span>                                        //roi.setStrokeWidth(ReconstructionStrokeWidth/2);<a name="line.208"></a>
@@ -237,7 +237,7 @@
 <span class="sourceLineNo">229</span>        void drawSamples(Overlay oly, Complex[] samples, double dx, double dy) {<a name="line.229"></a>
 <span class="sourceLineNo">230</span>                double rad = SampleRadius;<a name="line.230"></a>
 <span class="sourceLineNo">231</span>                for (Complex c : samples) {<a name="line.231"></a>
-<span class="sourceLineNo">232</span>                        Ellipse2D oval = new Ellipse2D.Double(c.re() + dx - rad, c.im() + dy - rad, 2 * rad, 2 * rad);<a name="line.232"></a>
+<span class="sourceLineNo">232</span>                        Ellipse2D oval = new Ellipse2D.Double(c.re + dx - rad, c.im + dy - rad, 2 * rad, 2 * rad);<a name="line.232"></a>
 <span class="sourceLineNo">233</span>                        Roi roi = new ShapeRoi(oval);<a name="line.233"></a>
 <span class="sourceLineNo">234</span>                        roi.setFillColor(SampleColor);<a name="line.234"></a>
 <span class="sourceLineNo">235</span>                        roi.setStrokeColor(SampleColor);<a name="line.235"></a>
@@ -277,8 +277,8 @@
 <span class="sourceLineNo">269</span>        ShapeRoi makeCentroidShape(FourierDescriptor fd) { <a name="line.269"></a>
 <span class="sourceLineNo">270</span>                int crossSize = 2;<a name="line.270"></a>
 <span class="sourceLineNo">271</span>                Complex G0 = fd.getCoefficient(0);<a name="line.271"></a>
-<span class="sourceLineNo">272</span>                double xc = G0.re();<a name="line.272"></a>
-<span class="sourceLineNo">273</span>                double yc = G0.im();<a name="line.273"></a>
+<span class="sourceLineNo">272</span>                double xc = G0.re;<a name="line.272"></a>
+<span class="sourceLineNo">273</span>                double yc = G0.im;<a name="line.273"></a>
 <span class="sourceLineNo">274</span>                Path2D path = new Path2D.Double();<a name="line.274"></a>
 <span class="sourceLineNo">275</span>                path.moveTo(xc-crossSize, yc);<a name="line.275"></a>
 <span class="sourceLineNo">276</span>                path.lineTo(xc+crossSize, yc);<a name="line.276"></a>

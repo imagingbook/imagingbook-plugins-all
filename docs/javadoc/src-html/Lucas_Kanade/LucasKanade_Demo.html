@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="de">
+<html lang="en">
 <head>
 <title>Source code</title>
 <link rel="stylesheet" type="text/css" href="../../stylesheet.css" title="Style">
@@ -193,7 +193,7 @@
 <span class="sourceLineNo">185</span>                double h = r.getHeight();<a name="line.185"></a>
 <span class="sourceLineNo">186</span>                Point2D[] pts = new Point2D[4];<a name="line.186"></a>
 <span class="sourceLineNo">187</span>                pts[0] = new Point2D.Double(x, y);<a name="line.187"></a>
-<span class="sourceLineNo">188</span>                pts[1] = new Point2D.Double(x + w - 1, y);      // does -1 matter? YES!!!<a name="line.188"></a>
+<span class="sourceLineNo">188</span>                pts[1] = new Point2D.Double(x + w - 1, y);      // TODO: does -1 matter? YES - it seems WRONG!!!<a name="line.188"></a>
 <span class="sourceLineNo">189</span>                pts[2] = new Point2D.Double(x + w - 1, y + h - 1);<a name="line.189"></a>
 <span class="sourceLineNo">190</span>                pts[3] = new Point2D.Double(x, y + h - 1);<a name="line.190"></a>
 <span class="sourceLineNo">191</span>                //IJ.log("getpoints2:  p1-4 = " + pts[0] + ", " + pts[1] + ", " + pts[2] + ", " + pts[3]);<a name="line.191"></a>

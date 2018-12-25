@@ -185,6 +185,7 @@ public class ProcrustesFitter2 implements LeastSquaresFitter {
 	/**
 	 * Retrieves the (n) x (n+1) transformation matrix A, such that
 	 * y_i = A * x_i (with x_i in homogeneous coordinates)
+	 * @return the transformation matrix
 	 */
 	public RealMatrix getTransformationMatrix() {
 		RealMatrix cR = R.scalarMultiply(c);
