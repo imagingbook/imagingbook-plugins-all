@@ -3,50 +3,55 @@
  *  image processing published by Springer-Verlag in various languages and editions.
  * Permission to use and distribute this software is granted under the BSD 2-Clause 
  * "Simplified" License (see http://opensource.org/licenses/BSD-2-Clause). 
- * Copyright (c) 2006-2016 Wilhelm Burger, Mark J. Burge. All rights reserved. 
+ * Copyright (c) 2006-2018 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
 package Hough_Transform;
 
+import java.awt.Color;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
+import ij.gui.Overlay;
+import ij.gui.Roi;
 import ij.gui.Toolbar;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.hough.HoughTransformLines;
-import imagingbook.pub.hough.HoughTransformLines.HoughLine;
 import imagingbook.pub.hough.HoughTransformLines.Parameters;
-
-import java.awt.Color;
-import java.awt.geom.Point2D;
+import imagingbook.pub.hough.lines.HoughLine;
 
 /** 
- * This plugin implements a simple Hough transform for straight lines.
- * It expects a binary (8-bit) image, with background = 0 and foreground (contour) 
+ * This ImageJ plugin demonstrates the use of the {@link HoughTransformLines}
+ * class for detecting straight lines in images.
+ * It expects an input image with background = 0 and foreground (contour) 
  * pixels with values &gt; 0.
- * TODO: Use a vector overly instead of pixel painting (for the detected lines)
- * @author WB
- * @version 2014/02/06
-*/
+ * A vector overlay is used to display the detected lines.
+ * 
+ * @author W. Burger
+ * @version 2018/12/25
+ */
+
 public class Find_Straight_Lines implements PlugInFilter {
-	
+
 	static int MaxLines = 5;			// number of strongest lines to be found
 	static int MinPointsOnLine = 50;	// min. number of points on each line
-	
+
 	static boolean ShowAccumulator = true;
-	static boolean ShowAccumulatorPeaks = true;
-	static boolean ListStrongestLines = true;
+	static boolean ShowAccumulatorExtended = true;
+	static boolean ShowAccumulatorPeaks = false;
+	static boolean ListStrongestLines = false;
 	static boolean ShowLines = true;
 	static boolean InvertOriginal = true;
 	static double LineWidth = 1.0;
-	static Color LineColor = Color.magenta;
+	static Color DefaultLineColor = Color.magenta;
 	static boolean UsePickedColor = false;
 	static boolean ShowReferencePoint = true;
 	static Color ReferencePointColor = Color.green;
-	
+
 	ImagePlus imp;	
 
 	public int setup(String arg, ImagePlus imp) {
@@ -55,75 +60,78 @@ public class Find_Straight_Lines implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
-		
+
 		Parameters params = new Parameters();
-			
+
 		if (!showDialog(params)) //dialog canceled or error
 			return; 
 
 		// compute the Hough Transform and retrieve the strongest lines:
 		HoughTransformLines ht = new HoughTransformLines(ip, params);
 		HoughLine[] lines = ht.getLines(MinPointsOnLine, MaxLines);
-		
+
 		if (lines.length == 0) {
 			IJ.log("No lines detected - check the input image and parameters!");
 		}
 
 		if (ShowAccumulator){
-			IJ.log("ShowAccumulator");
 			FloatProcessor accIp = ht.getAccumulatorImage();
-			// flip because angle is in opposite direction (y running top to bottom):
-			accIp.flipHorizontal(); 
 			(new ImagePlus("HT of " + imp.getTitle(), accIp)).show();
 		}
-		
+
+		if (ShowAccumulator){
+			FloatProcessor accEx = ht.getAccumulatorImageExtended();
+			(new ImagePlus("accumExt of " + imp.getTitle(), accEx)).show();
+		}
+
 		if (ShowAccumulatorPeaks) {
-			IJ.log("ShowAccumulatorPeaks");
 			FloatProcessor maxIp = ht.getAccumulatorMaxImage();
-			// flip because angle runs reverse (y running top to bottom):
-			maxIp.flipHorizontal(); 
 			(new ImagePlus("Maxima of " + imp.getTitle(), maxIp)).show();
 		}
-		
+
 		if (ListStrongestLines) {
 			for (int i = 0; i < lines.length; i++) {
 				IJ.log(i + ": " + lines[i].toString());
 			}
 		}
-		
+
 		if (ShowLines) {
+			Color lineColor = DefaultLineColor;
 			ColorProcessor lineIp = ip.convertToColorProcessor();
 			if (InvertOriginal) lineIp.invert();
 			if (UsePickedColor) {
-				IJ.log("use picked color");
-				lineIp.setColor(Toolbar.getForegroundColor());
+				lineColor = Toolbar.getForegroundColor();
 			}
-			else {
-				lineIp.setColor(LineColor);
-			}
-			
+
+			Overlay oly = new Overlay();
 			for (HoughLine hl : lines){
-				hl.draw(lineIp, LineWidth);
+				//hl.draw(lineIp, LineWidth);	// was brute-force painting
+				Roi roi = hl.makeLine();
+				roi.setStrokeColor(lineColor);
+				oly.add(roi);
 			}
-			
+
 			if (ShowReferencePoint) {
 				lineIp.setColor(ReferencePointColor);
-				Point2D pc = ht.getReferencePoint();
-				int uu = (int) Math.round(pc.getX());
-				int vv = (int) Math.round(pc.getY());
-				drawCross(lineIp, uu, vv, 2);
+				int ur = (int) Math.round(ht.getXref());
+				int vr = (int) Math.round(ht.getYref());
+				drawCross(lineIp, ur, vr, 2);
 			}
-			
-			(new ImagePlus(imp.getShortTitle()+"-lines", lineIp)).show();
+
+			ImagePlus him = new ImagePlus(imp.getShortTitle()+"-lines", lineIp);
+			oly.translate(0.5, 0.5);	// shift to run through pixel centers
+			him.setOverlay(oly);
+			him.show();
 		}
 	}
-	
+
 	private void drawCross(ImageProcessor ip, int uu, int vv, int size) {
 		ip.drawLine(uu - size, vv, uu + size, vv);
 		ip.drawLine(uu, vv - size, uu, vv + size);
 	}
-	
-	
+
+	// -----------------------------------------------------------------
+
 	private boolean showDialog(Parameters params) {
 		// display dialog , return false if canceled or on error.
 		GenericDialog dlg = new GenericDialog("Hough Transform (lines)");
@@ -131,7 +139,8 @@ public class Find_Straight_Lines implements PlugInFilter {
 		dlg.addNumericField("Radius steps", params.nRad, 0);
 		dlg.addNumericField("Max. number of lines to show", MaxLines, 0);
 		dlg.addNumericField("Min. number of points per line", MinPointsOnLine, 0);
-		dlg.addCheckbox("Show accumulator image", ShowAccumulator);
+		dlg.addCheckbox("Show accumulator", ShowAccumulator);
+		dlg.addCheckbox("Show accumulator extended", ShowAccumulator);
 		dlg.addCheckbox("Show accumulator peaks", ShowAccumulatorPeaks);
 		dlg.addCheckbox("List strongest lines", ListStrongestLines);
 		dlg.addCheckbox("Show lines", ShowLines);
@@ -146,6 +155,7 @@ public class Find_Straight_Lines implements PlugInFilter {
 		MaxLines = (int) dlg.getNextNumber();
 		MinPointsOnLine = (int) dlg.getNextNumber();
 		ShowAccumulator = dlg.getNextBoolean();
+		ShowAccumulatorExtended = dlg.getNextBoolean();
 		ShowAccumulatorPeaks = dlg.getNextBoolean();
 		ListStrongestLines = dlg.getNextBoolean();
 		ShowLines = dlg.getNextBoolean();
@@ -160,10 +170,3 @@ public class Find_Straight_Lines implements PlugInFilter {
 	}
 
 }
-
-
-
-
-
-	
-	
