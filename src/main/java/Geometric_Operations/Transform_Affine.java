@@ -33,7 +33,7 @@ public class Transform_Affine implements PlugInFilter {
 		Point2D q2 = new Point(400, 20);
 		Point2D q3 = new Point(300, 400);
 
-		AffineMapping map = new AffineMapping(p1, p2, p3, q1, q2, q3);
+		AffineMapping map = AffineMapping.fromPoints(p1, p2, p3, q1, q2, q3);
 		map.applyTo(ip, InterpolationMethod.Bicubic);
     }
 }

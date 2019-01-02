@@ -36,8 +36,7 @@ public class Transform_Projective implements PlugInFilter {
 		Point2D q3 = new Point(300, 400);
 		Point2D q4 = new Point(30, 200);
 
-		Mapping map = 
-				new ProjectiveMapping(p1, p2, p3, p4, q1, q2, q3, q4);
+		Mapping map = ProjectiveMapping.fromQuadToQuad(p1, p2, p3, p4, q1, q2, q3, q4);
 
 		map.applyTo(ip, InterpolationMethod.Bilinear);
 	}
