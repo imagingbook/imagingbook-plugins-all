@@ -48,7 +48,7 @@ public class Transform_Affine_Matrix implements PlugInFilter {
         double a22 = matrixValues[1][1];
         double a23 = matrixValues[1][2];
         
-        AffineMapping map = new AffineMapping(a11, a12, a13, a21, a22, a23, false);
+        AffineMapping map = new AffineMapping(a11, a12, a13, a21, a22, a23);
         map.applyTo(ip, InterpolationMethod.Bicubic);
     }
     

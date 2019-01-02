@@ -200,9 +200,7 @@ public class ProcrustesFitter2 implements LeastSquaresFitter {
 			return null;
 		AffineMapping map = new AffineMapping(
 				c * R.getEntry(0, 0), c * R.getEntry(0, 1), t.getEntry(0),
-				c * R.getEntry(1, 0), c * R.getEntry(1, 1), t.getEntry(1),
-				false
-				);
+				c * R.getEntry(1, 0), c * R.getEntry(1, 1), t.getEntry(1));
 		return map;	
 	}
 	
