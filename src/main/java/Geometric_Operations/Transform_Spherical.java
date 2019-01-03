@@ -24,9 +24,8 @@ public class Transform_Spherical implements PlugInFilter {
 		int w = ip.getWidth();
 		int h = ip.getHeight();
 
-		SphereMapping map = new SphereMapping(w / 2 + 10, h / 2, h / 2);
-
-		map.applyTo(ip, InterpolationMethod.Bicubic);
+		SphereMapping imap = new SphereMapping(0.5 * w + 10, 0.5 * h, 0.5 * h);	// inverse (target to source)
+		imap.applyTo(ip, InterpolationMethod.Bicubic);
 	}
 
 }

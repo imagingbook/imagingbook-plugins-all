@@ -24,9 +24,8 @@ public class Transform_Translate implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
 
-		Translation map = new Translation(dx, dy);
-		
-		map.applyTo(ip, InterpolationMethod.Bicubic);
+		Translation imap = new Translation(dx, dy).getInverse();
+		imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
 
 }

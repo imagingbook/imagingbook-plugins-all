@@ -56,11 +56,11 @@ public class Geometry_Rotate_Color implements PlugInFilter {
 			return;
     	}
     	
-    	Rotation map = new Rotation((2 * Math.PI * angle) / 360);
+    	Rotation imap = new Rotation(-2 * Math.PI * angle / 360);	// inverse mapping (target to source)
     	FloatProcessor[] processors = ColorStack.getProcessors(colStack);
   
    		for (FloatProcessor fp : processors) {
-   			map.applyTo(fp, InterpolationMethod.Bilinear);
+   			imap.applyTo(fp, InterpolationMethod.Bilinear);
    		}
        	
        	ColorStack.toSrgb(colStack);

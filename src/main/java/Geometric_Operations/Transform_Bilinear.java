@@ -34,9 +34,8 @@ public class Transform_Bilinear implements PlugInFilter {
 		Point2D q3 = new Point(300, 400);
 		Point2D q4 = new Point(30, 200);
 		
-		BilinearMapping invMap = 
-				BilinearMapping.fromQuads(q1, q2, q3, q4, p1, p2, p3, p4);	
-		
-		invMap.applyTo(ip, InterpolationMethod.Bicubic);
+		// inverse mapping (target to source)
+		BilinearMapping imap = BilinearMapping.fromQuads(q1, q2, q3, q4, p1, p2, p3, p4);	
+		imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
 }

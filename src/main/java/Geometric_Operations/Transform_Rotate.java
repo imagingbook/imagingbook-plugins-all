@@ -17,6 +17,7 @@ import imagingbook.pub.geometry.mappings.linear.Rotation;
 
 
 public class Transform_Rotate implements PlugInFilter {
+	
 	static double angle = 15; // rotation angle (in degrees)
 
     public int setup(String arg, ImagePlus imp) {
@@ -25,7 +26,7 @@ public class Transform_Rotate implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
     	
-		Mapping map = new Rotation((2 * Math.PI * angle) / 360);
-		map.applyTo(ip, InterpolationMethod.Bicubic);
+		Mapping imap = new Rotation((2 * Math.PI * angle) / 360).getInverse();	// inverse (target to source)
+		imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
 }

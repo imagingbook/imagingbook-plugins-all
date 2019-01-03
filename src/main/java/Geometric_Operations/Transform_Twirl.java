@@ -25,13 +25,12 @@ public class Transform_Twirl implements PlugInFilter {
 	public void run(ImageProcessor ip) {
 		int w = ip.getWidth();
 		int h = ip.getHeight();
-		double xcenter = 0.5 * w;
-		double ycenter = 0.5 * h;
-		double radius = Math.sqrt(xcenter * xcenter + ycenter * ycenter);
-
-		TwirlMapping map = new TwirlMapping(xcenter, ycenter, angle, radius);
-
-		map.applyTo(ip, InterpolationMethod.Bicubic);
+		double xc = 0.5 * w;
+		double yc = 0.5 * h;
+		double radius = Math.sqrt(xc * xc + yc * yc);
+		
+		TwirlMapping imap = new TwirlMapping(xc, yc, angle, radius);	// inverse mapping (target to source)
+		imap.applyTo(ip, InterpolationMethod.Bicubic);
 	}
 
 }

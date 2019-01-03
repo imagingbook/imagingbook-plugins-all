@@ -26,8 +26,8 @@ public class Transform_Ripple implements PlugInFilter {
 		double yW = 250 / (2 * Math.PI);
 		double yAmpl = 10;
 
-		RippleMapping map = new RippleMapping(xW, xAmpl, yW, yAmpl);
-		map.applyTo(ip, InterpolationMethod.Bicubic);
+		RippleMapping imap = new RippleMapping(xW, xAmpl, yW, yAmpl);	// inverse (target to source)
+		imap.applyTo(ip, InterpolationMethod.Bicubic);
 	}
 
 }

@@ -48,8 +48,8 @@ public class Transform_Affine_Matrix implements PlugInFilter {
         double a22 = matrixValues[1][1];
         double a23 = matrixValues[1][2];
         
-        AffineMapping map = new AffineMapping(a11, a12, a13, a21, a22, a23);
-        map.applyTo(ip, InterpolationMethod.Bicubic);
+        AffineMapping imap = new AffineMapping(a11, a12, a13, a21, a22, a23).getInverse();
+        imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
     
     // Dialog example taken from http://rsbweb.nih.gov/ij/plugins/download/Dialog_Grid_Demo.java
