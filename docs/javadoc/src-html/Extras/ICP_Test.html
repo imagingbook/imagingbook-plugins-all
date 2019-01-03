@@ -146,10 +146,10 @@
 <span class="sourceLineNo">138</span>        private AffineMapping makeTransformation() {<a name="line.138"></a>
 <span class="sourceLineNo">139</span>                double ctr = 0.5 * size;<a name="line.139"></a>
 <span class="sourceLineNo">140</span>                AffineMapping am = new AffineMapping();<a name="line.140"></a>
-<span class="sourceLineNo">141</span>                am.concatDestructive(new Translation(-ctr, -ctr));      // TODO: rename to concatD<a name="line.141"></a>
-<span class="sourceLineNo">142</span>                am.concatDestructive(new Rotation(theta));<a name="line.142"></a>
-<span class="sourceLineNo">143</span>                am.concatDestructive(new Translation(ctr, ctr));<a name="line.143"></a>
-<span class="sourceLineNo">144</span>                am.concatDestructive(new Translation(dx, dy));<a name="line.144"></a>
+<span class="sourceLineNo">141</span>                am = am.concat(new Translation(-ctr, -ctr));    // TODO: rename to concatD<a name="line.141"></a>
+<span class="sourceLineNo">142</span>                am = am.concat(new Rotation(theta));<a name="line.142"></a>
+<span class="sourceLineNo">143</span>                am = am.concat(new Translation(ctr, ctr));<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                am = am.concat(new Translation(dx, dy));<a name="line.144"></a>
 <span class="sourceLineNo">145</span>                return am;<a name="line.145"></a>
 <span class="sourceLineNo">146</span>        }<a name="line.146"></a>
 <span class="sourceLineNo">147</span><a name="line.147"></a>
