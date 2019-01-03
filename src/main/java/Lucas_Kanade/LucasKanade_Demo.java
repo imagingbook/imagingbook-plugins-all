@@ -19,10 +19,11 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageExtractor;
 import imagingbook.lib.math.Matrix;
 import imagingbook.lib.settings.PrintPrecision;
-import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping;
+//import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping;
 import imagingbook.pub.lucaskanade.LucasKanadeForwardMatcher;
 import imagingbook.pub.lucaskanade.LucasKanadeInverseMatcher;
 import imagingbook.pub.lucaskanade.LucasKanadeMatcher;
+import imagingbook.pub.lucaskanade.geom.ProjectiveMappingP;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -107,16 +108,16 @@ public class LucasKanade_Demo implements PlugInFilter {
 				new LucasKanadeInverseMatcher(I, R);
 		
 		// Step 5: Calculate the initial mapping Tinit from (centered) R -> Q:
-		ProjectiveMapping Tinit = matcher.getReferenceMappingTo(Q);
+		ProjectiveMappingP Tinit = matcher.getReferenceMappingTo(Q);
 		IJ.log("Tinit = " + Matrix.toString(Tinit.getWarpParameters()));
 
 		// Step 6: Calculate the real mapping from (centered) R -> QQ (for validation only):
-		ProjectiveMapping Treal = matcher.getReferenceMappingTo(QQ);
+		ProjectiveMappingP Treal = matcher.getReferenceMappingTo(QQ);
 		IJ.log("Treal = " + Matrix.toString(Treal.getWarpParameters()));
 		
 		// --------------------------------------------------------------------------
 		// Step 7: Initialize the matcher and run the matching loop:
-		ProjectiveMapping T = Tinit;
+		ProjectiveMappingP T = Tinit;
 		do {
 			T = matcher.iterateOnce(T);		// returns null if iteration failed
 			int i = matcher.getIteration();
@@ -133,13 +134,13 @@ public class LucasKanade_Demo implements PlugInFilter {
 			return;
 		}
 		else {
-			ProjectiveMapping Tfinal = T;
+			ProjectiveMappingP Tfinal = T;
 			
 			IJ.log(" ++++++++++++++++ Summary +++++++++++++++++++");
 			// convert all mappings to projective (for comparison)
-			ProjectiveMapping TinitP = new ProjectiveMapping(Tinit);
-			ProjectiveMapping TrealP = new ProjectiveMapping(Treal);
-			ProjectiveMapping TfinalP = new ProjectiveMapping(Tfinal);
+			ProjectiveMappingP TinitP = new ProjectiveMappingP(Tinit);
+			ProjectiveMappingP TrealP = new ProjectiveMappingP(Treal);
+			ProjectiveMappingP TfinalP = new ProjectiveMappingP(Tfinal);
 			IJ.log("Matcher type: " + matcher.getClass().getSimpleName());
 			IJ.log("Match found after " + matcher.getIteration() + " iterations.");
 			IJ.log("Final RMS error " + matcher.getRmsError());
