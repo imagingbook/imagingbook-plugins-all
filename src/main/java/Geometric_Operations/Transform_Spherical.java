@@ -16,18 +16,17 @@ import imagingbook.pub.geometry.mappings.nonlinear.SphereMapping;
 
 public class Transform_Spherical implements PlugInFilter {
 
-    public int setup(String arg, ImagePlus imp) {
-        return DOES_ALL;
-    }
+	public int setup(String arg, ImagePlus imp) {
+		return DOES_ALL;
+	}
 
-    public void run(ImageProcessor ip) {
-    	int w = ip.getWidth();
-    	int h = ip.getHeight();
-		
-		SphereMapping map = 
-				SphereMapping.makeInverseMapping(w / 2 + 10, h / 2, h / 2);
-		
+	public void run(ImageProcessor ip) {
+		int w = ip.getWidth();
+		int h = ip.getHeight();
+
+		SphereMapping map = new SphereMapping(w / 2 + 10, h / 2, h / 2);
+
 		map.applyTo(ip, InterpolationMethod.Bicubic);
-    }
+	}
 
 }
