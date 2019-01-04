@@ -11,6 +11,7 @@ package Geometric_Operations;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.linear.AffineMapping;
 
@@ -35,6 +36,8 @@ public class Transform_Affine implements PlugInFilter {
 
 		// inverse mapping (target to source):
 		AffineMapping imap = AffineMapping.from3Points(p1, p2, p3, q1, q2, q3).getInverse(); 
-		imap.applyTo(ip, InterpolationMethod.Bicubic);
+		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		mapper.map(ip);
+		//imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
 }

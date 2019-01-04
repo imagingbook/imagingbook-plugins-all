@@ -11,6 +11,7 @@ package Geometric_Operations;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.nonlinear.BilinearMapping;
 
@@ -35,7 +36,9 @@ public class Transform_Bilinear implements PlugInFilter {
 		Point2D q4 = new Point(30, 200);
 		
 		// inverse mapping (target to source)
-		BilinearMapping imap = BilinearMapping.fromQuads(q1, q2, q3, q4, p1, p2, p3, p4);	
-		imap.applyTo(ip, InterpolationMethod.Bicubic);
+		BilinearMapping imap = BilinearMapping.fromQuads(q1, q2, q3, q4, p1, p2, p3, p4);
+		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		mapper.map(ip);
+//		imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
 }

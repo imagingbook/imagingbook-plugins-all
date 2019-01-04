@@ -11,6 +11,7 @@ package Geometric_Operations;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.nonlinear.RippleMapping;
 
@@ -27,7 +28,9 @@ public class Transform_Ripple implements PlugInFilter {
 		double yAmpl = 10;
 
 		RippleMapping imap = new RippleMapping(xW, xAmpl, yW, yAmpl);	// inverse (target to source)
-		imap.applyTo(ip, InterpolationMethod.Bicubic);
+		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		mapper.map(ip);
+//		imap.applyTo(ip, InterpolationMethod.Bicubic);
 	}
 
 }

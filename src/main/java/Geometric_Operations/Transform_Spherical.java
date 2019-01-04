@@ -11,6 +11,7 @@ package Geometric_Operations;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.nonlinear.SphereMapping;
 
@@ -25,7 +26,9 @@ public class Transform_Spherical implements PlugInFilter {
 		int h = ip.getHeight();
 
 		SphereMapping imap = new SphereMapping(0.5 * w + 10, 0.5 * h, 0.5 * h);	// inverse (target to source)
-		imap.applyTo(ip, InterpolationMethod.Bicubic);
+		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		mapper.map(ip);
+//		imap.applyTo(ip, InterpolationMethod.Bicubic);
 	}
 
 }

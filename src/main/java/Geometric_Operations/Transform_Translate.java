@@ -11,6 +11,7 @@ package Geometric_Operations;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.linear.Translation;
 
@@ -25,7 +26,9 @@ public class Transform_Translate implements PlugInFilter {
     public void run(ImageProcessor ip) {
 
 		Translation imap = new Translation(dx, dy).getInverse();
-		imap.applyTo(ip, InterpolationMethod.Bicubic);
+		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		mapper.map(ip);
+//		imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
 
 }

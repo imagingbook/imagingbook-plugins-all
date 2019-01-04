@@ -11,6 +11,7 @@ package Geometric_Operations;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.Mapping;
 import imagingbook.pub.geometry.mappings.linear.Rotation;
@@ -27,6 +28,8 @@ public class Transform_Rotate implements PlugInFilter {
     public void run(ImageProcessor ip) {
     	
 		Mapping imap = new Rotation((2 * Math.PI * angle) / 360).getInverse();	// inverse (target to source)
-		imap.applyTo(ip, InterpolationMethod.Bicubic);
+		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		mapper.map(ip);
+//		imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
 }

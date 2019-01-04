@@ -11,6 +11,7 @@ package Geometric_Operations;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.Mapping;
 import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping;
@@ -37,6 +38,8 @@ public class Transform_Projective implements PlugInFilter {
 		Point2D q4 = new Point(30, 200);
 
 		Mapping imap = ProjectiveMapping.from4Points(p1, p2, p3, p4, q1, q2, q3, q4).getInverse();
-		imap.applyTo(ip, InterpolationMethod.Bilinear);
+		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		mapper.map(ip);
+//		imap.applyTo(ip, InterpolationMethod.Bilinear);
 	}
 }

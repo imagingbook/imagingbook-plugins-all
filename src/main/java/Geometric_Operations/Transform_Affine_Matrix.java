@@ -12,6 +12,7 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.linear.AffineMapping;
 
@@ -49,7 +50,9 @@ public class Transform_Affine_Matrix implements PlugInFilter {
         double a23 = matrixValues[1][2];
         
         AffineMapping imap = new AffineMapping(a11, a12, a13, a21, a22, a23).getInverse();
-        imap.applyTo(ip, InterpolationMethod.Bicubic);
+        ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		mapper.map(ip);
+//        imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
     
     // Dialog example taken from http://rsbweb.nih.gov/ij/plugins/download/Dialog_Grid_Demo.java

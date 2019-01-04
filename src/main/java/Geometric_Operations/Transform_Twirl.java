@@ -11,6 +11,7 @@ package Geometric_Operations;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.nonlinear.TwirlMapping;
 
@@ -30,7 +31,9 @@ public class Transform_Twirl implements PlugInFilter {
 		double radius = Math.sqrt(xc * xc + yc * yc);
 		
 		TwirlMapping imap = new TwirlMapping(xc, yc, angle, radius);	// inverse mapping (target to source)
-		imap.applyTo(ip, InterpolationMethod.Bicubic);
+		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		mapper.map(ip);
+//		imap.applyTo(ip, InterpolationMethod.Bicubic);
 	}
 
 }

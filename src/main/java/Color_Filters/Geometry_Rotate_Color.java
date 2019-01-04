@@ -14,6 +14,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.color.image.ColorStack;
@@ -59,8 +60,10 @@ public class Geometry_Rotate_Color implements PlugInFilter {
     	Rotation imap = new Rotation(-2 * Math.PI * angle / 360);	// inverse mapping (target to source)
     	FloatProcessor[] processors = ColorStack.getProcessors(colStack);
   
+    	ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bilinear);
    		for (FloatProcessor fp : processors) {
-   			imap.applyTo(fp, InterpolationMethod.Bilinear);
+   			//imap.applyTo(fp, InterpolationMethod.Bilinear);
+   			mapper.map(fp);
    		}
        	
        	ColorStack.toSrgb(colStack);
