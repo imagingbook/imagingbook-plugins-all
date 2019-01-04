@@ -109,11 +109,11 @@ public class LucasKanade_Demo implements PlugInFilter {
 		
 		// Step 5: Calculate the initial mapping Tinit from (centered) R -> Q:
 		ProjectiveMapping Tinit = matcher.getReferenceMappingTo(Q);
-		IJ.log("Tinit = " + Matrix.toString(Tinit.getWarpParameters()));
+		IJ.log("Tinit = " + Matrix.toString(Tinit.getParameters()));
 
 		// Step 6: Calculate the real mapping from (centered) R -> QQ (for validation only):
 		ProjectiveMapping Treal = matcher.getReferenceMappingTo(QQ);
-		IJ.log("Treal = " + Matrix.toString(Treal.getWarpParameters()));
+		IJ.log("Treal = " + Matrix.toString(Treal.getParameters()));
 		
 		// --------------------------------------------------------------------------
 		// Step 7: Initialize the matcher and run the matching loop:
@@ -144,9 +144,9 @@ public class LucasKanade_Demo implements PlugInFilter {
 			IJ.log("Matcher type: " + matcher.getClass().getSimpleName());
 			IJ.log("Match found after " + matcher.getIteration() + " iterations.");
 			IJ.log("Final RMS error " + matcher.getRmsError());
-			IJ.log("  Tinit  = " + Matrix.toString(TinitP.getWarpParameters()));
-			IJ.log("  Treal  = " + Matrix.toString(TrealP.getWarpParameters()));
-			IJ.log("  Tfinal = " + Matrix.toString(TfinalP.getWarpParameters()));
+			IJ.log("  Tinit  = " + Matrix.toString(TinitP.getParameters()));
+			IJ.log("  Treal  = " + Matrix.toString(TrealP.getParameters()));
+			IJ.log("  Tfinal = " + Matrix.toString(TfinalP.getParameters()));
 	
 			IJ.log("Corners of reference patch:");
 			Point2D[] ptsRef = Treal.applyTo(matcher.getReferencePoints());
