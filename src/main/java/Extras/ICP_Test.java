@@ -11,6 +11,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.io.LogStream;
 import ij.plugin.PlugIn;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
@@ -25,16 +26,21 @@ import imagingbook.pub.geometry.mappings.linear.Translation;
 
 public class ICP_Test implements PlugIn {
 	
+	static {
+		LogStream.redirectSystem();
+	}
+	
 	static Color colorX = Color.blue;
 	static Color colorY = Color.green.darker();
 	
-	static int m = 150;
-	static int size = 800;
-	static double theta = 0.2;
-	static double dx = 0;
-	static double dy = 0;
+	static int m = 150;				// number of points
+	static int size = 800;			// image size
 	
-	static double sigma = 0;
+	static double theta = 0.2;		// rotation angle
+	static double tx = 0;			// translation x
+	static double ty = 0;			// translation y
+	
+	static double sigma = 0;		// noise std. deviation
 
 	
 	static double tau = 0.1;
@@ -43,17 +49,15 @@ public class ICP_Test implements PlugIn {
 	AffineMapping A = null;
 	List<double[]> X, Y;
 	
-	Random rnd = new Random(11);
-	
+	Random rg = new Random(11);
 	ImagePlus im = null;
 	ImageStack stack = null;
 
 	@Override
 	public void run(String arg0) {
-		IjLogStream.redirectSystem();
 		System.out.println("ICP");
 		
-		A = makeTransformation();
+		A = makeAffineTransformation();
 		makeSamplePointsX();
 		makeSamplePointsY();
 		
@@ -97,7 +101,6 @@ public class ICP_Test implements PlugIn {
 
 	private void drawPoints(ImageProcessor ip, List<double[]> pnts, Color col) {
 		int w = 2;
-//		ImageProcessor ip = im.getProcessor();
 		ip.setColor(col);
 		ip.setLineWidth(2);
 		for (double[] p : pnts) {
@@ -109,7 +112,6 @@ public class ICP_Test implements PlugIn {
 	}
 	
 	private void drawAssociations(ImageProcessor ip, List<double[]> pX, List<double[]> pY, int[] Assoc, Color col) {
-//		ImageProcessor ip = im.getProcessor();
 		ip.setColor(col);
 		ip.setLineWidth(1);
 		int i = 0;
@@ -135,21 +137,22 @@ public class ICP_Test implements PlugIn {
 			(int) Math.round(b[0]), (int) Math.round(b[1]));
 	}
 
-	private AffineMapping makeTransformation() {
+	// Rotation about the image center by angle theta + translation by (tx,ty)
+	private AffineMapping makeAffineTransformation() {
 		double ctr = 0.5 * size;
 		AffineMapping am = new AffineMapping();
-		am = am.concat(new Translation(-ctr, -ctr));	// TODO: rename to concatD
+		am = am.concat(new Translation(-ctr, -ctr));
 		am = am.concat(new Rotation(theta));
 		am = am.concat(new Translation(ctr, ctr));
-		am = am.concat(new Translation(dx, dy));
+		am = am.concat(new Translation(tx, ty));
 		return am;
 	}
 
 	private void  makeSamplePointsX() {
 		X = new ArrayList<double[]>(m);
 		for (int i = 0; i < m; i++) {
-			double x = rnd.nextInt(size);
-			double y = rnd.nextInt(size);
+			double x = rg.nextInt(size);
+			double y = rg.nextInt(size);
 			X.add(new double[] {x, y});
 		}
 	}
@@ -158,8 +161,8 @@ public class ICP_Test implements PlugIn {
 		Y = new ArrayList<double[]>(m);
 		for (double[] xi : X) {
 			double[] xiT = A.applyTo(xi);
-			xiT[0] = xiT[0] + sigma * rnd.nextGaussian();
-			xiT[1] = xiT[1] + sigma * rnd.nextGaussian();
+			xiT[0] = xiT[0] + sigma * rg.nextGaussian();
+			xiT[1] = xiT[1] + sigma * rg.nextGaussian();
 			Y.add(xiT);
 		}
 	}
@@ -175,10 +178,7 @@ public class ICP_Test implements PlugIn {
 	
 	
 	/**
-	 * An instance of this class may be passed to the constructor
-	 * of {@link IterativeClosestPointMatcher}; its {@code notify()} method
-	 * is invoked after every iteration of the matcher for debugging
-	 * or visualizing intermediate results.
+	 * Iteration listener used for visualization only.
 	 */
 	private class Listener implements IterationListener {
 
