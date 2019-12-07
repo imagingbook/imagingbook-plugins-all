@@ -29,13 +29,13 @@ public class DFT_2D_Demo2_old implements PlugInFilter{
 	}
 
 	public void run(ImageProcessor ip) {
-		IJ.log("runnung DFT_2D_Demo");
-		FloatProcessor fp = ip.convertToFloatProcessor();
-		Dft2d dft = new Dft2d(fp, center);
-
-		ImageProcessor ipP = dft.makePowerImage();
-		ImagePlus win = new ImagePlus("DFT Power Spectrum (byte)", ipP);
-		win.show();
+//		IJ.log("runnung DFT_2D_Demo");
+//		FloatProcessor fp = ip.convertToFloatProcessor();
+//		Dft2d dft = new Dft2d(fp, center);
+//
+//		ImageProcessor ipP = dft.makePowerImage();
+//		ImagePlus win = new ImagePlus("DFT Power Spectrum (byte)", ipP);
+//		win.show();
 	}
 
 }

@@ -32,29 +32,81 @@ public class DFT_2D_Demo implements PlugInFilter{
 		IJ.log("runnung DFT_2D_Demo");
 		FloatProcessor fp = ip.convertToFloatProcessor();
 		
-		//Dft2d dft = new Dft2d(fp, center);
+		double[][] re = toDoubleArray(fp);
+		double[][] im = toDoubleArray(fp, false);
 		
-		double[][][] g = toComplexArray(fp);
-		Dft2d dft2D = new Dft2d(ip.getWidth(), ip.getHeight());
-		double[][][] G = dft2D.dft(g);
-
-		ImageProcessor ipP = dft2D.makePowerImage();
-		ImagePlus win = new ImagePlus("DFT Power Spectrum (byte)", ipP);
-		win.show();
+		Dft2d dft2 = new Dft2d();
+		dft2.dft(re, im, true);
+		
+		float[][] mag = getLogMagnitude(re, im);
+		FloatProcessor ms = new FloatProcessor(mag);
+		
+		ms.resetMinAndMax();
+		new ImagePlus("DFT Magnitude Spectrum", ms).show();
+		
+		// ----------------------------------------------------
+		
+		dft2.dft(re, im, false);
+		FloatProcessor reIp = toFloatProcessor(re);
+		reIp.setMinAndMax(0, 255);
+		new ImagePlus("Reconstructed Re",reIp).show();
+		
+		FloatProcessor imIp = toFloatProcessor(im);
+		imIp.setMinAndMax(0, 255);
+		new ImagePlus("Reconstructed Im",imIp).show();
+		
+		
 	}
 	
-	private double[][][] toComplexArray(FloatProcessor fp) {
-		final int width = fp.getWidth();
-		final int height = fp.getHeight();
-		float[][] pixels = fp.getFloatArray(); 
-		double[][][] arr = new double[width][height][2];
+	private FloatProcessor toFloatProcessor(double[][] da) {
+		final int width = da.length;
+		final int height = da[0].length;
+		float[][] fa = new float[width][height];
 		for (int u = 0; u < width; u++) {
 			for (int v = 0; v < height; v++) {
-				arr[u][v][0] = pixels[u][v];
-				arr[u][v][1] = 0;
+				fa[u][v] = (float) da[u][v];
+			}
+		}
+		return new FloatProcessor(fa);
+	}
+	
+	private double[][] toDoubleArray(FloatProcessor fp) {
+		return toDoubleArray(fp, true);
+	}
+	
+	private double[][] toDoubleArray(FloatProcessor fp, boolean copyValues) {
+		final int width = fp.getWidth();
+		final int height = fp.getHeight();
+		double[][] arr = new double[width][height];
+		if (copyValues) {
+			float[][] pixels = fp.getFloatArray(); 
+			for (int u = 0; u < width; u++) {
+				for (int v = 0; v < height; v++) {
+					arr[u][v] = pixels[u][v];
+				}
 			}
 		}
 		return arr;
+	}
+	
+	private double[][] nullDoubleArray(ImageProcessor fp) {
+		final int width = fp.getWidth();
+		final int height = fp.getHeight();
+		return new double[width][height];
+	}
+	
+	private float[][] getLogMagnitude(double[][] re, double[][] im) {
+		final int width = re.length;
+		final int height = re[0].length;
+		float[][] ps = new float[width][height];
+		for (int u = 0; u < width; u++) {
+			for (int v = 0; v < height; v++) {
+				double a = re[u][v];
+				double b = im[u][v];
+				ps[u][v] = (float) Math.log(1 + Math.sqrt(a * a + b * b));
+			}
+		}
+		return ps;
 	}
 
 }
