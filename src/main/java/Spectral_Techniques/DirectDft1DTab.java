@@ -25,6 +25,7 @@ This DFT uses the same definition as Mathematica. Example:
 	-1.41421 - 0.585786 i, 
 	-1.41421 - 1.41421 i, 
 	-1.41421 - 3.41421 i}
+@deprecated
 */
 public abstract class DirectDft1DTab {
 
