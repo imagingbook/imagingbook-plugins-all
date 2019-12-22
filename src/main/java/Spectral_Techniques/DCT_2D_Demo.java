@@ -9,6 +9,7 @@
 package Spectral_Techniques;
 
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
@@ -20,7 +21,7 @@ import imagingbook.pub.dct.Dct2d;
  * Calculates and displays the 2-dimensional DCT after converting the input image to a float image.
  * of arbitrary size. Be patient, this is not optimized and thus slow!
  * @author W. Burger
- * @version 2014-04-13
+ * @version 2014-04-13 modified!
  */
 public class DCT_2D_Demo implements PlugInFilter {
 	
@@ -44,9 +45,10 @@ public class DCT_2D_Demo implements PlugInFilter {
 
 		// modify the spectrum for viewing and show it:
 		if (showLogarithmicSpectrum) {
-			spectrum.abs();
-			spectrum.add(1.0);
-			spectrum.log();
+			IJ.log("Log display is DISABLED!");	 // TODO: side effects!!!
+//			spectrum.abs();
+//			spectrum.add(1.0);
+//			spectrum.log();
 		}
 		spectrum.resetMinAndMax();
 		new ImagePlus("DCT Spectrum", spectrum).show();
@@ -57,6 +59,8 @@ public class DCT_2D_Demo implements PlugInFilter {
 			new ImagePlus("DCT Reconstruction", reconstruction).show();
 		}
 	}
+	
+	// ---------------------------------------------------------------
 
 	private boolean runDialog() {
 		GenericDialog gd = new GenericDialog(getClass().getSimpleName());
