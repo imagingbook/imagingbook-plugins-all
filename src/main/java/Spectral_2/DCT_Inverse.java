@@ -2,8 +2,6 @@ package Spectral_2;
 
 import Spectral_2.dct.DCT;
 import Spectral_2.dct.Util;
-//import dct.DCT;
-//import dct.Util;
 import ij.ImagePlus;
 import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
