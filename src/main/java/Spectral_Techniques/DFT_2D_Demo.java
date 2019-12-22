@@ -9,9 +9,11 @@
 package Spectral_Techniques;
 
 import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.dft.Dft2d;
 
 /** 
@@ -22,19 +24,30 @@ import imagingbook.pub.dft.Dft2d;
  */
 public class DFT_2D_Demo implements PlugInFilter{
 
-	static boolean center = true;    //center the resulting spectrum?
+	static boolean showCenteredSpectrum = true;
 	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_ALL + NO_CHANGES;
 	}
 
 	public void run(ImageProcessor ip) {
+		if (!runDialog()) return;
 		FloatProcessor fp = ip.convertToFloatProcessor();
-		Dft2d dft = new Dft2d(fp, center);
+		Dft2d dft = new Dft2d(fp, showCenteredSpectrum);
 
 		ImageProcessor ipP = dft.makePowerImage();
 		ImagePlus win = new ImagePlus("DFT Power Spectrum (byte)", ipP);
 		win.show();
+	}
+	
+	private boolean runDialog() {
+		GenericDialog gd = new GenericDialog(getClass().getSimpleName());
+		gd.addCheckbox("Show centered spectrum", showCenteredSpectrum);
+		gd.showDialog(); 
+		if (gd.wasCanceled()) 
+			return false;
+		showCenteredSpectrum = gd.getNextBoolean();
+		return true;
 	}
 
 }
