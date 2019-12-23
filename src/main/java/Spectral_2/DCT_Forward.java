@@ -14,6 +14,7 @@ import ij.process.ImageProcessor;
  * This ImageJ plugin calculates the forward DCT of the 
  * input grayscale image and displays the resulting spectrum 
  * (of type FloatProcessor) in a new image.
+ * @deprecated
  */
 public class DCT_Forward implements PlugInFilter {
 	
