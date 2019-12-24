@@ -9,68 +9,82 @@
 package Spectral_Techniques;
 
 import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.dft.DFT2;
+import imagingbook.pub.dft.Dft2d;
+
 
 /** 
- * Computes the 2-dimensional (power-spectrum) DFT on a float image
- * of arbitrary size.
- * TODO: adapt API to the DCT layout.
+ * This ImageJ plugin computes the 2-dimensional (power-spectrum) DFT on an image
+ * of arbitrary size using float arrays.
+ * Optionally, either a naive DFT or a fast FFT implementation is used. 
  */
 public class DFT_2D_Float_Demo implements PlugInFilter {
 	
-	boolean LOGARITHMIC = true;
+	static boolean showLogSpectrum = true;
+	static boolean useFFT = true;
+	static boolean reconstructImage = true;
+	
+	private ImagePlus imp;
 	
 	public int setup(String arg, ImagePlus imp) {
+		this.imp = imp;
 		return DOES_ALL + NO_CHANGES;
 	}
 
 	public void run(ImageProcessor ip) {
+		if (!runDialog()) 
+			return;
+		
 		FloatProcessor fp = ip.convertToFloatProcessor();
 		
 		float[][] re = fp.getFloatArray();
 		float[][] im = new float[fp.getWidth()][fp.getHeight()];
 		
-		DFT2.Float dft2 = new DFT2.Float();
-		dft2.applyTo(re, im, true);
+		Dft2d.Float dft2 = new Dft2d.Float();
+		dft2.useFFT(useFFT);
 		
-		float[][] mag = DFT2.Float.getMagnitude(re, im);
+		dft2.forward(re, im);
+		
+		float[][] mag = dft2.getMagnitude(re, im);
 		FloatProcessor ms = new FloatProcessor(mag);
-		
-		if (LOGARITHMIC) {
+		if (showLogSpectrum) {
 			ms.add(1.0);
 			ms.log();
 		}
-		
 		ms.resetMinAndMax();
 		new ImagePlus("DFT Magnitude Spectrum", ms).show();
+//		
+//		// ----------------------------------------------------
 		
-		// ----------------------------------------------------
-		
-		dft2.applyTo(re, im, false);
-		FloatProcessor reIp = new FloatProcessor(re);
-		reIp.setMinAndMax(0, 255);
-		new ImagePlus("Reconstructed Re", reIp).show();
-		
-		FloatProcessor imIp = new FloatProcessor(im);
-		imIp.setMinAndMax(0, 255);
-		new ImagePlus("Reconstructed Im",imIp).show();
+		if (reconstructImage) {
+			dft2.inverse(re, im);
+			FloatProcessor reIp = new FloatProcessor(re);
+			reIp.setMinAndMax(0, 255);
+			new ImagePlus("Reconstructed image (real part)", reIp).show();
+			
+			FloatProcessor imIp = new FloatProcessor(im);
+			imIp.setMinAndMax(0, 255);
+			new ImagePlus("Reconstructed image (imaginary part)",imIp).show();
+		}
 	}
 	
-//	private float[][] getMagnitude(float[][] re, float[][] im) {
-//		final int width = re.length;
-//		final int height = re[0].length;
-//		float[][] ps = new float[width][height];
-//		for (int u = 0; u < width; u++) {
-//			for (int v = 0; v < height; v++) {
-//				float a = re[u][v];
-//				float b = im[u][v];
-//				ps[u][v] = (float) Math.sqrt(a * a + b * b);
-//			}
-//		}
-//		return ps;
-//	}
+	// -------------------------------------------------------------
+	
+	private boolean runDialog() {
+		GenericDialog gd = new GenericDialog(getClass().getSimpleName());
+		gd.addCheckbox("Use FFT", useFFT);
+		gd.addCheckbox("Show logarithmic spectrum", showLogSpectrum);
+		gd.addCheckbox("Reconstruct image", reconstructImage);
+		gd.showDialog(); 
+		if (gd.wasCanceled()) 
+			return false;
+		useFFT = gd.getNextBoolean();
+		showLogSpectrum = gd.getNextBoolean();
+		reconstructImage = gd.getNextBoolean();
+		return true;
+	}
 
 }

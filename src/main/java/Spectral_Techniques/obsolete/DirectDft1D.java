@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2016 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Spectral_Techniques;
+package Spectral_Techniques.obsolete;
 
 import java.util.Locale;
 

@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2016 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Spectral_Techniques;
+package Spectral_Techniques.obsolete;
 
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -14,7 +14,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
-import imagingbook.pub.dft.Dft2d;
+import imagingbook.pub.dft.obsolete.Dft2d;
 
 /** 
  * Computes the 2-dimensional (power-spectrum) DFT on a float image
