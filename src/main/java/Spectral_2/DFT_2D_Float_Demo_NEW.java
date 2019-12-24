@@ -8,7 +8,8 @@
  *******************************************************************************/
 package Spectral_2;
 
-import Spectral_2.dft.Dft2D;
+import Spectral_2.dft.Dft2DImpl;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
@@ -23,6 +24,7 @@ import ij.process.ImageProcessor;
 public class DFT_2D_Float_Demo_NEW implements PlugInFilter {
 	
 	boolean LOGARITHMIC = true;
+	boolean USE_FFT = true;
 	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_ALL + NO_CHANGES;
@@ -34,7 +36,10 @@ public class DFT_2D_Float_Demo_NEW implements PlugInFilter {
 		float[][] re = fp.getFloatArray();
 		float[][] im = new float[fp.getWidth()][fp.getHeight()];
 		
-		Dft2D.Float dft2 = new Dft2D.Float();
+		Dft2DImpl.Float dft2 = new Dft2DImpl.Float();
+		dft2.useFFT(USE_FFT);
+		IJ.log("using FFT: " + USE_FFT);
+		
 		dft2.forward(re, im);
 		
 		float[][] mag = getMagnitude(re, im);

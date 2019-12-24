@@ -8,7 +8,7 @@
  *******************************************************************************/
 package Spectral_2;
 
-import Spectral_2.dft.Dft2D;
+import Spectral_2.dft.Dft2DImpl;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
@@ -37,7 +37,7 @@ public class DFT_2D_Double_Demo_NEW implements PlugInFilter {
 		double[][] re = Matrix.toDouble(fp.getFloatArray());
 		double[][] im = new double[fp.getWidth()][fp.getHeight()];
 		
-		Dft2D.Double dft2 = new Dft2D.Double();
+		Dft2DImpl.Double dft2 = new Dft2DImpl.Double();
 		dft2.forward(re, im);
 		
 		double[][] mag = getMagnitude(re, im);

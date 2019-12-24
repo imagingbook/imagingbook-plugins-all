@@ -14,10 +14,29 @@
 	</properties>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook-common</artifactId>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.github.wendykierp/JTransforms -->
+		<!-- https://github.com/wendykierp/JTransforms -->
+		<!-- this will move to imagingbook-common  -->
+		<dependency>
+		    <groupId>com.github.wendykierp</groupId>
+		    <artifactId>JTransforms</artifactId>
+		    <version>3.1</version>
+		    <classifier>with-dependencies</classifier>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/pl.edu.icm/JLargeArrays -->
+		<!-- <dependency>
+		    <groupId>pl.edu.icm</groupId>
+		    <artifactId>JLargeArrays</artifactId>
+		    <version>1.6</version>
+		</dependency> -->
+		
 	</dependencies>
 
 	<build>
@@ -64,6 +83,7 @@
 								<artifactItem>
 									<groupId>com.imagingbook</groupId>
 									<artifactId>imagingbook-common</artifactId>
+									<!-- <classifier>with-dependencies</classifier> -->
 									<overWrite>true</overWrite>
 									<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
 									<destFileName>imagingbook-common.jar</destFileName>
@@ -77,6 +97,27 @@
 									<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
 									<destFileName>commons-math3.jar</destFileName>
 								</artifactItem>
+								
+								<!-- copy JTransforms.jar into ImageJ/jars -->
+								<artifactItem>
+									<groupId>com.github.wendykierp</groupId>
+		    						<artifactId>JTransforms</artifactId>
+		    						<classifier>with-dependencies</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
+									<destFileName>JTransforms.jar</destFileName>
+								</artifactItem>
+								
+								<!-- copy JLargeArrays.jar into ImageJ/jars -->
+								<!-- <artifactItem>
+									<groupId>pl.edu.icm</groupId>
+		    						<artifactId>JLargeArrays</artifactId>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
+									<destFileName>JLargeArrays.jar</destFileName>
+								</artifactItem> -->
+								
+								
 							</artifactItems>
 
 							<overWriteReleases>false</overWriteReleases>
