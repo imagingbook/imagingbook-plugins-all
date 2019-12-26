@@ -27,10 +27,7 @@ public class DFT_2D_Float_Demo implements PlugInFilter {
 	static boolean useFFT = true;
 	static boolean reconstructImage = true;
 	
-	private ImagePlus imp;
-	
 	public int setup(String arg, ImagePlus imp) {
-		this.imp = imp;
 		return DOES_ALL + NO_CHANGES;
 	}
 
@@ -56,8 +53,8 @@ public class DFT_2D_Float_Demo implements PlugInFilter {
 		}
 		ms.resetMinAndMax();
 		new ImagePlus("DFT Magnitude Spectrum", ms).show();
-//		
-//		// ----------------------------------------------------
+		
+		// ----------------------------------------------------
 		
 		if (reconstructImage) {
 			dft2.inverse(re, im);
