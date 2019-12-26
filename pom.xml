@@ -22,12 +22,12 @@
 		
 		<!-- https://mvnrepository.com/artifact/com.github.wendykierp/JTransforms -->
 		<!-- https://github.com/wendykierp/JTransforms -->
-		<dependency>
+		<!-- <dependency>
 		    <groupId>com.github.wendykierp</groupId>
-		    <artifactId>JTransforms</artifactId>
-		    <version>3.1</version>
-		    <classifier>with-dependencies</classifier>
-		</dependency>
+		    <artifactId>JTransforms</artifactId> -->
+		    <!-- <version>3.1</version> -->
+		    <!-- <classifier>with-dependencies</classifier> -->
+		<!-- </dependency> -->
 		
 	</dependencies>
 
@@ -61,51 +61,35 @@
 						</goals>
 						<configuration>
 							<artifactItems>
-
 								<!-- copy ij.jar into ImageJ/ -->
 								<artifactItem>
 									<groupId>net.imagej</groupId>
 									<artifactId>ij</artifactId>
-									<overWrite>true</overWrite>
 									<outputDirectory>${project.basedir}/ImageJ</outputDirectory>
 									<destFileName>ij.jar</destFileName>
 								</artifactItem>
-
-								<!-- copy the imagingbook-common.jar into ImageJ/jars/ -->
-								<artifactItem>
-									<groupId>com.imagingbook</groupId>
-									<artifactId>imagingbook-common</artifactId>
-									<!-- <classifier>with-dependencies</classifier> -->
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
-									<destFileName>imagingbook-common.jar</destFileName>
-								</artifactItem>
-
-								<!-- copy apache-commons-math.jar into ImageJ/jars -->
-								<artifactItem>
-									<groupId>org.apache.commons</groupId>
-									<artifactId>commons-math3</artifactId>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
-									<destFileName>commons-math3.jar</destFileName>
-								</artifactItem>
-								
-								<!-- copy JTransforms.jar into ImageJ/jars -->
-								<artifactItem>
-									<groupId>com.github.wendykierp</groupId>
-		    						<artifactId>JTransforms</artifactId>
-		    						<classifier>with-dependencies</classifier>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
-									<destFileName>JTransforms.jar</destFileName>
-								</artifactItem>
-								
 							</artifactItems>
-
+							<overWriteIfNewer>true</overWriteIfNewer>
 							<overWriteReleases>false</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>
 					</execution>
+					
+					<execution>
+						<!-- copy all other dependencies into ImageJ/jars/ -->
+		                <id>copy-dependencies</id>
+		                <phase>package</phase>
+		                <goals>
+		                    <goal>copy-dependencies</goal>
+		                </goals>
+		                <configuration>
+		                	<excludeArtifactIds>ij</excludeArtifactIds>
+		                    <outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
+		                    <overWriteIfNewer>true</overWriteIfNewer>
+		                    <overWriteReleases>false</overWriteReleases>
+		                    <overWriteSnapshots>true</overWriteSnapshots>
+		                </configuration>
+		            </execution>
 				</executions>
 			</plugin>
 			<!-- end of copy -->
