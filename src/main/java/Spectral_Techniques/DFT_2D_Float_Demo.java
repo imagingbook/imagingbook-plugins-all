@@ -19,12 +19,12 @@ import imagingbook.pub.dft.Dft2d;
 /** 
  * This ImageJ plugin computes the 2-dimensional (power-spectrum) DFT on an image
  * of arbitrary size using float arrays.
- * Optionally, either a naive DFT or a fast FFT implementation is used. 
+ * Optionally, either a direct DFT or a fast FFT implementation is used. 
  */
 public class DFT_2D_Float_Demo implements PlugInFilter {
 	
 	static boolean showLogSpectrum = true;
-	static boolean useFFT = true;
+	static boolean useFastMode = true;
 	static boolean reconstructImage = true;
 	
 	public int setup(String arg, ImagePlus imp) {
@@ -41,7 +41,7 @@ public class DFT_2D_Float_Demo implements PlugInFilter {
 		float[][] im = new float[fp.getWidth()][fp.getHeight()];
 		
 		Dft2d.Float dft2 = new Dft2d.Float();
-		dft2.useFFT(useFFT);
+		dft2.useFastMode(useFastMode);
 		
 		dft2.forward(re, im);
 		
@@ -72,13 +72,13 @@ public class DFT_2D_Float_Demo implements PlugInFilter {
 	
 	private boolean runDialog() {
 		GenericDialog gd = new GenericDialog(getClass().getSimpleName());
-		gd.addCheckbox("Use FFT", useFFT);
+		gd.addCheckbox("Use FFT", useFastMode);
 		gd.addCheckbox("Show logarithmic spectrum", showLogSpectrum);
 		gd.addCheckbox("Reconstruct image", reconstructImage);
 		gd.showDialog(); 
 		if (gd.wasCanceled()) 
 			return false;
-		useFFT = gd.getNextBoolean();
+		useFastMode = gd.getNextBoolean();
 		showLogSpectrum = gd.getNextBoolean();
 		reconstructImage = gd.getNextBoolean();
 		return true;

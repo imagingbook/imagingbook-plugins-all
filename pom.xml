@@ -18,6 +18,7 @@
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook-common</artifactId>
+			<version>${imagingbook.version}</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/com.github.wendykierp/JTransforms -->
