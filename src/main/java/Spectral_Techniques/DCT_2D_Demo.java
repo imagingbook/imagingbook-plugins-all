@@ -9,7 +9,6 @@
 package Spectral_Techniques;
 
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
@@ -21,12 +20,12 @@ import imagingbook.pub.dct.Dct2d;
  * Calculates and displays the 2-dimensional DCT after converting the input image to a float image.
  * of arbitrary size. Be patient, this is not optimized and thus slow!
  * @author W. Burger
- * @version 2014-04-13 modified!
+ * @version 2019-12-26
  */
 public class DCT_2D_Demo implements PlugInFilter {
 	
-	static boolean showLogarithmicSpectrum = true;
-	static boolean reconstructInputImage = false;
+	static boolean showLogSpectrum = true;
+	static boolean reconstructImage = false;
 
 	public int setup(String arg, ImagePlus im) {
 		return DOES_ALL + NO_CHANGES;
@@ -36,41 +35,45 @@ public class DCT_2D_Demo implements PlugInFilter {
 		if (!runDialog()) return;
 
 		FloatProcessor fp = ip.convertToFloatProcessor();
+		float[][] g = fp.getFloatArray();
 
 		// create a new DCT instance:
-		Dct2d dct = new Dct2d();
-
+		Dct2d.Float dct = new Dct2d.Float();
+		
 		// calculate the forward DCT:
-		FloatProcessor spectrum = dct.DCT(fp);
+		dct.forward(g);
 
-		// modify the spectrum for viewing and show it:
-		if (showLogarithmicSpectrum) {
-			IJ.log("Log display is DISABLED!");	 // TODO: side effects!!!
-//			spectrum.abs();
-//			spectrum.add(1.0);
-//			spectrum.log();
+		FloatProcessor spectrum = new FloatProcessor(g);
+		if (showLogSpectrum) {
+			spectrum.abs();
+			spectrum.add(1.0);
+			spectrum.log();
 		}
 		spectrum.resetMinAndMax();
 		new ImagePlus("DCT Spectrum", spectrum).show();
-
-		// reconstruct the image by the inverse DCT:
-		if (reconstructInputImage) {
-			FloatProcessor reconstruction = dct.iDCT(spectrum);
-			new ImagePlus("DCT Reconstruction", reconstruction).show();
+		
+		// ----------------------------------------------------
+		
+		if (reconstructImage) {
+			dct.inverse(g);
+			FloatProcessor reconstructed = new FloatProcessor(g);
+			reconstructed.setMinAndMax(0, 255);
+			new ImagePlus("Reconstructed image", reconstructed).show();
 		}
+
 	}
 	
 	// ---------------------------------------------------------------
 
 	private boolean runDialog() {
 		GenericDialog gd = new GenericDialog(getClass().getSimpleName());
-		gd.addCheckbox("Show logarithmic spectrum", showLogarithmicSpectrum);
-		gd.addCheckbox("Reconstruct the input image", reconstructInputImage);
+		gd.addCheckbox("Show absolute/log spectrum", showLogSpectrum);
+		gd.addCheckbox("Reconstruct the input image", reconstructImage);
 		gd.showDialog(); 
 		if (gd.wasCanceled()) 
 			return false;
-		showLogarithmicSpectrum = gd.getNextBoolean();
-		reconstructInputImage = gd.getNextBoolean();
+		showLogSpectrum = gd.getNextBoolean();
+		reconstructImage = gd.getNextBoolean();
 		return true;
 	}
 
