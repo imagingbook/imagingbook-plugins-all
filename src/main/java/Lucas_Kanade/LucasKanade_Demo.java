@@ -19,17 +19,16 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageExtractor;
 import imagingbook.lib.math.Matrix;
 import imagingbook.lib.settings.PrintPrecision;
-import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping;
+import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.mappings2.linear.ProjectiveMapping2D;
 import imagingbook.pub.lucaskanade.LucasKanadeForwardMatcher;
 import imagingbook.pub.lucaskanade.LucasKanadeInverseMatcher;
 import imagingbook.pub.lucaskanade.LucasKanadeMatcher;
 
 
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Random;
 
@@ -97,8 +96,8 @@ public class LucasKanade_Demo implements PlugInFilter {
 		FloatProcessor R = new FloatProcessor(roiR.width, roiR.height);
 		
 		// Step 3: Perturb the ROI corners to form the quad QQ and extract the reference image R:
-		Point2D[] Q  = getCornerPoints(roiR);
-		Point2D[] QQ = perturbGaussian(Q);
+		Point[] Q  = getCornerPoints(roiR);
+		Point[] QQ = perturbGaussian(Q);
 		(new ImageExtractor(I)).extractImage(R, QQ);
 		//(new ImagePlus("R", R)).show();
 		
@@ -108,16 +107,16 @@ public class LucasKanade_Demo implements PlugInFilter {
 				new LucasKanadeInverseMatcher(I, R);
 		
 		// Step 5: Calculate the initial mapping Tinit from (centered) R -> Q:
-		ProjectiveMapping Tinit = matcher.getReferenceMappingTo(Q);
+		ProjectiveMapping2D Tinit = matcher.getReferenceMappingTo(Q);
 		IJ.log("Tinit = " + Matrix.toString(Tinit.getParameters()));
 
 		// Step 6: Calculate the real mapping from (centered) R -> QQ (for validation only):
-		ProjectiveMapping Treal = matcher.getReferenceMappingTo(QQ);
+		ProjectiveMapping2D Treal = matcher.getReferenceMappingTo(QQ);
 		IJ.log("Treal = " + Matrix.toString(Treal.getParameters()));
 		
 		// --------------------------------------------------------------------------
 		// Step 7: Initialize the matcher and run the matching loop:
-		ProjectiveMapping T = Tinit;
+		ProjectiveMapping2D T = Tinit;
 		do {
 			T = matcher.iterateOnce(T);		// returns null if iteration failed
 			int i = matcher.getIteration();
@@ -134,13 +133,13 @@ public class LucasKanade_Demo implements PlugInFilter {
 			return;
 		}
 		else {
-			ProjectiveMapping Tfinal = T;
+			ProjectiveMapping2D Tfinal = T;
 			
 			IJ.log(" ++++++++++++++++ Summary +++++++++++++++++++");
 			// convert all mappings to projective (for comparison)
-			ProjectiveMapping TinitP = new ProjectiveMapping(Tinit);
-			ProjectiveMapping TrealP = new ProjectiveMapping(Treal);
-			ProjectiveMapping TfinalP = new ProjectiveMapping(Tfinal);
+			ProjectiveMapping2D TinitP = new ProjectiveMapping2D(Tinit);
+			ProjectiveMapping2D TrealP = new ProjectiveMapping2D(Treal);
+			ProjectiveMapping2D TfinalP = new ProjectiveMapping2D(Tfinal);
 			IJ.log("Matcher type: " + matcher.getClass().getSimpleName());
 			IJ.log("Match found after " + matcher.getIteration() + " iterations.");
 			IJ.log("Final RMS error " + matcher.getRmsError());
@@ -149,17 +148,17 @@ public class LucasKanade_Demo implements PlugInFilter {
 			IJ.log("  Tfinal = " + Matrix.toString(TfinalP.getParameters()));
 	
 			IJ.log("Corners of reference patch:");
-			Point2D[] ptsRef = Treal.applyTo(matcher.getReferencePoints());
-			for(Point2D pt : ptsRef) {
+			Point[] ptsRef = Treal.applyTo(matcher.getReferencePoints());
+			for(Point pt : ptsRef) {
 				IJ.log("  pt = " + pt.toString());
 			}
 			IJ.log("Corners for best match:");
-			Point2D[] ptsFinal = Tfinal.applyTo(matcher.getReferencePoints());
-			for(Point2D pt : ptsFinal) {
+			Point[] ptsFinal = Tfinal.applyTo(matcher.getReferencePoints());
+			for(Point pt : ptsFinal) {
 				IJ.log("  pt = " + pt.toString());
 			}
 			
-			Point2D test0 = new Point(0, 0);
+			Point test0 = Point.create(0, 0);
 			IJ.log(" (0,0) by Treal  = " + Treal.applyTo(test0).toString());
 			IJ.log(" (0,0) by Tfinal = " + Tfinal.applyTo(test0).toString());
 			
@@ -178,40 +177,40 @@ public class LucasKanade_Demo implements PlugInFilter {
 	
 	// ----------------------------------------------------------
 	
-	private Point2D[] getCornerPoints(Rectangle2D r) {	
+	private Point[] getCornerPoints(Rectangle2D r) {	
 		//IJ.log("getpoints2:  r = " + r.toString());
 		double x = r.getX();
 		double y = r.getY();
 		double w = r.getWidth();
 		double h = r.getHeight();
-		Point2D[] pts = new Point2D[4];
-		pts[0] = new Point2D.Double(x, y);
-		pts[1] = new Point2D.Double(x + w - 1, y);	// TODO: does -1 matter? YES - it seems WRONG!!!
-		pts[2] = new Point2D.Double(x + w - 1, y + h - 1);
-		pts[3] = new Point2D.Double(x, y + h - 1);
+		Point[] pts = new Point[4];
+		pts[0] = Point.create(x, y);
+		pts[1] = Point.create(x + w - 1, y);	// TODO: does -1 matter? YES - it seems WRONG!!!
+		pts[2] = Point.create(x + w - 1, y + h - 1);
+		pts[3] = Point.create(x, y + h - 1);
 		//IJ.log("getpoints2:  p1-4 = " + pts[0] + ", " + pts[1] + ", " + pts[2] + ", " + pts[3]);
 		return pts;
 	}
 	
 	private final Random rg = new Random();
 	
-	private Point2D perturbGaussian(Point2D p) {
+	private Point perturbGaussian(Point p) {
 		double x = p.getX();
 		double y = p.getY();
 		x = x + rg.nextGaussian() * sigma;
 		y = y + rg.nextGaussian() * sigma;
-		return new Point2D.Double(x, y);
+		return Point.create(x, y);
 	}
 	
-	private Point2D[] perturbGaussian(Point2D[] pntsIn) {
-		Point2D[] pntsOut = pntsIn.clone();
+	private Point[] perturbGaussian(Point[] pntsIn) {
+		Point[] pntsOut = pntsIn.clone();
 		for (int i = 0; i < pntsIn.length; i++) {
 			pntsOut[i] = perturbGaussian(pntsIn[i]);
 		}
 		return pntsOut;
 	}
 	
-	private Roi makePolygon(Point2D[] points, double strokeWidth, Color color) {
+	private Roi makePolygon(Point[] points, double strokeWidth, Color color) {
 		Path2D poly = new Path2D.Double();
 		if (points.length > 0) {
 			poly.moveTo(points[0].getX(), points[0].getY());
