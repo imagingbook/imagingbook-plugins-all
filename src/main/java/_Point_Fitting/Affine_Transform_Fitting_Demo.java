@@ -12,9 +12,10 @@ import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.math.Matrix;
-import imagingbook.pub.geometry.fitting_OLD.AffineFit;
-import imagingbook.pub.geometry.fitting_OLD.LinearFit;
-import imagingbook.pub.geometry.fitting_OLD.ProcrustesFit;
+import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.fitting.AffineFit2D;
+import imagingbook.pub.geometry.fitting.LinearFit2D;
+import imagingbook.pub.geometry.fitting.ProcrustesFit;
 
 /**
  * This IJ plugin creates a set of K random points, which are
@@ -77,24 +78,23 @@ public class Affine_Transform_Fitting_Demo implements PlugIn {
 		
 		// create K random points and place in ip1:
 		Random rg = new Random();
-		List<double[]> points1 = new ArrayList<>();
+		List<Point> points1 = new ArrayList<>();
 		for (int i = 0; i < K; i++) {
 			int u = W/4 + rg.nextInt(W/2);
 			int v = H/4 + rg.nextInt(H/2);
-			points1.add(new double[] {u, v});
+			points1.add(Point.create(u, v));
 			ip1.putPixel(u, v, 255);
 		}
 		
 		// transform points:
-		List<double[]> points2 = new ArrayList<>();
-		for (double[] p1 : points1) {
-			double[] p2 = Matrix.multiply(A, Matrix.toHomogeneous(p1));	// using imagingbook matrix utilities
+		List<Point> points2 = new ArrayList<>();
+		for (Point p1 : points1) {
+			double[] p2 = Matrix.multiply(A, Matrix.toHomogeneous(new double[] {p1.getX(), p1.getY()}));
 			int u = (int) Math.round(p2[0]);
 			int v = (int) Math.round(p2[1]);
-			points2.add(new double[] {u, v});
+			points2.add(Point.create(u, v));
 			ip2.putPixel(u, v, 255);
 		}
-		
 		
 		new ImagePlus("Stack", stack).show();
 		
@@ -102,14 +102,13 @@ public class Affine_Transform_Fitting_Demo implements PlugIn {
 //		AffineFit fitter = new AffineFit();
 //		ProcrustesFit fitter = new ProcrustesFit();
 		
-		LinearFit fitter = null;
+		LinearFit2D fitter = null;
 		switch (theMethod) {
-		case 0: fitter = new AffineFit(); break;
+		case 0: fitter = new AffineFit2D(); break;
 		case 1: fitter = new ProcrustesFit(); break;
 		}
 				
-		
-		fitter.fit(points1, points2); // linear least-squares fit
+		fitter.fit(points1, points2); // least-squares fit
 		
 		double[][] Ae = fitter.getTransformationMatrix().getData();
 		IJ.log("A (estimated) = \n" + Matrix.toString(Ae));
