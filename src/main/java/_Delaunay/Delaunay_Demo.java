@@ -46,8 +46,8 @@ import imagingbook.pub.geometry.delaunay.guibas.TriangulationGuibas;
 public class Delaunay_Demo implements PlugInFilter {
 
 	private static final String title = Delaunay_Demo.class.getSimpleName();
-	private static final String[] TriangulationMethods = {"Chew", "Guibas"};
 	
+	private static final String[] TriangulationMethods = {"Chew", "Guibas"};
 	private static int theMethod = 1;	// Guibas is 10 x faster
 	
 	private static Color DelaunayColor = Color.green;
@@ -86,7 +86,7 @@ public class Delaunay_Demo implements PlugInFilter {
 	// ---------------------------------------------------------------------------
 
 	private boolean runDialog() {
-		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
+		GenericDialog gd = new GenericDialog(title);
 		gd.addChoice("Select triangulation method", 
 				TriangulationMethods, TriangulationMethods[theMethod]);
 		gd.showDialog(); 

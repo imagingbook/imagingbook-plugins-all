@@ -23,7 +23,7 @@ import imagingbook.pub.geometry.mappings.linear.AffineMapping;
 import imagingbook.pub.geometry.mappings.linear.Rotation;
 import imagingbook.pub.geometry.mappings.linear.Translation;
 
-
+@Deprecated
 public class ICP_Test implements PlugIn {
 	
 	static {
