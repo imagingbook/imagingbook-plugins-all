@@ -27,18 +27,15 @@ import imagingbook.pub.geometry.delaunay.guibas.TriangulationGuibas;
  * the given set of points.
  * </p>
  * <p>
- * How to use: Create or open a binary image containing a point set. Any pixel with value > 0 
+ * How to use: Create or open a binary image containing a point set. Any pixel with value greater than 0 
  * is considered a foreground point, zero-value pixels are considered background). The plugin 
  * triangulates the foreground point set and displays the triangulation as a vector overlay
- * in a new image.
+ * in a new image. The following triangulation methods can be selected (both should yield similar results):
  * </p>
- * <p>
- * The following triangulation methods can be selected (both should yield similar results):
  * <ol>
  * <li><strong>Chew:</strong> Incremental triangulation algorithm proposed by Paul Chew.</li>
  * <li><strong>Guibas:</strong> Randomized incremental algorithm proposed by Guibas et al.</li>
  * </ol>
- * </p>
  * <p>
  * Note that the actual implementations reside in separate sub-packages and do not depend on ImageJ.
  * </p>
