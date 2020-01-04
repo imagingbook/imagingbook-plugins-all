@@ -13,7 +13,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings.nonlinear.TwirlMapping;
+import imagingbook.pub.geometry.mappings2.nonlinear.TwirlMapping;
 
 public class Transform_Twirl implements PlugInFilter {
 	
@@ -33,7 +33,6 @@ public class Transform_Twirl implements PlugInFilter {
 		TwirlMapping imap = new TwirlMapping(xc, yc, angle, radius);	// inverse mapping (target to source)
 		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
 		mapper.map(ip);
-//		imap.applyTo(ip, InterpolationMethod.Bicubic);
 	}
 
 }

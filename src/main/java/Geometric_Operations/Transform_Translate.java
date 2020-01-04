@@ -13,7 +13,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings.linear.Translation;
+import imagingbook.pub.geometry.mappings2.linear.Translation2D;
 
 public class Transform_Translate implements PlugInFilter {
 	static double dx = 5.25;
@@ -25,10 +25,9 @@ public class Transform_Translate implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
 
-		Translation imap = new Translation(dx, dy).getInverse();
+		Translation2D imap = new Translation2D(dx, dy).getInverse();
 		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
 		mapper.map(ip);
-//		imap.applyTo(ip, InterpolationMethod.Bicubic);
     }
 
 }

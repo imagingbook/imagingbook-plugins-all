@@ -13,7 +13,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings.nonlinear.SphereMapping;
+import imagingbook.pub.geometry.mappings2.nonlinear.SphereMapping;
 
 public class Transform_Spherical implements PlugInFilter {
 
@@ -28,7 +28,5 @@ public class Transform_Spherical implements PlugInFilter {
 		SphereMapping imap = new SphereMapping(0.5 * w + 10, 0.5 * h, 0.5 * h);	// inverse (target to source)
 		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
 		mapper.map(ip);
-//		imap.applyTo(ip, InterpolationMethod.Bicubic);
 	}
-
 }
