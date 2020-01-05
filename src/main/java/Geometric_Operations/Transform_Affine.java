@@ -23,17 +23,21 @@ public class Transform_Affine implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
+    	Point[] P = {
+			Point.create(0, 0),
+			Point.create(400, 0),
+			Point.create(400, 400)
+    	};
 
-		Point p1 = Point.create(0, 0);
-		Point p2 = Point.create(400, 0);
-		Point p3 = Point.create(400, 400);
-
-		Point q1 = Point.create(0, 60);
-		Point q2 = Point.create(400, 20);
-		Point q3 = Point.create(300, 400);
+    	Point[] Q = {
+			Point.create(0, 60),
+			Point.create(400, 20),
+			 Point.create(300, 400)
+    	};
 
 		// inverse mapping (target to source):
-		AffineMapping2D imap = AffineMapping2D.from3Points(p1, p2, p3, q1, q2, q3).getInverse(); 
+		//AffineMapping2D imap = AffineMapping2D.from3Points(p1, p2, p3, q1, q2, q3).getInverse(); 
+		AffineMapping2D imap = AffineMapping2D.fromPoints(P, Q).getInverse(); 
 		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
 		mapper.map(ip);
     }

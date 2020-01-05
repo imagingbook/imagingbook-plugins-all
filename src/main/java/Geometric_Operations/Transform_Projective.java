@@ -24,17 +24,22 @@ public class Transform_Projective implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-		Point p1 = Point.create(0, 0);
-		Point p2 = Point.create(400, 0);
-		Point p3 = Point.create(400, 400);
-		Point p4 = Point.create(0, 400);
 
-		Point q1 = Point.create(0, 60);
-		Point q2 = Point.create(400, 20);
-		Point q3 = Point.create(300, 400);
-		Point q4 = Point.create(30, 200);
+    	Point[] P = {
+			Point.create(0, 0),
+			Point.create(400, 0),
+			Point.create(400, 400),
+			Point.create(0, 400)
+    	};
 
-		Mapping2D imap = ProjectiveMapping2D.from4Points(p1, p2, p3, p4, q1, q2, q3, q4).getInverse();
+    	Point[] Q = {
+			Point.create(0, 60),
+			Point.create(400, 20),
+			 Point.create(300, 400),
+			 Point.create(30, 200)
+    	};
+    	
+		Mapping2D imap = ProjectiveMapping2D.fromPoints(P, Q).getInverse();
 		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
 		mapper.map(ip);
 	}
