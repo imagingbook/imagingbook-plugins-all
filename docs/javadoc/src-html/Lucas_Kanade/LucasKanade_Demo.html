@@ -116,11 +116,11 @@
 <span class="sourceLineNo">108</span>                <a name="line.108"></a>
 <span class="sourceLineNo">109</span>                // Step 5: Calculate the initial mapping Tinit from (centered) R -&gt; Q:<a name="line.109"></a>
 <span class="sourceLineNo">110</span>                ProjectiveMapping2D Tinit = matcher.getReferenceMappingTo(Q);<a name="line.110"></a>
-<span class="sourceLineNo">111</span>                IJ.log("Tinit = " + Matrix.toString(Tinit.getParameters()));<a name="line.111"></a>
+<span class="sourceLineNo">111</span>                IJ.log("Tinit = " + Matrix.toString(matcher.getParameters(Tinit)));<a name="line.111"></a>
 <span class="sourceLineNo">112</span><a name="line.112"></a>
 <span class="sourceLineNo">113</span>                // Step 6: Calculate the real mapping from (centered) R -&gt; QQ (for validation only):<a name="line.113"></a>
 <span class="sourceLineNo">114</span>                ProjectiveMapping2D Treal = matcher.getReferenceMappingTo(QQ);<a name="line.114"></a>
-<span class="sourceLineNo">115</span>                IJ.log("Treal = " + Matrix.toString(Treal.getParameters()));<a name="line.115"></a>
+<span class="sourceLineNo">115</span>                IJ.log("Treal = " + Matrix.toString(matcher.getParameters(Treal)));<a name="line.115"></a>
 <span class="sourceLineNo">116</span>                <a name="line.116"></a>
 <span class="sourceLineNo">117</span>                // --------------------------------------------------------------------------<a name="line.117"></a>
 <span class="sourceLineNo">118</span>                // Step 7: Initialize the matcher and run the matching loop:<a name="line.118"></a>
@@ -151,9 +151,9 @@
 <span class="sourceLineNo">143</span>                        IJ.log("Matcher type: " + matcher.getClass().getSimpleName());<a name="line.143"></a>
 <span class="sourceLineNo">144</span>                        IJ.log("Match found after " + matcher.getIteration() + " iterations.");<a name="line.144"></a>
 <span class="sourceLineNo">145</span>                        IJ.log("Final RMS error " + matcher.getRmsError());<a name="line.145"></a>
-<span class="sourceLineNo">146</span>                        IJ.log("  Tinit  = " + Matrix.toString(TinitP.getParameters()));<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                        IJ.log("  Treal  = " + Matrix.toString(TrealP.getParameters()));<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                        IJ.log("  Tfinal = " + Matrix.toString(TfinalP.getParameters()));<a name="line.148"></a>
+<span class="sourceLineNo">146</span>                        IJ.log("  Tinit  = " + Matrix.toString(matcher.getParameters(TinitP)));<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                        IJ.log("  Treal  = " + Matrix.toString(matcher.getParameters(TrealP)));<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                        IJ.log("  Tfinal = " + Matrix.toString(matcher.getParameters(TfinalP)));<a name="line.148"></a>
 <span class="sourceLineNo">149</span>        <a name="line.149"></a>
 <span class="sourceLineNo">150</span>                        IJ.log("Corners of reference patch:");<a name="line.150"></a>
 <span class="sourceLineNo">151</span>                        Point[] ptsRef = Treal.applyTo(matcher.getReferencePoints());<a name="line.151"></a>
