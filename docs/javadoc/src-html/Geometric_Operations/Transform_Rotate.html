@@ -21,8 +21,8 @@
 <span class="sourceLineNo">013</span>import ij.process.ImageProcessor;<a name="line.13"></a>
 <span class="sourceLineNo">014</span>import imagingbook.lib.image.ImageMapper;<a name="line.14"></a>
 <span class="sourceLineNo">015</span>import imagingbook.lib.interpolation.InterpolationMethod;<a name="line.15"></a>
-<span class="sourceLineNo">016</span>import imagingbook.pub.geometry.mappings.Mapping;<a name="line.16"></a>
-<span class="sourceLineNo">017</span>import imagingbook.pub.geometry.mappings.linear.Rotation;<a name="line.17"></a>
+<span class="sourceLineNo">016</span>import imagingbook.pub.geometry.mappings.Mapping2D;<a name="line.16"></a>
+<span class="sourceLineNo">017</span>import imagingbook.pub.geometry.mappings.linear.Rotation2D;<a name="line.17"></a>
 <span class="sourceLineNo">018</span><a name="line.18"></a>
 <span class="sourceLineNo">019</span><a name="line.19"></a>
 <span class="sourceLineNo">020</span>public class Transform_Rotate implements PlugInFilter {<a name="line.20"></a>
@@ -35,12 +35,11 @@
 <span class="sourceLineNo">027</span><a name="line.27"></a>
 <span class="sourceLineNo">028</span>    public void run(ImageProcessor ip) {<a name="line.28"></a>
 <span class="sourceLineNo">029</span>        <a name="line.29"></a>
-<span class="sourceLineNo">030</span>                Mapping imap = new Rotation((2 * Math.PI * angle) / 360).getInverse();  // inverse (target to source)<a name="line.30"></a>
+<span class="sourceLineNo">030</span>                Mapping2D imap = new Rotation2D((2 * Math.PI * angle) / 360).getInverse();      // inverse (target to source)<a name="line.30"></a>
 <span class="sourceLineNo">031</span>                ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);<a name="line.31"></a>
 <span class="sourceLineNo">032</span>                mapper.map(ip);<a name="line.32"></a>
-<span class="sourceLineNo">033</span>//              imap.applyTo(ip, InterpolationMethod.Bicubic);<a name="line.33"></a>
-<span class="sourceLineNo">034</span>    }<a name="line.34"></a>
-<span class="sourceLineNo">035</span>}<a name="line.35"></a>
+<span class="sourceLineNo">033</span>    }<a name="line.33"></a>
+<span class="sourceLineNo">034</span>}<a name="line.34"></a>
 
 
 

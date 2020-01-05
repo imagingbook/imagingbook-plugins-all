@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package _Point_Fitting;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.util.Random;<a name="line.3"></a>
+<span class="sourceLineNo">004</span><a name="line.4"></a>
+<span class="sourceLineNo">005</span>import ij.IJ;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import ij.ImagePlus;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import ij.ImageStack;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import ij.gui.GenericDialog;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import ij.plugin.PlugIn;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import ij.process.ByteProcessor;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import ij.process.ImageProcessor;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import imagingbook.lib.math.Matrix;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import imagingbook.pub.geometry.basic.Point;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import imagingbook.pub.geometry.fitting.AffineFit2D;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import imagingbook.pub.geometry.fitting.LinearFit2D;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import imagingbook.pub.geometry.fitting.ProcrustesFit;<a name="line.16"></a>
+<span class="sourceLineNo">017</span><a name="line.17"></a>
+<span class="sourceLineNo">018</span>/**<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * This IJ plugin creates a set of K random points, which are<a name="line.19"></a>
+<span class="sourceLineNo">020</span> * displayed in the first frame of a 2-image stack.<a name="line.20"></a>
+<span class="sourceLineNo">021</span> * The point set is transformed by a (fixed) affine transformation,<a name="line.21"></a>
+<span class="sourceLineNo">022</span> * the result is shown in frame 2.<a name="line.22"></a>
+<span class="sourceLineNo">023</span> * All point coordinates are integers, the transformed coordinates are rounded<a name="line.23"></a>
+<span class="sourceLineNo">024</span> * to their closest values.<a name="line.24"></a>
+<span class="sourceLineNo">025</span> * Then a linear fit is found between the two point sets, using either<a name="line.25"></a>
+<span class="sourceLineNo">026</span> * (a) an affine fitter or<a name="line.26"></a>
+<span class="sourceLineNo">027</span> * (b) a Procrustes fitter.<a name="line.27"></a>
+<span class="sourceLineNo">028</span> * The correspondence between the point sets is known.<a name="line.28"></a>
+<span class="sourceLineNo">029</span> * <a name="line.29"></a>
+<span class="sourceLineNo">030</span> * @author WB<a name="line.30"></a>
+<span class="sourceLineNo">031</span> *<a name="line.31"></a>
+<span class="sourceLineNo">032</span> */<a name="line.32"></a>
+<span class="sourceLineNo">033</span>public class Affine_Transform_Fitting_Demo implements PlugIn {<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        <a name="line.34"></a>
+<span class="sourceLineNo">035</span>        static int W = 400;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>        static int H = 400;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>        static int K = 200;             // number of points<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        <a name="line.38"></a>
+<span class="sourceLineNo">039</span>        static boolean allowTranslation = true;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>        static boolean allowScaling = true;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>        static boolean forceRotation = true;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        <a name="line.42"></a>
+<span class="sourceLineNo">043</span>        static final String title = Affine_Transform_Fitting_Demo.class.getSimpleName();<a name="line.43"></a>
+<span class="sourceLineNo">044</span>        <a name="line.44"></a>
+<span class="sourceLineNo">045</span>        private static final String[] FittingMethods = {"Affine Least Squares", "Procrustes"};<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        private static int theMethod = 0;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        <a name="line.47"></a>
+<span class="sourceLineNo">048</span>        <a name="line.48"></a>
+<span class="sourceLineNo">049</span>//      static double[][] A =   // affine 2D transformation<a name="line.49"></a>
+<span class="sourceLineNo">050</span>//              {{ 0.013,  1.088,  18.688 },<a name="line.50"></a>
+<span class="sourceLineNo">051</span>//               {-1.000, -0.050, 127.500 }};<a name="line.51"></a>
+<span class="sourceLineNo">052</span>        <a name="line.52"></a>
+<span class="sourceLineNo">053</span>        static double a = 10 * 2 * Math.PI / 360;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        static double ca = Math.cos(a);<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        static double sa = Math.sin(a);<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        static double S = 1.05;<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        <a name="line.57"></a>
+<span class="sourceLineNo">058</span>        static double[][] A =   // affine 2D transformation<a name="line.58"></a>
+<span class="sourceLineNo">059</span>                {{ S * ca, S * -sa, 18.688 },<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                 { S * sa, S *  ca, -7.123 }};<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        <a name="line.61"></a>
+<span class="sourceLineNo">062</span>//      static double[][] A =   // affine 2D transformation<a name="line.62"></a>
+<span class="sourceLineNo">063</span>//      {{ 1, 0, 0 },<a name="line.63"></a>
+<span class="sourceLineNo">064</span>//       { 0, 1, 0 }};<a name="line.64"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
+<span class="sourceLineNo">066</span>        public void run(String arg) {<a name="line.66"></a>
+<span class="sourceLineNo">067</span>                if (!runDialog())<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                        return;<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                        <a name="line.69"></a>
+<span class="sourceLineNo">070</span>                IJ.log("Fitter used: " + FittingMethods[theMethod]);<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                IJ.log("A (original) = \n" + Matrix.toString(A));<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                <a name="line.72"></a>
+<span class="sourceLineNo">073</span>                // create the image stack<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                ImageStack stack = new ImageStack(W, H);<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                ImageProcessor ipP = new ByteProcessor(W, H);<a name="line.75"></a>
+<span class="sourceLineNo">076</span>                ImageProcessor ipQ = new ByteProcessor(W, H);<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                stack.addSlice(ipP);<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                stack.addSlice(ipQ);<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                <a name="line.79"></a>
+<span class="sourceLineNo">080</span>                // create K random points and draw them in ipP:<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                Random rg = new Random();<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                Point[] P = new Point[K];<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                for (int i = 0; i &lt; K; i++) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                        int u = W/4 + rg.nextInt(W/2);<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                        int v = H/4 + rg.nextInt(H/2);<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                        P[i] = Point.create(u, v);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                        ipP.putPixel(u, v, 255);<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                }<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                <a name="line.89"></a>
+<span class="sourceLineNo">090</span>                // transform points: TODO: use an affine mapping instead!<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                Point[] Q = new Point[K];<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                for (int i = 0; i &lt; K; i++) {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                        double[] q = Matrix.multiply(A, Matrix.toHomogeneous(Q[i].toArray()));<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                        // we round coordinates to simulate a discrete grid transformation:<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                        int u = (int) Math.round(q[0]);<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                        int v = (int) Math.round(q[1]);<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                        Q[i] = Point.create(u, v);<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                        ipQ.putPixel(u, v, 255);<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                }<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                <a name="line.100"></a>
+<span class="sourceLineNo">101</span>                new ImagePlus("Stack", stack).show();<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                <a name="line.102"></a>
+<span class="sourceLineNo">103</span>                // select a fitter:<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                LinearFit2D fitter = null;<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                switch (theMethod) {<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                case 0: fitter = new AffineFit2D(P, Q); <a name="line.106"></a>
+<span class="sourceLineNo">107</span>                                break;<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                case 1: fitter = new ProcrustesFit(P, Q, allowTranslation, allowScaling, forceRotation); <a name="line.108"></a>
+<span class="sourceLineNo">109</span>                                break;<a name="line.109"></a>
+<span class="sourceLineNo">110</span>                }<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                <a name="line.111"></a>
+<span class="sourceLineNo">112</span>                double[][] A = fitter.getTransformationMatrix().getData();<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                IJ.log("A (estimated) = \n" + Matrix.toString(A));<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                IJ.log(String.format("e = %.6f", fitter.getError()));<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        }<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        <a name="line.116"></a>
+<span class="sourceLineNo">117</span>        // ---------------------------------------------------------------------------<a name="line.117"></a>
+<span class="sourceLineNo">118</span><a name="line.118"></a>
+<span class="sourceLineNo">119</span>        private boolean runDialog() {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                GenericDialog gd = new GenericDialog(title);<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                gd.addChoice("Select fitting method", <a name="line.121"></a>
+<span class="sourceLineNo">122</span>                                FittingMethods, FittingMethods[theMethod]);<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                gd.showDialog(); <a name="line.123"></a>
+<span class="sourceLineNo">124</span>                if (gd.wasCanceled()) <a name="line.124"></a>
+<span class="sourceLineNo">125</span>                        return false;<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                theMethod = gd.getNextChoiceIndex();<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                return true;<a name="line.127"></a>
+<span class="sourceLineNo">128</span>        }<a name="line.128"></a>
+<span class="sourceLineNo">129</span><a name="line.129"></a>
+<span class="sourceLineNo">130</span>}<a name="line.130"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
