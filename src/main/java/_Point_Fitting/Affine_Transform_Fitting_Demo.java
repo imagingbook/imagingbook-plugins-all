@@ -1,7 +1,5 @@
 package _Point_Fitting;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import ij.IJ;
@@ -38,6 +36,10 @@ public class Affine_Transform_Fitting_Demo implements PlugIn {
 	static int H = 400;
 	static int K = 200;		// number of points
 	
+	static boolean allowTranslation = true;
+	static boolean allowScaling = true;
+	static boolean forceRotation = true;
+	
 	static final String title = Affine_Transform_Fitting_Demo.class.getSimpleName();
 	
 	private static final String[] FittingMethods = {"Affine Least Squares", "Procrustes"};
@@ -53,13 +55,13 @@ public class Affine_Transform_Fitting_Demo implements PlugIn {
 	static double sa = Math.sin(a);
 	static double S = 1.05;
 	
-//	static double[][] A = 	// affine 2D transformation
-//		{{ S * ca, S * -sa, 18.688 },
-//		 { S * sa, S *  ca, -7.123 }};
-	
 	static double[][] A = 	// affine 2D transformation
-	{{ 1, 0, 0 },
-	 { 0, 1, 0 }};
+		{{ S * ca, S * -sa, 18.688 },
+		 { S * sa, S *  ca, -7.123 }};
+	
+//	static double[][] A = 	// affine 2D transformation
+//	{{ 1, 0, 0 },
+//	 { 0, 1, 0 }};
 
 	public void run(String arg) {
 		if (!runDialog())
@@ -70,50 +72,45 @@ public class Affine_Transform_Fitting_Demo implements PlugIn {
 		
 		// create the image stack
 		ImageStack stack = new ImageStack(W, H);
-		ImageProcessor ip1 = new ByteProcessor(W, H);
-		ImageProcessor ip2 = new ByteProcessor(W, H);
+		ImageProcessor ipP = new ByteProcessor(W, H);
+		ImageProcessor ipQ = new ByteProcessor(W, H);
+		stack.addSlice(ipP);
+		stack.addSlice(ipQ);
 		
-		stack.addSlice(ip1);
-		stack.addSlice(ip2);
-		
-		// create K random points and place in ip1:
+		// create K random points and draw them in ipP:
 		Random rg = new Random();
-		List<Point> points1 = new ArrayList<>();
+		Point[] P = new Point[K];
 		for (int i = 0; i < K; i++) {
 			int u = W/4 + rg.nextInt(W/2);
 			int v = H/4 + rg.nextInt(H/2);
-			points1.add(Point.create(u, v));
-			ip1.putPixel(u, v, 255);
+			P[i] = Point.create(u, v);
+			ipP.putPixel(u, v, 255);
 		}
 		
-		// transform points:
-		List<Point> points2 = new ArrayList<>();
-		for (Point p1 : points1) {
-			double[] p2 = Matrix.multiply(A, Matrix.toHomogeneous(new double[] {p1.getX(), p1.getY()}));
-			int u = (int) Math.round(p2[0]);
-			int v = (int) Math.round(p2[1]);
-			points2.add(Point.create(u, v));
-			ip2.putPixel(u, v, 255);
+		// transform points: TODO: use an affine mapping instead!
+		Point[] Q = new Point[K];
+		for (int i = 0; i < K; i++) {
+			double[] q = Matrix.multiply(A, Matrix.toHomogeneous(Q[i].toArray()));
+			// we round coordinates to simulate a discrete grid transformation:
+			int u = (int) Math.round(q[0]);
+			int v = (int) Math.round(q[1]);
+			Q[i] = Point.create(u, v);
+			ipQ.putPixel(u, v, 255);
 		}
 		
 		new ImagePlus("Stack", stack).show();
 		
-		// select a fitter
-//		AffineFit fitter = new AffineFit();
-//		ProcrustesFit fitter = new ProcrustesFit();
-		
+		// select a fitter:
 		LinearFit2D fitter = null;
 		switch (theMethod) {
-		case 0: fitter = new AffineFit2D(); break;
-		case 1: fitter = new ProcrustesFit(); break;
+		case 0: fitter = new AffineFit2D(P, Q); 
+				break;
+		case 1: fitter = new ProcrustesFit(P, Q, allowTranslation, allowScaling, forceRotation); 
+				break;
 		}
-				
-		fitter.fit(points1, points2); // least-squares fit
 		
-		double[][] Ae = fitter.getTransformationMatrix().getData();
-		IJ.log("A (estimated) = \n" + Matrix.toString(Ae));
-		
-		//IJ.log("S = " + fitter.getScale());
+		double[][] A = fitter.getTransformationMatrix().getData();
+		IJ.log("A (estimated) = \n" + Matrix.toString(A));
 		IJ.log(String.format("e = %.6f", fitter.getError()));
 	}
 	
