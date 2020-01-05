@@ -20,7 +20,7 @@ import imagingbook.lib.image.ImageExtractor;
 import imagingbook.lib.math.Matrix;
 import imagingbook.lib.settings.PrintPrecision;
 import imagingbook.pub.geometry.basic.Point;
-import imagingbook.pub.geometry.mappings2.linear.ProjectiveMapping2D;
+import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 import imagingbook.pub.lucaskanade.LucasKanadeForwardMatcher;
 import imagingbook.pub.lucaskanade.LucasKanadeInverseMatcher;
 import imagingbook.pub.lucaskanade.LucasKanadeMatcher;

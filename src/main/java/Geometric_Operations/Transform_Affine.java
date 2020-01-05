@@ -14,7 +14,7 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Point;
-import imagingbook.pub.geometry.mappings2.linear.AffineMapping2D;
+import imagingbook.pub.geometry.mappings.linear.AffineMapping2D;
 
 public class Transform_Affine implements PlugInFilter {
 

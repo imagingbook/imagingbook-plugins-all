@@ -13,8 +13,8 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings2.Mapping2D;
-import imagingbook.pub.geometry.mappings2.linear.Rotation2D;
+import imagingbook.pub.geometry.mappings.Mapping2D;
+import imagingbook.pub.geometry.mappings.linear.Rotation2D;
 
 
 public class Transform_Rotate implements PlugInFilter {

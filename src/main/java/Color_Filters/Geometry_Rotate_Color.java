@@ -19,7 +19,7 @@ import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.color.image.ColorStack;
 import imagingbook.pub.color.image.ColorStack.ColorStackType;
-import imagingbook.pub.geometry.mappings2.linear.Rotation2D;
+import imagingbook.pub.geometry.mappings.linear.Rotation2D;
 
 /**
  * This plugin rotates the input image. This operation

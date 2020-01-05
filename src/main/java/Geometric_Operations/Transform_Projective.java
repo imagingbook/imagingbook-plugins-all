@@ -14,8 +14,8 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Point;
-import imagingbook.pub.geometry.mappings2.Mapping2D;
-import imagingbook.pub.geometry.mappings2.linear.ProjectiveMapping2D;
+import imagingbook.pub.geometry.mappings.Mapping2D;
+import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 
 public class Transform_Projective implements PlugInFilter {
 

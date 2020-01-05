@@ -13,7 +13,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings2.linear.Translation2D;
+import imagingbook.pub.geometry.mappings.linear.Translation2D;
 
 public class Transform_Translate implements PlugInFilter {
 	static double dx = 5.25;

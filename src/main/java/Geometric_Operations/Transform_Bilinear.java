@@ -14,7 +14,7 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Point;
-import imagingbook.pub.geometry.mappings2.nonlinear.BilinearMapping;
+import imagingbook.pub.geometry.mappings.nonlinear.BilinearMapping;
 
 public class Transform_Bilinear implements PlugInFilter {
 

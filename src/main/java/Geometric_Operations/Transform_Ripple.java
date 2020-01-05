@@ -13,7 +13,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings2.nonlinear.RippleMapping;
+import imagingbook.pub.geometry.mappings.nonlinear.RippleMapping;
 
 public class Transform_Ripple implements PlugInFilter {
 
