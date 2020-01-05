@@ -109,7 +109,7 @@ public class Affine_Transform_Fitting_Demo implements PlugIn {
 				break;
 		}
 		
-		double[][] A = fitter.getTransformationMatrix().getData();
+		double[][] A = fitter.getTransformationMatrix();
 		IJ.log("A (estimated) = \n" + Matrix.toString(A));
 		IJ.log(String.format("e = %.6f", fitter.getError()));
 	}
