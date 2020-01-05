@@ -31,6 +31,7 @@ public class Make_Test_Grid implements PlugIn {
     	ip.setValue(background);
     	ip.fill();
     	
+    	
 		ip.setValue(foreground);
     	int y = yStart;
     	int x1 = xStart;

@@ -19,8 +19,8 @@ import ij.process.ImageProcessor;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.HarrisCornerDetector;
 import imagingbook.pub.geometry.basic.Point;
-import imagingbook.pub.geometry.basic.Triangle;
 import imagingbook.pub.geometry.delaunay.DelaunayTriangulation;
+import imagingbook.pub.geometry.delaunay.Triangle;
 import imagingbook.pub.geometry.delaunay.guibas.TriangulationGuibas;
 
 

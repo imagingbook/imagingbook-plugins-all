@@ -19,14 +19,14 @@ import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.color.image.ColorStack;
 import imagingbook.pub.color.image.ColorStack.ColorStackType;
-import imagingbook.pub.geometry.mappings.linear.Rotation;
+import imagingbook.pub.geometry.mappings2.linear.Rotation2D;
 
 /**
  * This plugin rotates the input image. This operation
  * is performed in a color space specified by the user.
  * The intent is to visualize the differences of linear interpolation
  * when applied in different color spaces. Bilinear interpolation is 
- * used to avoid negative results.
+ * used to avoid negative component values.
  * 
  * @author W. Burger
  * @version 2013/05/30
@@ -57,7 +57,7 @@ public class Geometry_Rotate_Color implements PlugInFilter {
 			return;
     	}
     	
-    	Rotation imap = new Rotation(-2 * Math.PI * angle / 360);	// inverse mapping (target to source)
+    	Rotation2D imap = new Rotation2D(-2 * Math.PI * angle / 360);	// inverse mapping (target to source)
     	FloatProcessor[] processors = ColorStack.getProcessors(colStack);
   
     	ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bilinear);
