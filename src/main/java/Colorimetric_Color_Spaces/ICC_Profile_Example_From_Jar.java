@@ -19,8 +19,8 @@ import java.util.List;
 
 import ij.IJ;
 import ij.gui.GenericDialog;
+import ij.io.LogStream;
 import ij.plugin.PlugIn;
-import imagingbook.lib.ij.IjLogStream;
 import imagingbook.lib.math.Matrix;
 import imagingbook.lib.util.ResourceUtils;
 
@@ -35,7 +35,7 @@ import imagingbook.lib.util.ResourceUtils;
 public class ICC_Profile_Example_From_Jar implements PlugIn {
 	
 	static {
-		IjLogStream.redirectSystem();
+		LogStream.redirectSystem();
 	}
 	
 	static final String ProfileDirectory = "sample-icc-profiles/";

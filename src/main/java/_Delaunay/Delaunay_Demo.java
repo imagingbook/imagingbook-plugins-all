@@ -12,9 +12,9 @@ import ij.gui.GenericDialog;
 import ij.gui.Overlay;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
+import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.ij.IjLogStream;
 import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.geometry.delaunay.DelaunayTriangulation;
 import imagingbook.pub.geometry.delaunay.Triangle;
@@ -56,7 +56,7 @@ public class Delaunay_Demo implements PlugInFilter {
 	private static double PointRadius = 1.5;
 
 	static {
-		IjLogStream.redirectSystem();
+		LogStream.redirectSystem();
 	}
 
 	public int setup(String arg, ImagePlus im) {
