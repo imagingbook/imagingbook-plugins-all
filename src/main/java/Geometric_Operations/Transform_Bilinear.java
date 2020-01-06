@@ -23,18 +23,32 @@ public class Transform_Bilinear implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-		Point p1 = Point.create(0, 0);
-		Point p2 = Point.create(400, 0);
-		Point p3 = Point.create(400, 400);
-		Point p4 = Point.create(0, 400);
-
-		Point q1 = Point.create(0, 60);
-		Point q2 = Point.create(400, 20);
-		Point q3 = Point.create(300, 400);
-		Point q4 = Point.create(30, 200);
+//		Point p1 = Point.create(0, 0);
+//		Point p2 = Point.create(400, 0);
+//		Point p3 = Point.create(400, 400);
+//		Point p4 = Point.create(0, 400);
+//
+//		Point q1 = Point.create(0, 60);
+//		Point q2 = Point.create(400, 20);
+//		Point q3 = Point.create(300, 400);
+//		Point q4 = Point.create(30, 200);
 		
-		// inverse mapping (target to source)
-		BilinearMapping imap = BilinearMapping.fromQuads(q1, q2, q3, q4, p1, p2, p3, p4);
+	   	Point[] P = {
+				Point.create(0, 0),
+				Point.create(400, 0),
+				Point.create(400, 400),
+				Point.create(0, 400)
+	    	};
+
+	    	Point[] Q = {
+				Point.create(0, 60),
+				Point.create(400, 20),
+				 Point.create(300, 400),
+				 Point.create(30, 200)
+	    	};
+		
+		// we want the inverse mapping (Q -> P, so we swap P/Q):
+		BilinearMapping imap = BilinearMapping.fromPoints(Q, P);
 		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
 		mapper.map(ip);
     }
