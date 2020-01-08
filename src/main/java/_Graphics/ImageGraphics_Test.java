@@ -11,7 +11,7 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageGraphics;
 
 /**
- * TODO: add documentation and demo!
+ * TODO: add proper demo!
  * @author w. Burger
  * @version 2020-01-07
  *

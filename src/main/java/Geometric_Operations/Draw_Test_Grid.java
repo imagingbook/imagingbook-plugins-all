@@ -11,8 +11,17 @@ package Geometric_Operations;
 import ij.ImagePlus;
 import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
+import imagingbook.lib.image.ImageGraphics;
 
-public class Make_Test_Grid implements PlugIn {
+/**
+ * This ImageJ plugin draws a test grid in a newly created image.
+ * It uses anti-aliased drawing operations provided by 
+ * imagingbook's {@link ImageGraphics} class.
+ * 
+ * @author W. Burger
+ * @version 2020-01-08
+ */
+public class Draw_Test_Grid implements PlugIn {
 	
 	static int w = 400;
 	static int h = 400;
@@ -23,37 +32,38 @@ public class Make_Test_Grid implements PlugIn {
 	static int xN = 10;
 	static int yN = 10;
 	
-	int foreground = 0;
-	int background = 255;
+	static int foreground = 0;
+	static int background = 255;
 	
     public void run(String arg) {
-    	ByteProcessor ip = new ByteProcessor(w,h);
+    	ByteProcessor ip = new ByteProcessor(w, h);
     	ip.setValue(background);
     	ip.fill();
     	
-    	
-		ip.setValue(foreground);
-    	int y = yStart;
-    	int x1 = xStart;
-    	int x2 = xStart+xN*xStep;
-    	for (int j = 0; j <= yN; j++) {
-			ip.drawLine(x1,y,x2,y);
-			y = y + yStep;
+    	try (ImageGraphics g = new ImageGraphics(ip)) {
+			g.setColor(foreground);
+			g.setLineWidth(1.0);
+			
+			int y = yStart;
+	    	int x1 = xStart;
+	    	int x2 = xStart + xN * xStep;
+			for (int j = 0; j <= yN; j++) {
+				g.drawLine(x1, y, x2, y);
+				y = y + yStep;
+			}
+			
+			int x = xStart;
+			int y1 = yStart;
+			int y2 = yStart + yN * yStep;
+			for (int i = 0; i <= xN; i++) {
+				g.drawLine(x, y1, x, y2);
+				x = x + xStep;
+			}
+			
+			g.drawLine(0, 0, w - 1, h - 1);
+			g.drawOval(xStart, yStart, w/2, h/2);
     	}
     	
-		int x = xStart;
-		int y1 = yStart;
-		int y2 = yStart+yN*yStep;
-		for (int i = 0; i <= xN; i++) {
-			ip.drawLine(x,y1,x,y2);
-			x = x + xStep;
-		}
-		
-		ip.drawLine(0,0,w-1,h-1);
-		ip.drawOval(xStart, yStart, 200, 200);
-    	
-        ImagePlus im = new ImagePlus("Grid",ip);
-        im.show();
-        //im.updateAndDraw();
+        new ImagePlus("Grid",ip).show();
     }
 }
