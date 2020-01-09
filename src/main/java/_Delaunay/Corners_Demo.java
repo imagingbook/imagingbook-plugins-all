@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class Corners_Demo implements PlugInFilter {
 		HarrisCornerDetector cd = new HarrisCornerDetector(ip, params);
 		List<Corner> corners = cd.findCorners();
 
-		DelaunayTriangulation dt = new TriangulationGuibas(toPointList(corners));
+		DelaunayTriangulation dt = new TriangulationGuibas(corners);
 		
 		ImageProcessor cp = ip.convertToByteProcessor();
 		Overlay oly = makeOverlay(dt);
@@ -89,21 +88,6 @@ public class Corners_Demo implements PlugInFilter {
 	}
 	
 	// ---------------------------------------------------------------------------
-	
-	/**
-	 * TODO: Make class {@link Corner} implement {@link Point}.
-	 * @param corners
-	 * @return
-	 */
-	private List<Point> toPointList(List<Corner> corners) {
-		Point[] points = new Point[corners.size()];
-		int i = 0;
-		for (Corner c : corners) {
-			points[i] = new Point.Imp(c.getX(), c.getY());
-			i++;
-		}
-		return Arrays.asList(points);
-	}
 	
 	private Overlay makeOverlay(DelaunayTriangulation dt) {
 		Collection<Triangle> triangles = dt.getTriangles();
