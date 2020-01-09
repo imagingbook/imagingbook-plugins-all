@@ -99,8 +99,8 @@ public class Find_Corners implements PlugInFilter {
 	
 	private void drawCorner(ImageProcessor ip, Corner c) {
 		int size = cornerSize;
-		int x = Math.round(c.getX());
-		int y = Math.round(c.getY());
+		int x = (int) Math.round(c.getX());
+		int y = (int) Math.round(c.getY());
 		ip.drawLine(x - size, y, x + size, y);
 		ip.drawLine(x, y - size, x, y + size);
 	}
