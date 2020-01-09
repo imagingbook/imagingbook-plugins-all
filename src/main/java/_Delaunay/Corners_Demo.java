@@ -33,11 +33,11 @@ import imagingbook.pub.geometry.delaunay.guibas.TriangulationGuibas;
 public class Corners_Demo implements PlugInFilter {
 	
 	private static int CornerCount = 0;					// number of corners to show (0 = show all)
-	private static Color DelaunayColor = Color.blue;	// color for graph edges
-	private static Color PointColor = Color.magenta;		// color for point markers
+	private static Color DelaunayColor = Color.green;	// color for graph edges
+	private static Color PointColor = Color.red;		// color for point markers
 	
-	private static float StrokeWidth = 0.1f;
-	private static double PointRadius = 1.5;
+	private static float StrokeWidth = 1.0f;
+	private static double PointRadius = 2.5;
 	
 	private static String title = Corners_Demo.class.getSimpleName();
 	
