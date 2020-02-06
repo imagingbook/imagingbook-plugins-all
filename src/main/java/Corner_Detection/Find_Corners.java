@@ -20,6 +20,7 @@ import imagingbook.pub.corners.HarrisCornerDetector;
 import java.awt.Color;
 import java.util.List;
 
+
 /**
  * This plugin implements the Harris corner detector. It calculates the corner
  * positions and shows the result in a new color image.
