@@ -12,13 +12,17 @@ package Color_Edges;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
+import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.pub.color.edge.CannyEdgeDetector;
-import imagingbook.pub.color.edge.CannyEdgeDetector.Parameters;
+//import imagingbook.pub.color.edge.CannyEdgeDetector;
+//import imagingbook.pub.color.edge.CannyEdgeDetector.Parameters;
 
 import java.awt.Point;
 import java.util.List;
+
+import Color_Edges.lib.CannyEdgeDetector;
+import Color_Edges.lib.CannyEdgeDetector.Parameters;
 
 /**
  * This plugin implements the Canny edge detector for all types of images.
@@ -26,6 +30,10 @@ import java.util.List;
  * @version 2014/12/03
  */
 public class Color_Edges_Canny implements PlugInFilter {
+	
+	static {
+		LogStream.redirectSystem();
+	}
 	
 	static boolean showEdgeMagnitude = true;
 	static boolean showEdgeOrientation = true;
@@ -40,6 +48,7 @@ public class Color_Edges_Canny implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
+		IJ.log("Running lib " + this.getClass().getName());
 		
 		Parameters params = new Parameters();
 		if (!setParameters(params)) return;
