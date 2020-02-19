@@ -136,7 +136,7 @@ public class CannyEdgeDetector extends ColorEdgeDetector {
 		float[] gaussKernel = makeGaussKernel1d(params.gSigma);
 		Convolver conv = new Convolver();
 		conv.setNormalize(true);
-		for (int i=0; i<Irgb.length; i++) {
+		for (int i=0; i < Irgb.length; i++) {
 			FloatProcessor If = Irgb[i];
 			conv.convolve(If, gaussKernel, gaussKernel.length, 1);
 			conv.convolve(If, gaussKernel, 1, gaussKernel.length);
