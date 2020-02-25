@@ -28,8 +28,7 @@ public class Canny_Edge_Demo_Minimal implements PlugInFilter {
 	@SuppressWarnings("unused")
 	public void run(ImageProcessor ip) {
 	
-		CannyEdgeDetector.Parameters params = 
-							new CannyEdgeDetector.Parameters(); 
+		CannyEdgeDetector.Parameters params = new CannyEdgeDetector.Parameters(); 
 							
 		params.gSigma = 3.0f;	// sigma of Gaussian
 		params.hiThr  = 20.0f;	// 20% of max. edge magnitude

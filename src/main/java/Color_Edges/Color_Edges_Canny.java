@@ -9,20 +9,17 @@
 package Color_Edges;
 
 
+import java.awt.Point;
+import java.util.List;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-//import imagingbook.pub.color.edge.CannyEdgeDetector;
-//import imagingbook.pub.color.edge.CannyEdgeDetector.Parameters;
-
-import java.awt.Point;
-import java.util.List;
-
-import Color_Edges.lib.CannyEdgeDetector;
-import Color_Edges.lib.CannyEdgeDetector.Parameters;
+import imagingbook.pub.color.edge.CannyEdgeDetector;
+import imagingbook.pub.color.edge.CannyEdgeDetector.Parameters;
 
 /**
  * This plugin implements the Canny edge detector for all types of images.
