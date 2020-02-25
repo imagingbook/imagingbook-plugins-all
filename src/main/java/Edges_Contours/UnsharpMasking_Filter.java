@@ -40,7 +40,7 @@ public class UnsharpMasking_Filter implements PlugInFilter {
 		
 		//create a blurred version of the original
 		ImageProcessor J = I.duplicate();
-		float[] H = GaussianFilter.makeGaussKernel1d(radius);
+		float[] H = GaussianFilter.makeGaussKernel1D(radius);
 		Convolver cv = new Convolver();
 		cv.setNormalize(true);
 		cv.convolve(J, H, 1, H.length);
