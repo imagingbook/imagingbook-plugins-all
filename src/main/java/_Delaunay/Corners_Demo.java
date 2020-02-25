@@ -54,7 +54,7 @@ public class Corners_Demo implements PlugInFilter {
 		}
 		
 		HarrisCornerDetector cd = new HarrisCornerDetector(ip, params);
-		List<Corner> corners = cd.findCorners();
+		List<Corner> corners = cd.getCorners();
 
 		DelaunayTriangulation dt = new TriangulationGuibas(corners);
 		

@@ -8,26 +8,33 @@
  *******************************************************************************/
 package Corner_Detection;
 
-import ij.IJ;
-import ij.ImagePlus;
-import ij.gui.GenericDialog;
-import ij.plugin.filter.PlugInFilter;
-import ij.process.ColorProcessor;
-import ij.process.ImageProcessor;
-import imagingbook.pub.corners.Corner;
-import imagingbook.pub.corners.HarrisCornerDetector;
-
 import java.awt.Color;
 import java.util.List;
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.gui.GenericDialog;
+import ij.io.LogStream;
+import ij.plugin.filter.PlugInFilter;
+import ij.process.ColorProcessor;
+import ij.process.ImageProcessor;
+import imagingbook.pub.corners.AbstractGradientCornerDetector;
+import imagingbook.pub.corners.Corner;
+import imagingbook.pub.corners.HarrisCornerDetector;
 
 /**
- * This plugin implements the Harris corner detector. It calculates the corner
- * positions and shows the result in a new color image.
+ * This plugin demonstrates the use of the Harris corner detector
+ * (see {@link HarrisCornerDetector}).
+ * It calculates the corner positions and marks them in a
+ * new color image.
  * 
- * @version 2013/08/22
+ * @version 2020/02/25
  */
-public class Find_Corners implements PlugInFilter {
+public class Find_Corners_Harris implements PlugInFilter {
+	
+	static {
+		LogStream.redirectSystem();
+	}
 	
 	static int nmax = 0;						// number of corners to show
 	static int cornerSize = 2;					// size of cross-markers
@@ -46,27 +53,33 @@ public class Find_Corners implements PlugInFilter {
 			return;
 		}
 		
-		HarrisCornerDetector cd = new HarrisCornerDetector(ip, params);
-		List<Corner> corners = cd.findCorners();
+		AbstractGradientCornerDetector cd = new HarrisCornerDetector(ip, params);
+		List<Corner> corners = cd.getCorners();
 		
 		ColorProcessor R = ip.convertToColorProcessor();
 		drawCorners(R, corners);
-		(new ImagePlus("Corners from " + im.getShortTitle(), R)).show();
+		(new ImagePlus("Harris Corners from " + im.getShortTitle(), R)).show();
     }
     
 	private boolean showDialog(HarrisCornerDetector.Parameters params) {
 		// display dialog , return false if canceled or on error.
 		GenericDialog dlg = new GenericDialog("Harris Corner Detector");
-		dlg.addNumericField("Alpha", params.alpha, 3);
-		dlg.addNumericField("Threshold", params.tH, 0);
+		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
+		dlg.addNumericField("Sensitivity (\u03B1)", params.alpha, 3);
+		dlg.addNumericField("Corner response threshold (th)", params.tH, 0);
+		dlg.addNumericField("Border distance", params.border, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
+		dlg.addNumericField("Minimum corner distance", params.dmin, 0);
 		dlg.addNumericField("Corners to show (0 = show all)", nmax, 0);
 		dlg.showDialog();
 		if(dlg.wasCanceled())
-			return false;	
-		params.alpha = dlg.getNextNumber();
-		params.tH = (int) dlg.getNextNumber();
+			return false;
+		params.sigma = Math.max(0.5, dlg.getNextNumber());
+		params.alpha = Math.max(0, dlg.getNextNumber());
+		params.tH = dlg.getNextNumber();
+		params.border = (int) dlg.getNextNumber();
 		params.doCleanUp = dlg.getNextBoolean();
+		params.dmin = (int) dlg.getNextNumber();
 		nmax = (int) dlg.getNextNumber();
 		if(dlg.invalidNumber()) {
 			IJ.error("Input Error", "Invalid input number");
@@ -77,6 +90,17 @@ public class Find_Corners implements PlugInFilter {
 	
 	//-------------------------------------------------------------------
 	
+	private void drawCorners(ImageProcessor ip, List<Corner> corners) {
+		ip.setColor(cornerColor);
+		int n = 0;
+		for (Corner c : corners) {
+			c.draw(ip, cornerSize);
+			n = n + 1;
+			if (nmax > 0 && n >= nmax)
+				break;
+		}
+	}
+	
 	// Brightens the image ip. May not work with ShortProcessor and FloatProcessor
 	@SuppressWarnings("unused")
 	private void brighten(ImageProcessor ip) {	
@@ -86,23 +110,5 @@ public class Find_Corners implements PlugInFilter {
 		}
 		ip.applyTable(lookupTable); 
 	}
-	
-	private void drawCorners(ImageProcessor ip, List<Corner> corners) {
-		ip.setColor(cornerColor);
-		int n = 0;
-		for (Corner c : corners) {
-			drawCorner(ip, c);
-			n = n + 1;
-			if (nmax > 0 && n >= nmax) 
-				break;
-		}
-	}
-	
-	private void drawCorner(ImageProcessor ip, Corner c) {
-		int size = cornerSize;
-		int x = (int) Math.round(c.getX());
-		int y = (int) Math.round(c.getY());
-		ip.drawLine(x - size, y, x + size, y);
-		ip.drawLine(x, y - size, x, y + size);
-	}
+
 }
