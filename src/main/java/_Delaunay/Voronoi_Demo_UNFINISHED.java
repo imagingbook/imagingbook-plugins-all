@@ -23,7 +23,7 @@ import imagingbook.pub.geometry.delaunay.chew.TriangulationChew;
 
 
 /**
- * TODO: UNFINISHED!!
+ * TODO: NOT OPERATIONAL - UNFINISHED!!
  * This ImageJ plugin demonstrates the calculation of of the 2D Voronoi diagram for
  * a given set of points.
  * 
@@ -38,7 +38,7 @@ import imagingbook.pub.geometry.delaunay.chew.TriangulationChew;
  * @author W. Burger
  * @version 2020/03/09
  */
-public class Voronoi_Demo implements PlugInFilter {
+public class Voronoi_Demo_UNFINISHED implements PlugInFilter {
 	
 	static String title = "Voronoi diagram";
 	private static Color VoronoiColor = Color.blue;
@@ -99,7 +99,7 @@ public class Voronoi_Demo implements PlugInFilter {
 	// ---------------- REPLACE THESE --------------------
 	
 	Pnt toPnt(Point p) {
-		return new Pnt(p.getX(), p.getX());
+		return new Pnt(p.getX(), p.getY());
 	}
 	
 	Triangle2D toTriangle2D(Triangle t) {
