@@ -28,13 +28,21 @@ import imagingbook.pub.geometry.fitting.ProcrustesFit;
  * The correspondence between the point sets is known.
  * 
  * @author WB
+ * @version 2020/03/17
  *
  */
 public class Affine_Transform_Fitting_Demo implements PlugIn {
 	
 	static int W = 400;
 	static int H = 400;
-	static int K = 200;		// number of points
+	static int K = 200;			// number of points
+	
+	static double dX = 18.688;
+	static double dY = -7.123;
+	
+	static double S = 1.05;		// uniform scale factor
+	static double alpha = 20;	// rotation angle (in degrees)
+	static double sigma = 0.0;	// amount of additive Gaussian position noise 
 	
 	static boolean allowTranslation = true;
 	static boolean allowScaling = true;
@@ -45,30 +53,20 @@ public class Affine_Transform_Fitting_Demo implements PlugIn {
 	private static final String[] FittingMethods = {"Affine Least Squares", "Procrustes"};
 	private static int theMethod = 0;
 	
-	
-//	static double[][] A = 	// affine 2D transformation
-//		{{ 0.013,  1.088,  18.688 },
-//		 {-1.000, -0.050, 127.500 }};
-	
-	static double a = 10 * 2 * Math.PI / 360;
-	static double ca = Math.cos(a);
-	static double sa = Math.sin(a);
-	static double S = 1.05;
-	
-	static double[][] A = 	// affine 2D transformation
-		{{ S * ca, S * -sa, 18.688 },
-		 { S * sa, S *  ca, -7.123 }};
-	
-//	static double[][] A = 	// affine 2D transformation
-//	{{ 1, 0, 0 },
-//	 { 0, 1, 0 }};
+	// -------------------------------------------------------------
 
 	public void run(String arg) {
 		if (!runDialog())
 			return;
 			
 		IJ.log("Fitter used: " + FittingMethods[theMethod]);
-		IJ.log("A (original) = \n" + Matrix.toString(A));
+		
+		double a = alpha * Math.PI / 360;
+		double[][] A = 		// affine 2D transformation matrix
+			{{ S * Math.cos(a), S * -Math.sin(a), dX },
+			 { S * Math.sin(a), S *  Math.cos(a), dY }};
+		
+		IJ.log("\nA (original) = \n" + Matrix.toString(A));
 		
 		// create the image stack
 		ImageStack stack = new ImageStack(W, H);
@@ -87,13 +85,13 @@ public class Affine_Transform_Fitting_Demo implements PlugIn {
 			ipP.putPixel(u, v, 255);
 		}
 		
-		// transform points: TODO: use an affine mapping instead!
+		// transform points P -> Q
 		Point[] Q = new Point[K];
 		for (int i = 0; i < K; i++) {
-			double[] q = Matrix.multiply(A, Matrix.toHomogeneous(Q[i].toArray()));
-			// we round coordinates to simulate a discrete grid transformation:
-			int u = (int) Math.round(q[0]);
-			int v = (int) Math.round(q[1]);
+			double[] q = Matrix.multiply(A, Matrix.toHomogeneous(P[i].toArray()));
+			// we add Gaussian noise and round to simulate a discrete grid transformation:
+			int u = (int) Math.round(q[0] + rg.nextGaussian() * sigma);
+			int v = (int) Math.round(q[1] + rg.nextGaussian() * sigma);
 			Q[i] = Point.create(u, v);
 			ipQ.putPixel(u, v, 255);
 		}
@@ -109,20 +107,35 @@ public class Affine_Transform_Fitting_Demo implements PlugIn {
 				break;
 		}
 		
-		double[][] A = fitter.getTransformationMatrix();
-		IJ.log("A (estimated) = \n" + Matrix.toString(A));
-		IJ.log(String.format("e = %.6f", fitter.getError()));
+		double[][] Af = fitter.getTransformationMatrix().getData();
+		IJ.log("\nA (estimated) = \n" + Matrix.toString(Af));
+		IJ.log(String.format("\nRMS error: \u03B5 = %.6f", Math.sqrt(fitter.getError())));
 	}
 	
-	// ---------------------------------------------------------------------------
+	// -------------------------------------------------------------
 
 	private boolean runDialog() {
 		GenericDialog gd = new GenericDialog(title);
-		gd.addChoice("Select fitting method", 
-				FittingMethods, FittingMethods[theMethod]);
+		gd.addNumericField("Image width (W)", W, 0);
+		gd.addNumericField("Image height (H)", H, 0);
+		gd.addNumericField("Number of points (K)", K, 0);
+		gd.addNumericField("Translation in x (dX)", dX, 2);
+		gd.addNumericField("Translation in x (dY)", dY, 2);
+		gd.addNumericField("Rotation angle (degrees)", alpha, 2);
+		gd.addNumericField("Uniform scale factor (s)", S, 2);
+		gd.addNumericField("Position noise (\u03C3)", sigma, 2);
+		gd.addChoice("Fitting method", FittingMethods, FittingMethods[theMethod]);
 		gd.showDialog(); 
 		if (gd.wasCanceled()) 
 			return false;
+		W = (int) gd.getNextNumber();
+		H = (int) gd.getNextNumber();
+		K = (int) gd.getNextNumber();
+		dX = gd.getNextNumber();
+		dY = gd.getNextNumber();
+		alpha = gd.getNextNumber();
+		S = gd.getNextNumber();
+		sigma = gd.getNextNumber();
 		theMethod = gd.getNextChoiceIndex();
 		return true;
 	}
