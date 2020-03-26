@@ -10,6 +10,8 @@ package Hough_Transform;
 
 import java.awt.Color;
 
+import Hough_Transform.lib.HoughTransformLines2;
+import Hough_Transform.lib.HoughTransformLines2.Parameters;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -21,7 +23,6 @@ import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.hough.HoughTransformLines;
-import imagingbook.pub.hough.HoughTransformLines.Parameters;
 import imagingbook.pub.hough.lines.HoughLine;
 
 /** 
@@ -35,7 +36,7 @@ import imagingbook.pub.hough.lines.HoughLine;
  * @version 2018/12/25
  */
 
-public class Find_Straight_Lines implements PlugInFilter {
+public class Find_Straight_Lines2 implements PlugInFilter {
 
 	static int MaxLines = 5;			// number of strongest lines to be found
 	static int MinPointsOnLine = 50;	// min. number of points on each line
@@ -67,7 +68,7 @@ public class Find_Straight_Lines implements PlugInFilter {
 			return; 
 
 		// compute the Hough Transform and retrieve the strongest lines:
-		HoughTransformLines ht = new HoughTransformLines(ip, params);
+		HoughTransformLines2 ht = new HoughTransformLines2(ip, params);
 		HoughLine[] lines = ht.getLines(MinPointsOnLine, MaxLines);
 
 		if (lines.length == 0) {
