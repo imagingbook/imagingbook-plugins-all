@@ -8,6 +8,8 @@
  *******************************************************************************/
 package Fourier_Shape_Descriptors;
 
+import java.util.List;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Overlay;
@@ -19,11 +21,9 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.math.Complex;
 import imagingbook.pub.fd.FourierDescriptor;
 import imagingbook.pub.fd.FourierDescriptorUniform;
+import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.regions.Contour;
 import imagingbook.pub.regions.RegionContourLabeling;
-
-import java.awt.geom.Point2D;
-import java.util.List;
 
 
 /**
@@ -43,7 +43,7 @@ import java.util.List;
  * foreground. Lookup-tables are ignored.
  * 
  * @author W. Burger
- * @version 2013/05/30
+ * @version 2020/04/01
  */
 
 public class Fourier_Descriptor_RegularSampling extends CommonSetup implements PlugInFilter {
@@ -69,7 +69,7 @@ public class Fourier_Descriptor_RegularSampling extends CommonSetup implements P
 			return;
 		}
 		Contour contr = outerContours.get(0);	// select the longest contour
-		Point2D[] V = contr.getPointArray();
+		Point[] V = contr.getPointArray();
 		
 		// create the Fourier descriptor for 'V' with Mp coefficient pairs:
 		int Mp = FourierDescriptorPairs;

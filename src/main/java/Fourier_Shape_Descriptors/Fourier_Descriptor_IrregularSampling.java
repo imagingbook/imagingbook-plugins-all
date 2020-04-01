@@ -8,6 +8,12 @@
  *******************************************************************************/
 package Fourier_Shape_Descriptors;
 
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
+
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.Roi;
@@ -17,12 +23,6 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.math.Complex;
 import imagingbook.pub.fd.FourierDescriptor;
 import imagingbook.pub.fd.FourierDescriptorFromPolygon;
-
-import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This plugin demonstrates the use of the trigonometric method for calculating Fourier
@@ -34,7 +34,7 @@ import java.util.List;
  * array 'fdAB') is calculated.
  * 
  * @author W. Burger
- * @version 2013/05/30
+ * @version 2020/04/01
  */
 
 public class Fourier_Descriptor_IrregularSampling extends Fourier_Descriptor_RegularSampling { //implements PlugInFilter {

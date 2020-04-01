@@ -9,6 +9,14 @@
 
 package Fourier_Shape_Descriptors;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
+import java.util.List;
+import java.util.Locale;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -25,21 +33,16 @@ import imagingbook.pub.fd.Colors;
 import imagingbook.pub.fd.FourierDescriptor;
 import imagingbook.pub.fd.FourierDescriptorUniform;
 import imagingbook.pub.fd.PolygonSampler;
+import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.regions.Contour;
 import imagingbook.pub.regions.RegionContourLabeling;
 import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
-import java.util.List;
-import java.util.Locale;
-
-
-
+/**
+ * @version 2020/04/01
+ * @author WB
+ *
+ */
 public class Private_Ellipse_Superposition_Animation implements PlugInFilter {
 	
 	static int StepsPerFullRevolution = 500;
@@ -115,7 +118,7 @@ public class Private_Ellipse_Superposition_Animation implements PlugInFilter {
 		}
 		
 		Contour contr = outerContours.get(0);	// contour of largest region
-		Point2D[] polygon = new PolygonSampler().samplePolygonUniformly(contr.getPointArray(), NumberOfContourSamples);
+		Point[] polygon = new PolygonSampler().samplePolygonUniformly(contr.getPointArray(), NumberOfContourSamples);
 		FourierDescriptor fd = new FourierDescriptorUniform(polygon);
 		//fd.print();
 		
