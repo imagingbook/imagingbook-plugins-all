@@ -24,17 +24,18 @@ import imagingbook.pub.geometry.basic.Point;
 import java.util.List;
 
 /**
- * This plugin demonstrates the use of the class CombinedContourLabeling
+ * This ImageJ plugin demonstrates the use of the class {@link RegionContourLabeling}
  * to perform both region labeling and contour tracing simultaneously.
  * The resulting contours are displayed as a non-destructive vector overlay.
- * 2010-11-19: initial version.
- * 2012-03-04: updated to use awt.Point2D (instead of Point) class 
+ * 
+ * @author WB
+ * @version 2020/04/01
  */
 public class Region_Contours_Demo implements PlugInFilter {
 	
-	static boolean listRegions = true;
-	static boolean listContourPoints = false;
-	static boolean showContours = true;
+	static boolean ListRegions = true;
+	static boolean ListContourPoints = false;
+	static boolean ShowContours = true;
 	
 	public int setup(String arg, ImagePlus im) { 
 		return DOES_8G + NO_CHANGES; 
@@ -57,17 +58,14 @@ public class Region_Contours_Demo implements PlugInFilter {
 			return;
 		}
 
-		if (listRegions) {
+		if (ListRegions) {
 			IJ.log("Detected regions: " + regions.size());
 			for (BinaryRegion r: regions) {
 				IJ.log(r.toString());
 			}
 		}
-		
-//		List<Contour> outerContours = seg.getOuterContours();
-//		List<Contour> innerContours = seg.getInnerContours();
-		
-		if (listContourPoints) {
+			
+		if (ListContourPoints) {
 			// Get the outer contour of the largest region:
 			BinaryRegion largestRegion = regions.get(0);
 			Contour oc =  largestRegion.getOuterContour();
@@ -85,32 +83,27 @@ public class Region_Contours_Demo implements PlugInFilter {
 		
 		
 		// Display the contours if desired:
-		if (showContours) {
+		if (ShowContours) {
 			ImageProcessor lip = seg.makeLabelImage(false);
 			ImagePlus lim = new ImagePlus("Region labels and contours", lip);
 			Overlay oly = new ContourOverlay(seg);
 			lim.setOverlay(oly);
 			lim.show();
 		}
-		
-//		BinaryRegion r = segmenter.getRegions().get(0);
-//		for (java.awt.Point p : r.getRegionPoints()) {
-//			
-//		}
 	}
 	
 	boolean getUserInput() {
-		GenericDialog gd = new GenericDialog("Contour Tracer");
-		gd.addCheckbox("List regions", listRegions);
-		gd.addCheckbox("List contour points", listContourPoints);
-		gd.addCheckbox("Show contours", showContours);
+		GenericDialog gd = new GenericDialog(Region_Contours_Demo.class.getSimpleName());
+		gd.addCheckbox("List regions", ListRegions);
+		gd.addCheckbox("List contour points", ListContourPoints);
+		gd.addCheckbox("Show contours", ShowContours);
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			return false;
 		}
-		listRegions = gd.getNextBoolean();
-		listContourPoints = gd.getNextBoolean();
-		showContours = gd.getNextBoolean();
+		ListRegions = gd.getNextBoolean();
+		ListContourPoints = gd.getNextBoolean();
+		ShowContours = gd.getNextBoolean();
 		return true;
 	}
 }

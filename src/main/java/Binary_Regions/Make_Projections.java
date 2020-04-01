@@ -13,6 +13,13 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 
+/**
+ * This ImageJ plugin demonstrates the calculation of horizontal and
+ * vertical projections on a grayscale image.
+ * 
+ * @author WB
+ *
+ */
 public class Make_Projections implements PlugInFilter {
 	
 	static boolean verbose = true;
@@ -21,11 +28,9 @@ public class Make_Projections implements PlugInFilter {
 	static final int BACKGROUND = 255;
 	
 	ImagePlus origImage = null;
-//	String origTitle = null;
 	
 	public int setup(String arg, ImagePlus im) { 
 		origImage = im;
-//		origTitle = im.getTitle();
 		return DOES_8G + NO_CHANGES; 
 	}
 	

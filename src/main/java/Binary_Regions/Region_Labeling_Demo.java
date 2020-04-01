@@ -29,13 +29,19 @@ import imagingbook.pub.regions.SequentialLabeling;
 
 /**
  * This ImageJ plugin is an example for how to use the region
- * labeling classes in the "regions" package.
- * One of four labeling types can be selected (see run() method).
- * They should all return the same result.
- * 2009-11-15: Cleanup, added mu_11() example.
- * 2010-11-19: Added user dialog, selection menu, combined region+contour 
- * segmenter.
-*/
+ * labeling classes in the "regions" package:
+ * {@link BreadthFirstLabeling},
+ * {@link DepthFirstLabeling},
+ * {@link RecursiveLabeling},
+ * {@link SequentialLabeling},
+ * {@link RegionContourLabeling}.
+ * One of four labeling types can be selected (see the {@code run()} method).
+ * All should produce the same results.
+ * 
+ * @author WB
+ * @version 2020/04/01
+ * 
+ */
 public class Region_Labeling_Demo implements PlugInFilter {
 	
 	public enum LabelingMethod {
@@ -53,6 +59,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
     public void run(ImageProcessor ip) {
     	if (!getUserInput())
     		return;
+    	
     	if (method == LabelingMethod.Recursive && 
     			!IJ.showMessageWithCancel("Recursive labeling", "This may run out of stack memory!\n" + "Continue?")) {
 			return;
@@ -61,7 +68,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	// Copy the original to a new byte image:
     	ByteProcessor bp = ip.convertToByteProcessor(false);
     
-		// Select one of 4 different labeling methods:
+		// Select a labeling method:
 		RegionLabeling segmenter = null;
 		switch (method) {
 			case BreadthFirst:		segmenter = new BreadthFirstLabeling(bp); break;
@@ -91,8 +98,26 @@ public class Region_Labeling_Demo implements PlugInFilter {
 		}
     }
     
+	/**
+	 * This method demonstrates how a particular region's central moment
+     * mu_11 could be calculated from the finished region labeling.
+	 * @param r a binary region
+	 * @return
+	 */
+    double mu_11 (BinaryRegion r) {
+    	Point ctr = r.getCenterPoint();
+    	final double xc = ctr.getX();	// centroid of this region
+    	final double yc = ctr.getY();
+    	double mu11 = 0;
+    	// iterate through all pixels of regions r:
+    	for (Point p : r) {
+    		mu11 = mu11 + (p.getX() - xc) * (p.getY() - yc);
+    	}
+    	return mu11;
+    }
+    
 	boolean getUserInput() {
-		GenericDialog gd = new GenericDialog("Binary Region Labeling");
+		GenericDialog gd = new GenericDialog(Region_Labeling_Demo.class.getSimpleName());
 		String[] mNames = Enums.getEnumNames(LabelingMethod.class);
 		gd.addChoice("Labeling method", mNames, mNames[0]);
 		gd.addCheckbox("Color result", recolor);
@@ -107,22 +132,6 @@ public class Region_Labeling_Demo implements PlugInFilter {
 		return true;
 	}
     
-    /*
-     * This method demonstrates how a particular region's central moment
-     * mu_11 could be calculated from the finished region labeling.
-     */
-    double mu_11 (BinaryRegion r) {
-    	Point ctr = r.getCenterPoint();
-    	final double xc = ctr.getX();	// centroid of this region
-    	final double yc = ctr.getY();
-    	double mu11 = 0;					// moment
-    	
-    	// iterate through all pixels of regions r:
-    	for (Point p : r) {
-    		mu11 = mu11 + (p.getX() - xc) * (p.getY() - yc);
-    	}
-    	return mu11;
-    }
     
 }
 
