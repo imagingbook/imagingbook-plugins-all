@@ -8,6 +8,9 @@
  *******************************************************************************/
 package Binary_Regions;
 
+
+import java.util.List;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -15,6 +18,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.util.Enums;
+import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.regions.BreadthFirstLabeling;
 import imagingbook.pub.regions.DepthFirstLabeling;
 import imagingbook.pub.regions.RecursiveLabeling;
@@ -22,10 +26,6 @@ import imagingbook.pub.regions.RegionContourLabeling;
 import imagingbook.pub.regions.RegionLabeling;
 import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
 import imagingbook.pub.regions.SequentialLabeling;
-
-import java.awt.Point;
-import java.awt.geom.Point2D;
-import java.util.List;
 
 /**
  * This ImageJ plugin is an example for how to use the region
@@ -112,14 +112,14 @@ public class Region_Labeling_Demo implements PlugInFilter {
      * mu_11 could be calculated from the finished region labeling.
      */
     double mu_11 (BinaryRegion r) {
-    	Point2D ctr = r.getCenterPoint();
+    	Point ctr = r.getCenterPoint();
     	final double xc = ctr.getX();	// centroid of this region
     	final double yc = ctr.getY();
     	double mu11 = 0;					// moment
     	
     	// iterate through all pixels of regions r:
     	for (Point p : r) {
-    		mu11 = mu11 + (p.x - xc) * (p.y - yc);
+    		mu11 = mu11 + (p.getX() - xc) * (p.getY() - yc);
     	}
     	return mu11;
     }

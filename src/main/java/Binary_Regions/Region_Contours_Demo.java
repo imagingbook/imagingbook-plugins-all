@@ -20,7 +20,7 @@ import imagingbook.pub.regions.ContourOverlay;
 import imagingbook.pub.regions.RegionContourLabeling;
 import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
 
-import java.awt.geom.Point2D;
+import imagingbook.pub.geometry.basic.Point;
 import java.util.List;
 
 /**
@@ -72,9 +72,9 @@ public class Region_Contours_Demo implements PlugInFilter {
 			BinaryRegion largestRegion = regions.get(0);
 			Contour oc =  largestRegion.getOuterContour();
 			IJ.log("Points along outer contour of largest region:");
-			Point2D[] points = oc.getPointArray();
+			Point[] points = oc.getPointArray();
 			for (int i = 0; i < points.length; i++) {
-				Point2D p = points[i];
+				Point p = points[i];
 				IJ.log("Point " + i + ": " + p.toString());
 			}
 			
