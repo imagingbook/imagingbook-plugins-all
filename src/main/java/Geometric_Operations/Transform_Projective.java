@@ -17,6 +17,19 @@ import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 
+/**
+ * This plugin demonstrates the use of geometric mappings, as implemented
+ * in the imagingbook library.
+ * A {@link ProjectiveMapping} (transformation) is specified by 4 corresponding point
+ * pairs, given by P and Q.
+ * The mapping defines the target-to-source transformation.
+ * The actual pixel transformation is performed by an {@link ImageMapper} object.
+ * Try on the "bridge" test image and check if the image corners (P) are
+ * mapped to the points specified in Q.
+ * 
+ * @author WB
+ *
+ */
 public class Transform_Projective implements PlugInFilter {
 
     public int setup(String arg, ImagePlus imp) {
@@ -39,7 +52,12 @@ public class Transform_Projective implements PlugInFilter {
 			 Point.create(30, 200)
     	};
     	
-		Mapping2D imap = ProjectiveMapping2D.fromPoints(P, Q).getInverse();
+		// We need the target-to source mapping, i.e. Q -> P. There are 2 alternatives:
+		Mapping2D imap = ProjectiveMapping2D.fromPoints(P, Q).getInverse();		// P -> Q, then invert
+		//Mapping2D imap = ProjectiveMapping2D.fromPoints(Q, P);		// Q -> P = inverse mapping
+
+		
+		// Now we apply the geometric mapping to the input image:
 		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
 		mapper.map(ip);
 	}
