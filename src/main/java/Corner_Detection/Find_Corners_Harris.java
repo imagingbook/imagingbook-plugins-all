@@ -94,11 +94,19 @@ public class Find_Corners_Harris implements PlugInFilter {
 		ip.setColor(cornerColor);
 		int n = 0;
 		for (Corner c : corners) {
-			c.draw(ip, cornerSize);
+			drawCorner(c, ip, cornerSize);
 			n = n + 1;
 			if (nmax > 0 && n >= nmax)
 				break;
 		}
+	}
+	
+	// Moved from class 'corner'
+	private void drawCorner(Corner c, ImageProcessor ip, int size) {
+		int x = (int) Math.round(c.getX());
+		int y = (int) Math.round(c.getY());
+		ip.drawLine(x - size, y, x + size, y);
+		ip.drawLine(x, y - size, x, y + size);
 	}
 	
 	// Brightens the image ip. May not work with ShortProcessor and FloatProcessor
