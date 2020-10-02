@@ -14,13 +14,17 @@ import java.util.List;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
+import ij.gui.Overlay;
 import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.util.Enums;
 import imagingbook.pub.corners.AbstractGradientCornerDetector;
+import imagingbook.pub.corners.AbstractGradientCornerDetector.Parameters.SubpixelMethod;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.HarrisCornerDetector;
+import imagingbook.pub.corners.utils.CornerOverlay;
+
 
 /**
  * This plugin demonstrates the use of the Harris corner detector
@@ -44,10 +48,11 @@ public class Find_Corners_Harris implements PlugInFilter {
 
     public int setup(String arg, ImagePlus im) {
     	this.im = im;
-        return DOES_ALL + NO_CHANGES;
+        return DOES_ALL;
     }
     
     public void run(ImageProcessor ip) {
+    	
     	HarrisCornerDetector.Parameters params = new HarrisCornerDetector.Parameters();
 		if (!showDialog(params)) {
 			return;
@@ -55,10 +60,11 @@ public class Find_Corners_Harris implements PlugInFilter {
 		
 		AbstractGradientCornerDetector cd = new HarrisCornerDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
+		//Overlay oly = makeOverlay(corners);
 		
-		ColorProcessor R = ip.convertToColorProcessor();
-		drawCorners(R, corners);
-		(new ImagePlus("Harris Corners from " + im.getShortTitle(), R)).show();
+		Overlay oly = new CornerOverlay(corners);
+
+		im.setOverlay(oly);
     }
     
 	private boolean showDialog(HarrisCornerDetector.Parameters params) {
@@ -70,6 +76,7 @@ public class Find_Corners_Harris implements PlugInFilter {
 		dlg.addNumericField("Border distance", params.border, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
 		dlg.addNumericField("Minimum corner distance", params.dmin, 0);
+		dlg.addChoice("Subpixel localization", Enums.getEnumNames(SubpixelMethod.class), SubpixelMethod.None.name());
 		dlg.addNumericField("Corners to show (0 = show all)", nmax, 0);
 		dlg.showDialog();
 		if(dlg.wasCanceled())
@@ -80,6 +87,7 @@ public class Find_Corners_Harris implements PlugInFilter {
 		params.border = (int) dlg.getNextNumber();
 		params.doCleanUp = dlg.getNextBoolean();
 		params.dmin = (int) dlg.getNextNumber();
+		params.subpixel = SubpixelMethod.valueOf(dlg.getNextChoice());
 		nmax = (int) dlg.getNextNumber();
 		if(dlg.invalidNumber()) {
 			IJ.error("Input Error", "Invalid input number");
@@ -89,6 +97,13 @@ public class Find_Corners_Harris implements PlugInFilter {
 	}
 	
 	//-------------------------------------------------------------------
+	
+	private void listCorners(List<Corner> corners) {
+		IJ.log(this.getClass().getSimpleName() + " - corners found: " + corners.size());
+		for (Corner c : corners) {
+			IJ.log(c.toString());
+		}
+	}
 	
 	private void drawCorners(ImageProcessor ip, List<Corner> corners) {
 		ip.setColor(cornerColor);
