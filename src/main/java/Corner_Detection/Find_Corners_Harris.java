@@ -14,25 +14,25 @@ import java.util.List;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
-import ij.gui.Overlay;
 import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.corners.AbstractGradientCornerDetector;
-import imagingbook.pub.corners.AbstractGradientCornerDetector.Parameters.SubpixelMethod;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.HarrisCornerDetector;
+import imagingbook.pub.corners.subpixel.PolynomialInterpolator2D.SubpixelMethod;
 import imagingbook.pub.corners.utils.CornerOverlay;
 
 
 /**
  * This plugin demonstrates the use of the Harris corner detector
  * (see {@link HarrisCornerDetector}).
- * It calculates the corner positions and marks them in a
- * new color image.
+ * It calculates the corner positions and shows them as a vector overlas
+ * on top of the source image.
  * 
- * @version 2020/02/25
+ * @author WB
+ * @version 2020/10/03
  */
 public class Find_Corners_Harris implements PlugInFilter {
 	
@@ -41,7 +41,7 @@ public class Find_Corners_Harris implements PlugInFilter {
 	}
 	
 	static int nmax = 0;						// number of corners to show
-	static int cornerSize = 2;					// size of cross-markers
+	static double cornerSize = 2;				// size of cross-markers
 	static Color cornerColor = Color.green;		// color of cross markers
 	
 	ImagePlus im;
@@ -60,68 +60,64 @@ public class Find_Corners_Harris implements PlugInFilter {
 		
 		AbstractGradientCornerDetector cd = new HarrisCornerDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
-		//Overlay oly = makeOverlay(corners);
 		
-		Overlay oly = new CornerOverlay(corners);
+		CornerOverlay oly = new CornerOverlay();
+		oly.setMarkerSize(cornerSize);
+		oly.strokeColor(cornerColor);
+		oly.strokeWidth(0.2);
+		oly.add(corners);
 
 		im.setOverlay(oly);
     }
     
 	private boolean showDialog(HarrisCornerDetector.Parameters params) {
-		// display dialog , return false if canceled or on error.
+		// display dialog , return false if cancelled or on error.
 		GenericDialog dlg = new GenericDialog("Harris Corner Detector");
 		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
 		dlg.addNumericField("Sensitivity (\u03B1)", params.alpha, 3);
 		dlg.addNumericField("Corner response threshold (th)", params.tH, 0);
+		dlg.addChoice("Subpixel localization", 
+				Enums.getEnumNames(SubpixelMethod.class), params.subpixel.name()); // SubpixelMethod.None.name()
+		// -----------
 		dlg.addNumericField("Border distance", params.border, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
 		dlg.addNumericField("Minimum corner distance", params.dmin, 0);
-		dlg.addChoice("Subpixel localization", Enums.getEnumNames(SubpixelMethod.class), SubpixelMethod.None.name());
+		
 		dlg.addNumericField("Corners to show (0 = show all)", nmax, 0);
+		dlg.addNumericField("Corner display size", cornerSize, 1);
+		
 		dlg.showDialog();
 		if(dlg.wasCanceled())
 			return false;
+		
 		params.sigma = Math.max(0.5, dlg.getNextNumber());
 		params.alpha = Math.max(0, dlg.getNextNumber());
 		params.tH = dlg.getNextNumber();
+		params.subpixel = SubpixelMethod.valueOf(dlg.getNextChoice());
+		// -----------
 		params.border = (int) dlg.getNextNumber();
 		params.doCleanUp = dlg.getNextBoolean();
 		params.dmin = (int) dlg.getNextNumber();
-		params.subpixel = SubpixelMethod.valueOf(dlg.getNextChoice());
+		
 		nmax = (int) dlg.getNextNumber();
+		cornerSize = dlg.getNextNumber();
+		
 		if(dlg.invalidNumber()) {
 			IJ.error("Input Error", "Invalid input number");
 			return false;
-		}	
+		}
+		
 		return true;
 	}
 	
 	//-------------------------------------------------------------------
 	
+	@SuppressWarnings("unused")
 	private void listCorners(List<Corner> corners) {
 		IJ.log(this.getClass().getSimpleName() + " - corners found: " + corners.size());
 		for (Corner c : corners) {
 			IJ.log(c.toString());
 		}
-	}
-	
-	private void drawCorners(ImageProcessor ip, List<Corner> corners) {
-		ip.setColor(cornerColor);
-		int n = 0;
-		for (Corner c : corners) {
-			drawCorner(c, ip, cornerSize);
-			n = n + 1;
-			if (nmax > 0 && n >= nmax)
-				break;
-		}
-	}
-	
-	// Moved from class 'corner'
-	private void drawCorner(Corner c, ImageProcessor ip, int size) {
-		int x = (int) Math.round(c.getX());
-		int y = (int) Math.round(c.getY());
-		ip.drawLine(x - size, y, x + size, y);
-		ip.drawLine(x, y - size, x, y + size);
 	}
 	
 	// Brightens the image ip. May not work with ShortProcessor and FloatProcessor
