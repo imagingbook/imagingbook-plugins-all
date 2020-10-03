@@ -14,46 +14,37 @@ import java.util.List;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
-import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
+import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.corners.AbstractGradientCornerDetector;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.ShiTomasiDetector;
 import imagingbook.pub.corners.subpixel.MaxLocator.Method;
-import imagingbook.pub.corners.utils.CornerOverlay;
-
 
 /**
  * This plugin demonstrates the use of the Shi-Tomasi corner detector
  * (see {@link ShiTomasiDetector}).
- * It calculates the corner positions and shows them as a vector overlay
- * on top of the source image.
+ * It calculates the corner positions and marks them in a
+ * new color image.
  * 
- * @author WB
- * @version 2020/10/03
+ * @version 2020/02/25
  */
-public class Find_Corners_ShiTomasi implements PlugInFilter {
+public class Find_Corners_ShiTomasi_old implements PlugInFilter {
 	
-	static {
-		LogStream.redirectSystem();
-	}
-	
-	static int nmax = 0;						// number of corners to show (0 = all)
-	static double CornerSize = 2;				// size of cross-markers
-	static Color CornerColor = Color.green;		// color of cross markers
-	static double CornerStrokeWidth = 0.2;
+	static int nmax = 0;						// number of corners to show  (0 = all)
+	static double cornerSize = 2;				// size of cross-markers
+	static Color cornerColor = Color.green;		// color of cross markers
 	
 	ImagePlus im;
 
     public int setup(String arg, ImagePlus im) {
     	this.im = im;
-        return DOES_ALL;
+        return DOES_ALL + NO_CHANGES;
     }
     
     public void run(ImageProcessor ip) {
-    	
     	ShiTomasiDetector.Parameters params = new ShiTomasiDetector.Parameters();
 		if (!showDialog(params)) {
 			return;
@@ -62,61 +53,59 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
 		AbstractGradientCornerDetector cd = new ShiTomasiDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
 		
-		CornerOverlay oly = new CornerOverlay();
-		oly.setMarkerSize(CornerSize);
-		oly.strokeColor(CornerColor);
-		oly.strokeWidth(CornerStrokeWidth);
-		oly.add(corners);
-
-		im.setOverlay(oly);
+		ColorProcessor R = ip.convertToColorProcessor();
+		drawCorners(R, corners);
+		(new ImagePlus("Shi-Tomasi Corners from " + im.getShortTitle(), R)).show();
     }
     
 	private boolean showDialog(ShiTomasiDetector.Parameters params) {
-		// display dialog , return false if cancelled or on error.
 		GenericDialog dlg = new GenericDialog("Harris Corner Detector");
-		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
 		dlg.addNumericField("Corner response threshold (th)", params.tH, 0);
 		dlg.addChoice("Subpixel localization", 
 				Enums.getEnumNames(Method.class), params.maxLocatorMethod.name()); // SubpixelMethod.None.name()
 		// -----------
-		dlg.addNumericField("Border distance", params.border, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
-		dlg.addNumericField("Minimum corner distance", params.dmin, 0);
 		
 		dlg.addNumericField("Corners to show (0 = show all)", nmax, 0);
-		dlg.addNumericField("Corner display size", CornerSize, 1);
+		dlg.addNumericField("Corner display size", cornerSize, 1);
 		
 		dlg.showDialog();
 		if(dlg.wasCanceled())
 			return false;
 		
-		params.sigma = Math.max(0.5, dlg.getNextNumber());
 		params.tH = dlg.getNextNumber();
 		params.maxLocatorMethod = Method.valueOf(dlg.getNextChoice());
-		// -----------
-		params.border = (int) dlg.getNextNumber();
-		params.doCleanUp = dlg.getNextBoolean();
-		params.dmin = (int) dlg.getNextNumber();
 		
+		params.doCleanUp = dlg.getNextBoolean();
 		nmax = (int) dlg.getNextNumber();
-		CornerSize = dlg.getNextNumber();
+		cornerSize = dlg.getNextNumber();
 		
 		if(dlg.invalidNumber()) {
 			IJ.error("Input Error", "Invalid input number");
 			return false;
-		}
-		
+		}	
 		return true;
 	}
 	
 	//-------------------------------------------------------------------
 	
-	@SuppressWarnings("unused")
-	private void listCorners(List<Corner> corners) {
-		IJ.log(this.getClass().getSimpleName() + " - corners found: " + corners.size());
+	private void drawCorners(ImageProcessor ip, List<Corner> corners) {
+		ip.setColor(cornerColor);
+		int n = 0;
 		for (Corner c : corners) {
-			IJ.log(c.toString());
+//			drawCorner(c, ip, cornerSize);
+			n = n + 1;
+			if (nmax > 0 && n >= nmax)
+				break;
 		}
+	}
+	
+	// Moved from class 'corner'
+	private void drawCorner(Corner c, ImageProcessor ip, int size) {
+		int x = (int) Math.round(c.getX());
+		int y = (int) Math.round(c.getY());
+		ip.drawLine(x - size, y, x + size, y);
+		ip.drawLine(x, y - size, x, y + size);
 	}
 	
 	// Brightens the image ip. May not work with ShortProcessor and FloatProcessor
@@ -128,5 +117,5 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
 		}
 		ip.applyTable(lookupTable); 
 	}
-
+	
 }

@@ -21,14 +21,14 @@ import imagingbook.lib.util.Enums;
 import imagingbook.pub.corners.AbstractGradientCornerDetector;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.HarrisCornerDetector;
-import imagingbook.pub.corners.subpixel.PolynomialInterpolator2D.SubpixelMethod;
+import imagingbook.pub.corners.subpixel.MaxLocator.Method;
 import imagingbook.pub.corners.utils.CornerOverlay;
 
 
 /**
  * This plugin demonstrates the use of the Harris corner detector
  * (see {@link HarrisCornerDetector}).
- * It calculates the corner positions and shows them as a vector overlas
+ * It calculates the corner positions and shows them as a vector overlay
  * on top of the source image.
  * 
  * @author WB
@@ -40,9 +40,10 @@ public class Find_Corners_Harris implements PlugInFilter {
 		LogStream.redirectSystem();
 	}
 	
-	static int nmax = 0;						// number of corners to show
-	static double cornerSize = 2;				// size of cross-markers
-	static Color cornerColor = Color.green;		// color of cross markers
+	static int nmax = 0;						// number of corners to show (0 = all)
+	static double CornerSize = 2;				// size of cross-markers
+	static Color CornerColor = Color.green;		// color of cross markers
+	static double CornerStrokeWidth = 0.2;
 	
 	ImagePlus im;
 
@@ -62,9 +63,9 @@ public class Find_Corners_Harris implements PlugInFilter {
 		List<Corner> corners = cd.getCorners();
 		
 		CornerOverlay oly = new CornerOverlay();
-		oly.setMarkerSize(cornerSize);
-		oly.strokeColor(cornerColor);
-		oly.strokeWidth(0.2);
+		oly.setMarkerSize(CornerSize);
+		oly.strokeColor(CornerColor);
+		oly.strokeWidth(CornerStrokeWidth);
 		oly.add(corners);
 
 		im.setOverlay(oly);
@@ -77,14 +78,14 @@ public class Find_Corners_Harris implements PlugInFilter {
 		dlg.addNumericField("Sensitivity (\u03B1)", params.alpha, 3);
 		dlg.addNumericField("Corner response threshold (th)", params.tH, 0);
 		dlg.addChoice("Subpixel localization", 
-				Enums.getEnumNames(SubpixelMethod.class), params.subpixel.name()); // SubpixelMethod.None.name()
+				Enums.getEnumNames(Method.class), params.maxLocatorMethod.name()); // SubpixelMethod.None.name()
 		// -----------
 		dlg.addNumericField("Border distance", params.border, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
 		dlg.addNumericField("Minimum corner distance", params.dmin, 0);
 		
 		dlg.addNumericField("Corners to show (0 = show all)", nmax, 0);
-		dlg.addNumericField("Corner display size", cornerSize, 1);
+		dlg.addNumericField("Corner display size", CornerSize, 1);
 		
 		dlg.showDialog();
 		if(dlg.wasCanceled())
@@ -93,14 +94,14 @@ public class Find_Corners_Harris implements PlugInFilter {
 		params.sigma = Math.max(0.5, dlg.getNextNumber());
 		params.alpha = Math.max(0, dlg.getNextNumber());
 		params.tH = dlg.getNextNumber();
-		params.subpixel = SubpixelMethod.valueOf(dlg.getNextChoice());
+		params.maxLocatorMethod = Method.valueOf(dlg.getNextChoice());
 		// -----------
 		params.border = (int) dlg.getNextNumber();
 		params.doCleanUp = dlg.getNextBoolean();
 		params.dmin = (int) dlg.getNextNumber();
 		
 		nmax = (int) dlg.getNextNumber();
-		cornerSize = dlg.getNextNumber();
+		CornerSize = dlg.getNextNumber();
 		
 		if(dlg.invalidNumber()) {
 			IJ.error("Input Error", "Invalid input number");
