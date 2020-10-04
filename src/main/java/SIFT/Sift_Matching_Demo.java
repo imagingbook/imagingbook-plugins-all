@@ -111,6 +111,7 @@ public class Sift_Matching_Demo implements PlugInFilter {
 		int xoffset = w;
 
 		// draw the matched SIFT markers:
+		// TODO: convert to CustomOverlay !
 		int count = 1;
 		for (SiftMatch m : matches) {
 			SiftDescriptor dA = m.getDescriptor1();
