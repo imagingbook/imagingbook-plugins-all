@@ -8,22 +8,19 @@
  *******************************************************************************/
 package Corner_Detection;
 
-import java.awt.Color;
 import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
-import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.util.Enums;
-import imagingbook.pub.corners.AbstractGradientCornerDetector;
 import imagingbook.pub.corners.Corner;
+import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.ShiTomasiDetector;
 import imagingbook.pub.corners.subpixel.MaxLocator.Method;
-import imagingbook.pub.corners.utils.CornerOverlay;
-
+import imagingbook.pub.corners.util.CornerOverlay;
 
 /**
  * This plugin demonstrates the use of the Shi-Tomasi corner detector
@@ -31,21 +28,16 @@ import imagingbook.pub.corners.utils.CornerOverlay;
  * It calculates the corner positions and shows them as a vector overlay
  * on top of the source image.
  * 
+ * @see Find_Corners_Harris
  * @author WB
- * @version 2020/10/03
+ * @version 2020/10/04
  */
 public class Find_Corners_ShiTomasi implements PlugInFilter {
 	
-	static {
-		LogStream.redirectSystem();
-	}
+	private static int Nmax = 0;	// number of corners to show (0 = all)
 	
-	static int nmax = 0;						// number of corners to show (0 = all)
-	static double CornerSize = 2;				// size of cross-markers
-	static Color CornerColor = Color.green;		// color of cross markers
-	static double CornerStrokeWidth = 0.2;
-	
-	ImagePlus im;
+	private ImagePlus im;
+	private ShiTomasiDetector.Parameters params;
 
     public int setup(String arg, ImagePlus im) {
     	this.im = im;
@@ -54,26 +46,23 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
     
     public void run(ImageProcessor ip) {
     	
-    	ShiTomasiDetector.Parameters params = new ShiTomasiDetector.Parameters();
-		if (!showDialog(params)) {
+    	params = new ShiTomasiDetector.Parameters();
+		if (!showDialog()) {
 			return;
 		}
 		
-		AbstractGradientCornerDetector cd = new ShiTomasiDetector(ip, params);
+		GradientCornerDetector cd = new ShiTomasiDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
 		
+		// create a vector overlay to mark the resulting corners
 		CornerOverlay oly = new CornerOverlay();
-		oly.setMarkerSize(CornerSize);
-		oly.strokeColor(CornerColor);
-		oly.strokeWidth(CornerStrokeWidth);
-		oly.add(corners);
-
+		oly.addItems(corners);
 		im.setOverlay(oly);
     }
     
-	private boolean showDialog(ShiTomasiDetector.Parameters params) {
+	private boolean showDialog() {
 		// display dialog , return false if cancelled or on error.
-		GenericDialog dlg = new GenericDialog("Harris Corner Detector");
+		GenericDialog dlg = new GenericDialog("Shi-Tomasi Corner Detector");
 		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
 		dlg.addNumericField("Corner response threshold (th)", params.tH, 0);
 		dlg.addChoice("Subpixel localization", 
@@ -83,8 +72,7 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
 		dlg.addNumericField("Minimum corner distance", params.dmin, 0);
 		
-		dlg.addNumericField("Corners to show (0 = show all)", nmax, 0);
-		dlg.addNumericField("Corner display size", CornerSize, 1);
+		dlg.addNumericField("Corners to show (0 = show all)", Nmax, 0);
 		
 		dlg.showDialog();
 		if(dlg.wasCanceled())
@@ -98,14 +86,12 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
 		params.doCleanUp = dlg.getNextBoolean();
 		params.dmin = (int) dlg.getNextNumber();
 		
-		nmax = (int) dlg.getNextNumber();
-		CornerSize = dlg.getNextNumber();
+		Nmax = (int) dlg.getNextNumber();
 		
 		if(dlg.invalidNumber()) {
 			IJ.error("Input Error", "Invalid input number");
 			return false;
-		}
-		
+		}	
 		return true;
 	}
 	
