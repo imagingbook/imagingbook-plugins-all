@@ -8,11 +8,13 @@
  *******************************************************************************/
 package Corner_Detection;
 
+import java.awt.Color;
 import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
+import ij.gui.Overlay;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.util.Enums;
@@ -56,8 +58,18 @@ public class Find_Corners_Harris implements PlugInFilter {
 		
 		// create a vector overlay to mark the resulting corners
 		CornerOverlay oly = new CornerOverlay();
+		oly.strokeColor(Color.red);
 		oly.addItems(corners);
-		im.setOverlay(oly);
+		
+		Overlay olyOld = im.getOverlay();
+		if (olyOld != null) {
+			// add corners to existing overlay
+			oly.addToOverlay(olyOld);
+		}
+		else {
+			// otherwise set to the new overlay
+			im.setOverlay(oly);
+		}
 		
 		// (new ImagePlus("Harris Corner Score", cd.getQ())).show();
     }
