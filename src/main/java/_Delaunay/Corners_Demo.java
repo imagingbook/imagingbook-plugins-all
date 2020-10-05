@@ -70,14 +70,14 @@ public class Corners_Demo implements PlugInFilter {
 		// display dialog , return false if canceled or on error.
 		GenericDialog dlg = new GenericDialog("Harris Corner Detector");
 		dlg.addNumericField("Alpha", params.alpha, 3);
-		dlg.addNumericField("Threshold", params.tH, 0);
+		dlg.addNumericField("Threshold", params.scoreThreshold, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
 		dlg.addNumericField("Corners to show (0 = show all)", CornerCount, 0);
 		dlg.showDialog();
 		if(dlg.wasCanceled())
 			return false;	
 		params.alpha = dlg.getNextNumber();
-		params.tH = (int) dlg.getNextNumber();
+		params.scoreThreshold = (int) dlg.getNextNumber();
 		params.doCleanUp = dlg.getNextBoolean();
 		CornerCount = (int) dlg.getNextNumber();
 		if(dlg.invalidNumber()) {

@@ -58,14 +58,18 @@ public class Find_Corners_Harris implements PlugInFilter {
 		CornerOverlay oly = new CornerOverlay();
 		oly.addItems(corners);
 		im.setOverlay(oly);
+		
+		// (new ImagePlus("Harris Corner Score", cd.getQ())).show();
     }
     
 	private boolean showDialog() {
 		// display dialog , return false if cancelled or on error.
 		GenericDialog dlg = new GenericDialog("Harris Corner Detector");
+		
+		dlg.addCheckbox("Apply pre-filter", params.doPreFilter);
 		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
 		dlg.addNumericField("Sensitivity (\u03B1)", params.alpha, 3);
-		dlg.addNumericField("Corner response threshold (th)", params.tH, 0);
+		dlg.addNumericField("Corner response threshold (th)", params.scoreThreshold, 0);
 		dlg.addChoice("Subpixel localization", 
 				Enums.getEnumNames(Method.class), params.maxLocatorMethod.name()); // SubpixelMethod.None.name()
 		// -----------
@@ -79,9 +83,10 @@ public class Find_Corners_Harris implements PlugInFilter {
 		if(dlg.wasCanceled())
 			return false;
 		
-		params.sigma = Math.max(0.5, dlg.getNextNumber());
-		params.alpha = Math.max(0, dlg.getNextNumber());
-		params.tH = dlg.getNextNumber();
+		params.doPreFilter = dlg.getNextBoolean();
+		params.sigma = Math.max(0.5, dlg.getNextNumber()); 	// min 0.5
+		params.alpha = Math.max(0, dlg.getNextNumber());	// min 0
+		params.scoreThreshold = dlg.getNextNumber();
 		params.maxLocatorMethod = Method.valueOf(dlg.getNextChoice());
 		// -----------
 		params.border = (int) dlg.getNextNumber();

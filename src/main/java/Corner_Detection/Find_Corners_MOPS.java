@@ -18,13 +18,14 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
-import imagingbook.pub.corners.ShiTomasiDetector;
+import imagingbook.pub.corners.MopsCornerDetector;
+import imagingbook.pub.corners.MopsCornerDetector.Parameters;
 import imagingbook.pub.corners.subpixel.MaxLocator.Method;
 import imagingbook.pub.corners.util.CornerOverlay;
 
 /**
- * This plugin demonstrates the use of the Shi-Tomasi corner detector
- * (see {@link ShiTomasiDetector}).
+ * This plugin demonstrates the use of the MOPS corner detector
+ * (see {@link MopsCornerDetector}).
  * It calculates the corner positions and shows them as a vector overlay
  * on top of the source image.
  * 
@@ -32,12 +33,12 @@ import imagingbook.pub.corners.util.CornerOverlay;
  * @author WB
  * @version 2020/10/04
  */
-public class Find_Corners_ShiTomasi implements PlugInFilter {
+public class Find_Corners_MOPS implements PlugInFilter {
 	
 	private static int Nmax = 0;	// number of corners to show (0 = all)
 	
 	private ImagePlus im;
-	private ShiTomasiDetector.Parameters params;
+	private Parameters params;
 
     public int setup(String arg, ImagePlus im) {
     	this.im = im;
@@ -46,12 +47,12 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
     
     public void run(ImageProcessor ip) {
     	
-    	params = new ShiTomasiDetector.Parameters();
+    	params = new MopsCornerDetector.Parameters();
 		if (!showDialog()) {
 			return;
 		}
 		
-		GradientCornerDetector cd = new ShiTomasiDetector(ip, params);
+		GradientCornerDetector cd = new MopsCornerDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
 		
 		// create a vector overlay to mark the resulting corners
@@ -59,12 +60,12 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
 		oly.addItems(corners);
 		im.setOverlay(oly);
 		
-		// (new ImagePlus("Shi-Tomasi Corner Score", cd.getQ())).show();
+		// (new ImagePlus("MOPS Corner Score", cd.getQ())).show();
     }
     
 	private boolean showDialog() {
 		// display dialog , return false if cancelled or on error.
-		GenericDialog dlg = new GenericDialog("Shi-Tomasi Corner Detector");
+		GenericDialog dlg = new GenericDialog("MOPS Corner Detector");
 		
 		dlg.addCheckbox("Apply pre-filter", params.doPreFilter);
 		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
@@ -99,5 +100,5 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
 		}	
 		return true;
 	}
-	
+
 }
