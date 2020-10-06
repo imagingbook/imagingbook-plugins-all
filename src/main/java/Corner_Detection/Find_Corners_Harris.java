@@ -14,7 +14,6 @@ import java.util.List;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
-import ij.gui.Overlay;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.util.Enums;
@@ -30,7 +29,9 @@ import imagingbook.pub.corners.util.CornerOverlay;
  * It calculates the corner positions and shows them as a vector overlay
  * on top of the source image.
  * 
+ * @see Find_Corners_MOPS
  * @see Find_Corners_ShiTomasi
+ * 
  * @author WB
  * @version 2020/10/03
  */
@@ -61,15 +62,7 @@ public class Find_Corners_Harris implements PlugInFilter {
 		oly.strokeColor(Color.red);
 		oly.addItems(corners);
 		
-		Overlay olyOld = im.getOverlay();
-		if (olyOld != null) {
-			// add corners to existing overlay
-			oly.addToOverlay(olyOld);
-		}
-		else {
-			// otherwise set to the new overlay
-			im.setOverlay(oly);
-		}
+		im.setOverlay(oly);
 		
 		// (new ImagePlus("Harris Corner Score", cd.getQ())).show();
     }

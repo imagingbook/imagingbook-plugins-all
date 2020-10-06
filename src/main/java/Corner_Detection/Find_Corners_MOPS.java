@@ -30,6 +30,8 @@ import imagingbook.pub.corners.util.CornerOverlay;
  * on top of the source image.
  * 
  * @see Find_Corners_Harris
+ * @see Find_Corners_ShiTomasi
+ * 
  * @author WB
  * @version 2020/10/04
  */
