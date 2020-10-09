@@ -1,13 +1,13 @@
-package Corner_Detection;
+package Tools;
 
 import java.awt.Rectangle;
 
-import Corner_Detection.lib.Util;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.Roi;
 import ij.plugin.PlugIn;
+import imagingbook.lib.ij.GuiTools;
 
 
 /**
@@ -55,7 +55,7 @@ public class Zoom_To_Selection implements PlugIn {
 		double ymag = (double) im.getHeight() / bounds.height;	
 		double mag =  Math.min(xmag, ymag);
 		
-		Rectangle srcRect = Util.setView(im, mag, bounds.x, bounds.y);
+		Rectangle srcRect = GuiTools.setImageView(im, mag, bounds.x, bounds.y);
 		
 		if (srcRect == null) {
 			IJ.showMessage("Failed to set view");
