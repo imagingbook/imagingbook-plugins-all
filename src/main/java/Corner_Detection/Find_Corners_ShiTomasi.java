@@ -12,11 +12,9 @@ import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.GenericDialogPlus;
-import imagingbook.lib.util.Enums;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.ShiTomasiDetector;

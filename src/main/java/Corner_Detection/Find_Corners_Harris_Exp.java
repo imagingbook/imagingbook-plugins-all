@@ -9,15 +9,15 @@
 package Corner_Detection;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.GenericDialog;
-import ij.gui.Overlay;
+import ij.gui.Roi;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.util.Enums;
+import imagingbook.lib.ij.GenericDialogPlus;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector;
@@ -50,6 +50,9 @@ public class Find_Corners_Harris_Exp implements PlugInFilter {
     
     public void run(ImageProcessor ip) {
     	
+    	Rectangle roi = ip.getRoi();
+    	IJ.log("roi = " + roi);
+    	
     	params = new HarrisCornerDetector.Parameters();
 		if (!showDialog()) {
 			return;
@@ -63,29 +66,23 @@ public class Find_Corners_Harris_Exp implements PlugInFilter {
 		oly.strokeColor(Color.red);
 		oly.addItems(corners);
 		
-		Overlay olyOld = im.getOverlay();
-		if (olyOld != null) {
-			// add corners to existing overlay
-			oly.addToOverlay(olyOld);
-		}
-		else {
-			// otherwise set to the new overlay
-			im.setOverlay(oly);
-		}
+		im.setOverlay(oly);
 		
 		// (new ImagePlus("Harris Corner Score", cd.getQ())).show();
     }
     
 	private boolean showDialog() {
 		// display dialog , return false if cancelled or on error.
-		GenericDialog dlg = new GenericDialog("Harris Corner Detector");
+		GenericDialogPlus dlg = new GenericDialogPlus("Harris Corner Detector");
 		
 		dlg.addCheckbox("Apply pre-filter", params.doPreFilter);
 		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
 		dlg.addNumericField("Sensitivity (\u03B1)", params.alpha, 3);
 		dlg.addNumericField("Corner response threshold (th)", params.scoreThreshold, 0);
-		dlg.addChoice("Subpixel localization", 
-				Enums.getEnumNames(Method.class), params.maxLocatorMethod.name()); // SubpixelMethod.None.name()
+//		dlg.addChoice("Subpixel localization", 
+//				Enums.getEnumNames(Method.class), params.maxLocatorMethod.name()); // SubpixelMethod.None.name()
+		dlg.addEnumChoice("Subpixel localization", params.maxLocatorMethod);
+				
 		// -----------
 		dlg.addNumericField("Border distance", params.border, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
@@ -101,7 +98,8 @@ public class Find_Corners_Harris_Exp implements PlugInFilter {
 		params.sigma = Math.max(0.5, dlg.getNextNumber()); 	// min 0.5
 		params.alpha = Math.max(0, dlg.getNextNumber());	// min 0
 		params.scoreThreshold = dlg.getNextNumber();
-		params.maxLocatorMethod = Method.valueOf(dlg.getNextChoice());
+//		params.maxLocatorMethod = Method.valueOf(dlg.getNextChoice());
+		params.maxLocatorMethod = dlg.getNextEnumChoice(Method.class);
 		// -----------
 		params.border = (int) dlg.getNextNumber();
 		params.doCleanUp = dlg.getNextBoolean();

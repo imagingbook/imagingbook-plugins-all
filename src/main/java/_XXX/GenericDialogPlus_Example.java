@@ -6,7 +6,7 @@ import imagingbook.lib.ij.GenericDialogPlus;
 
 public class GenericDialogPlus_Example implements PlugIn {
 	
-	private enum MyEnum {
+	enum MyEnum {
 		Alpha, Beta, Gamma;
 	}
 
