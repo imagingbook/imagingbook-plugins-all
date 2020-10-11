@@ -11,6 +11,7 @@
 package Binary_Regions;
 
 import java.awt.Color;
+import java.awt.geom.Line2D;
 import java.util.List;
 
 import ij.IJ;
@@ -48,6 +49,7 @@ public class Convex_Hull_Demo implements PlugInFilter {
 	public void run(ImageProcessor ip) {
 		RegionContourLabeling segmenter = new RegionContourLabeling((ByteProcessor) ip);
 //		RegionLabeling segmenter = new DepthFirstLabeling((ByteProcessor) ip);
+		
 		List<BinaryRegion> regions = segmenter.getRegions();
 		if (regions.isEmpty()) {
 			IJ.error("No regions detected!");
@@ -60,11 +62,17 @@ public class Convex_Hull_Demo implements PlugInFilter {
 		for (BinaryRegion r: regions) {
 			//ConvexHull hull = new ConvexHull(r);					// takes all region points
 			ConvexHull hull = new ConvexHull(r.getOuterContour());	// takes only outer contour points
-			Point[] vertices = hull.getVertices();
-			drawHull(cp, vertices);
+			
+			// Variant 1
+//			Point[] vertices = hull.getVertices();
+//			drawHull(cp, vertices);
+			
+			// Variant 2
+			Line2D[] segments = hull.getSegments();
+			drawHull(cp, segments);
 		}
 
-		(new ImagePlus(title + "-convex-hull", cp)).show();
+		(new ImagePlus(title + "-convex-hulls", cp)).show();
 	}
 	
 	// ----------------------------------------------------
@@ -76,6 +84,12 @@ public class Convex_Hull_Demo implements PlugInFilter {
 			Point p1 = vertices[i];
 			Point p2 = vertices[(i + 1) % vertices.length];
 			drawSegment(ip, p1, p2);
+		}
+	}
+	
+	private void drawHull(ImageProcessor ip, Line2D[] segments) {
+		for (Line2D line : segments) {
+			drawSegment(ip, Point.create(line.getP1()), Point.create(line.getP2()));
 		}
 	}
 
