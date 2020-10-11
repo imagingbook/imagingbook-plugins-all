@@ -15,6 +15,7 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.GenericDialogPlus;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
@@ -67,13 +68,14 @@ public class Find_Corners_MOPS implements PlugInFilter {
     
 	private boolean showDialog() {
 		// display dialog , return false if cancelled or on error.
-		GenericDialog dlg = new GenericDialog("MOPS Corner Detector");
+		GenericDialogPlus dlg = new GenericDialogPlus("Harris Corner Detector");
 		
 		dlg.addCheckbox("Apply pre-filter", params.doPreFilter);
 		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
 		dlg.addNumericField("Corner response threshold (th)", params.scoreThreshold, 0);
-		dlg.addChoice("Subpixel localization", 
-				Enums.getEnumNames(Method.class), params.maxLocatorMethod.name()); // SubpixelMethod.None.name()
+//		dlg.addChoice("Subpixel localization", 
+//		Enums.getEnumNames(Method.class), params.maxLocatorMethod.name()); // SubpixelMethod.None.name()
+		dlg.addEnumChoice("Subpixel localization", params.maxLocatorMethod);
 		// -----------
 		dlg.addNumericField("Border distance", params.border, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
@@ -88,7 +90,8 @@ public class Find_Corners_MOPS implements PlugInFilter {
 		params.doPreFilter = dlg.getNextBoolean();
 		params.sigma = Math.max(0.5, dlg.getNextNumber());	// min 0.5
 		params.scoreThreshold = dlg.getNextNumber();
-		params.maxLocatorMethod = Method.valueOf(dlg.getNextChoice());
+//		params.maxLocatorMethod = Method.valueOf(dlg.getNextChoice());
+		params.maxLocatorMethod = dlg.getNextEnumChoice(Method.class);
 		// -----------
 		params.border = (int) dlg.getNextNumber();
 		params.doCleanUp = dlg.getNextBoolean();
