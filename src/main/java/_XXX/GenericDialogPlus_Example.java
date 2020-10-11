@@ -2,9 +2,9 @@ package _XXX;
 
 import ij.IJ;
 import ij.plugin.PlugIn;
-import imagingbook.lib.ij.GenericDialogWithEnums;
+import imagingbook.lib.ij.GenericDialogPlus;
 
-public class GenericDialogWithEnums_Example implements PlugIn {
+public class GenericDialogPlus_Example implements PlugIn {
 	
 	private enum MyEnum {
 		Alpha, Beta, Gamma;
@@ -13,7 +13,7 @@ public class GenericDialogWithEnums_Example implements PlugIn {
 	@Override
 	public void run(String arg) {
 		
-		GenericDialogWithEnums gd = new GenericDialogWithEnums("Testing enums");
+		GenericDialogPlus gd = new GenericDialogPlus("Testing enums");
 		gd.addEnumChoice("Choose from here", MyEnum.Beta);
 		gd.showDialog();
 		if (gd.wasCanceled())
