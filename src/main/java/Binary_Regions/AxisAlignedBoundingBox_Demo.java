@@ -57,9 +57,11 @@ public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 			int uc = (int) Math.round(r.getXc());
 			int vc = (int) Math.round(r.getYc());
 			Point[] box = (new AxisAlignedBoundingBox(r)).getCornerPoints();
-			//double[][] box = getAxisAlignedBoundingBox(r);
-			drawCenter(cp,  uc,  vc);
-			drawBox(cp, box);
+			if (box != null) {
+				//double[][] box = getAxisAlignedBoundingBox(r);
+				drawCenter(cp,  uc,  vc);
+				drawBox(cp, box);
+			}
 		}
 
 		(new ImagePlus(title + "-aligned-bb", cp)).show();
