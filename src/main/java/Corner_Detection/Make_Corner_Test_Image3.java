@@ -86,7 +86,7 @@ public class Make_Corner_Test_Image3 implements PlugIn {
 		
 		Parameters params = new Parameters();
 		params.doCleanUp = false;
-		params.maxLocatorMethod = Method.Quadratic2; //Method.Quartic; //Method.Parabolic; //Method.None; //
+		params.maxLocatorMethod = Method.QuadraticLeastSquares; //Method.Quartic; //Method.Parabolic; //Method.None; //
 		GradientCornerDetector cd = new HarrisCornerDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
 		
