@@ -20,7 +20,7 @@ import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 /**
  * This plugin demonstrates the use of geometric mappings, as implemented
  * in the imagingbook library.
- * A {@link ProjectiveMapping} (transformation) is specified by 4 corresponding point
+ * A {@link ProjectiveMapping2D} (transformation) is specified by 4 corresponding point
  * pairs, given by P and Q.
  * The mapping defines the target-to-source transformation.
  * The actual pixel transformation is performed by an {@link ImageMapper} object.

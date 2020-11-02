@@ -27,11 +27,11 @@ import imagingbook.pub.geometry.delaunay.chew.TriangulationChew;
  * This ImageJ plugin demonstrates the calculation of of the 2D Voronoi diagram for
  * a given set of points.
  * 
- * Requires a binary (grayscale) image with points valued > 0.
+ * Requires a binary (grayscale) image with points valued &gt; 0.
  * 
  * This plugin is based on applet code by Paul Chew (http://www.cs.cornell.edu/home/chew/Delaunay.html)
  * that is contained in the associated 'delaunay' package.
- * Usage: Create or open an grayscale image containing a point set (any pixel with value > 0 
+ * Usage: Create or open an grayscale image containing a point set (any pixel with value &gt; 0 
  * is considered a foreground point, zero pixels are considered background). The plugin 
  * triangulates this point set and displays the triangulation as a new color image.
  * 

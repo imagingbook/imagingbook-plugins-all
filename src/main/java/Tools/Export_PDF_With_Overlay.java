@@ -26,9 +26,10 @@ import ij.process.ImageProcessor;
  * This ImageJ plugin exports the current image and its attached
  * vector graphic overlay (if existent) as a PDF file.
  * This plugin requires iText to be in the Java library path:
- * place itextpdf-5.5.8.jar (or newer) in <ImageJ>/jars/.
+ * place itextpdf-5.5.8.jar (or newer) in {@code ImageJ/jars/}.
  * iText releases can be downloaded from here:
- * https://github.com/itext/itextpdf/releases
+ * <a href="https://github.com/itext/itextpdf/releases">
+ * https://github.com/itext/itextpdf/releases</a>.
  * 
  * @author W. Burger
  * @version 2016/01/09

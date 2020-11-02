@@ -23,8 +23,8 @@ import imagingbook.lib.ij.GuiTools;
  * The size of the existing image window is never changed.
  * <br>
  * The functionality is similar to ImageJ's
- * "Image -> Zoom -> To Selection" operator which, however, only
- * uses a restricted number of predefined magnification values.
+ * "Image &rarr; Zoom &rarr; To Selection" operator which, however, only
+ * supports a limited number of predefined magnification values.
  * 
  * 
  * @author WB
