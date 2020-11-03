@@ -16,10 +16,13 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.GenericDialogPlus;
+import imagingbook.lib.util.choice.Choices;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector;
+import imagingbook.pub.corners.subpixel.MaxLocator;
 import imagingbook.pub.corners.subpixel.MaxLocator.Method;
+//import imagingbook.pub.corners.subpixel.MaxLocator.Method;
 import imagingbook.pub.corners.util.CornerOverlay;
 
 /**
@@ -77,6 +80,9 @@ public class Find_Corners_Harris implements PlugInFilter {
 //		dlg.addChoice("Subpixel localization", 
 //				Enums.getEnumNames(Method.class), params.maxLocatorMethod.name()); // SubpixelMethod.None.name()
 		dlg.addEnumChoice("Subpixel localization", params.maxLocatorMethod);
+//		dlg.addChoice("Subpixel localization", 
+//				Choices.getChoiceNames(MaxLocator.class), 
+//				Choices.getChoiceName(params.maxLocatorMethod)); // SubpixelMethod.None.name()
 				
 		// -----------
 		dlg.addNumericField("Border distance", params.border, 0);
@@ -93,8 +99,10 @@ public class Find_Corners_Harris implements PlugInFilter {
 		params.sigma = Math.max(0.5, dlg.getNextNumber()); 	// min 0.5
 		params.alpha = Math.max(0, dlg.getNextNumber());	// min 0
 		params.scoreThreshold = dlg.getNextNumber();
+		
 //		params.maxLocatorMethod = Method.valueOf(dlg.getNextChoice());
 		params.maxLocatorMethod = dlg.getNextEnumChoice(Method.class);
+//		params.maxLocatorMethod = Choices.getChoices(MaxLocator.class)[dlg.getNextChoiceIndex()];
 		// -----------
 		params.border = (int) dlg.getNextNumber();
 		params.doCleanUp = dlg.getNextBoolean();
