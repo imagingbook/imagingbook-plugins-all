@@ -37,6 +37,7 @@ import imagingbook.pub.corners.util.CornerOverlay;
 public class Find_Corners_Harris implements PlugInFilter {
 
 	private static int Nmax = 0;	// number of corners to show (0 = all)
+	private static Color cornerColor = Color.green;
 
 	private ImagePlus im;
 	private HarrisCornerDetector.Parameters params;
@@ -58,9 +59,9 @@ public class Find_Corners_Harris implements PlugInFilter {
 		
 		// create a vector overlay to mark the resulting corners
 		CornerOverlay oly = new CornerOverlay();
-		oly.strokeColor(Color.red);
+		oly.strokeColor(cornerColor);
+		oly.strokeWidth(0.25);
 		oly.addItems(corners);
-		
 		im.setOverlay(oly);
 		
 		// (new ImagePlus("Harris Corner Score", cd.getQ())).show();

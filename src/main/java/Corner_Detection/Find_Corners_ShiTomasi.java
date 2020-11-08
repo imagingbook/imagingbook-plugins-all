@@ -8,6 +8,7 @@
  *******************************************************************************/
 package Corner_Detection;
 
+import java.awt.Color;
 import java.util.List;
 
 import ij.IJ;
@@ -36,6 +37,7 @@ import imagingbook.pub.corners.util.CornerOverlay;
 public class Find_Corners_ShiTomasi implements PlugInFilter {
 	
 	private static int Nmax = 0;	// number of corners to show (0 = all)
+	private static Color cornerColor = Color.green;
 	
 	private ImagePlus im;
 	private ShiTomasiDetector.Parameters params;
@@ -57,6 +59,8 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
 		
 		// create a vector overlay to mark the resulting corners
 		CornerOverlay oly = new CornerOverlay();
+		oly.strokeColor(cornerColor);
+		oly.strokeWidth(0.25);
 		oly.addItems(corners);
 		im.setOverlay(oly);
 		

@@ -1,10 +1,9 @@
-package Corner_Detection;
+package Corner_Detection_Tests;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
@@ -13,10 +12,6 @@ import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.Arrow;
-import ij.gui.Line;
-import ij.gui.PointRoi;
-import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.plugin.PlugIn;
@@ -27,9 +22,9 @@ import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector.Parameters;
+import imagingbook.pub.corners.subpixel.MaxLocator.Method;
 import imagingbook.pub.corners.util.CornerOverlay;
 import imagingbook.pub.geometry.basic.Point;
-import imagingbook.pub.corners.subpixel.MaxLocator.Method;
 
 public class Make_Corner_Test_Image3 implements PlugIn {
 	
@@ -46,9 +41,6 @@ public class Make_Corner_Test_Image3 implements PlugIn {
 		ByteProcessor ip = new ByteProcessor(width, height);
 		ip.setColor(128);
 		ip.fill();
-		
-		
-		AffineTransform T = AffineTransform.getTranslateInstance(2.3, 0);
 		
 		int N = Nx * Ny;
 		
@@ -90,10 +82,10 @@ public class Make_Corner_Test_Image3 implements PlugIn {
 		GradientCornerDetector cd = new HarrisCornerDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
 		
-		CornerOverlay.DefaultMarkerSize = 3;
+//		CornerOverlay.DefaultMarkerSize = 3;
 		CornerOverlay oly = new CornerOverlay();
 		oly.strokeColor(Color.green);
-		oly.strokeWidth(1.0);
+		oly.strokeWidth(0.25);
 		oly.addItems(corners);
 		
 		

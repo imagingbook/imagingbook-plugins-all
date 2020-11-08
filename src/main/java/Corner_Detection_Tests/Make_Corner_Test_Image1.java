@@ -1,4 +1,4 @@
-package Corner_Detection;
+package Corner_Detection_Tests;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -11,7 +11,7 @@ import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import imagingbook.lib.image.ImageGraphics;
 
-public class Make_Corner_Test_Image implements PlugIn {
+public class Make_Corner_Test_Image1 implements PlugIn {
 	
 	static int width = 512;
 	static int height = 512;

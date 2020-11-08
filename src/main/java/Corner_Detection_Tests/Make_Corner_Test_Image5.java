@@ -1,4 +1,4 @@
-package Corner_Detection;
+package Corner_Detection_Tests;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -37,7 +37,7 @@ public class Make_Corner_Test_Image5 implements PlugIn {
 	static int origWidth = 64;
 	static int origHeight = 64;
 	
-	static int angleDeg = 20; //40; //10; //30; //20; //11;
+	static int angleDeg = 20; //10; 20; 30;
 	
 	static double rectW = 30;
 	static double rectH = 50;
@@ -45,9 +45,9 @@ public class Make_Corner_Test_Image5 implements PlugIn {
 	double angle = angleDeg / 180.0 * Math.PI;
 	
 	double cornerSize = 1.5;
+	
 	double cornerStrokeWidth = 0.25;
 	Color cornerColor = Color.blue;
-	
 	Color renderBoxColor = Color.red;
 	Color cornerBoxColor = Color.green.darker();
 
@@ -93,7 +93,7 @@ public class Make_Corner_Test_Image5 implements PlugIn {
 		GradientCornerDetector cd = new HarrisCornerDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
 		
-		CornerOverlay.DefaultMarkerSize = 3;
+//		CornerOverlay.DefaultMarkerSize = 3;
 		CornerOverlay oly = new CornerOverlay();
 //		oly.strokeColor(Color.green);
 //		oly.strokeWidth(1.0);
@@ -124,8 +124,12 @@ public class Make_Corner_Test_Image5 implements PlugIn {
 		
 		
 		// add corners (on top)
+		oly.strokeColor(cornerColor);
+		oly.strokeWidth(cornerStrokeWidth);
+		oly.setCornerSize(2);
 		for (Corner c : corners) {
-			oly.addRoi(makeCrossShape(c.getX(), c.getY()), true);
+			//oly.addRoi(makeCrossShape(c.getX(), c.getY()), true);
+			oly.addItem(c);
 		}
 		
 		ImagePlus im = new ImagePlus("RectCorners-" + angleDeg + "-" + subPixMethod.name(), ip);
@@ -135,17 +139,17 @@ public class Make_Corner_Test_Image5 implements PlugIn {
 	
 	// ---------------------------------------------------------------------
 	
-	ShapeRoi makeCrossShape(double xc, double yc) {
-		Path2D path = new Path2D.Double();
-		path.moveTo(xc - cornerSize, yc);
-		path.lineTo(xc + cornerSize, yc);
-		path.moveTo(xc, yc - cornerSize);
-		path.lineTo(xc, yc + cornerSize);
-		ShapeRoi cross = new ShapeRoi(path);
-		cross.setStrokeWidth(cornerStrokeWidth);
-		cross.setStrokeColor(cornerColor);
-		return cross;
-	}
+//	ShapeRoi makeCrossShape(double xc, double yc) {
+//		Path2D path = new Path2D.Double();
+//		path.moveTo(xc - cornerSize, yc);
+//		path.lineTo(xc + cornerSize, yc);
+//		path.moveTo(xc, yc - cornerSize);
+//		path.lineTo(xc, yc + cornerSize);
+//		ShapeRoi cross = new ShapeRoi(path);
+//		cross.setStrokeWidth(cornerStrokeWidth);
+//		cross.setStrokeColor(cornerColor);
+//		return cross;
+//	}
 	
 	void listPoints(Shape s) {
 		IJ.log("rectangle: ");
