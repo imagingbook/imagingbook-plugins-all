@@ -15,6 +15,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Arrow;
 import ij.gui.Line;
+import ij.gui.Overlay;
 import ij.gui.PointRoi;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
@@ -22,6 +23,7 @@ import ij.gui.ShapeRoi;
 import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import imagingbook.lib.image.ImageGraphics;
+import imagingbook.lib.math.Complex;
 import imagingbook.lib.math.Matrix;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
@@ -36,7 +38,7 @@ import imagingbook.pub.corners.subpixel.MaxLocator.Method;
  * @author WB
  *
  */
-public class Make_Corner_Test_Image4 implements PlugIn {
+public class Make_Corner_Test_Image5b implements PlugIn {
 	
 	// size of the original image
 	static int origWidth = 64;
@@ -45,12 +47,17 @@ public class Make_Corner_Test_Image4 implements PlugIn {
 	static double rectW = 30;
 	static double rectH = 50;
 	static double angle = 0.2;
+	
+	double cornerSize = 2;
+	Color cornerColor = Color.green.darker();
 
+	ByteProcessor ip;
+	Shape rectR;
 
 	@Override
 	public void run(String arg) {
 
-		ByteProcessor ip = new ByteProcessor(origWidth, origHeight);
+		ip = new ByteProcessor(origWidth, origHeight);
 		ip.setColor(128);
 		ip.fill();
 		
@@ -61,7 +68,7 @@ public class Make_Corner_Test_Image4 implements PlugIn {
 		AffineTransform R = AffineTransform.getRotateInstance(angle, xc, yc);
 		
 		AffineTransform T = AffineTransform.getTranslateInstance(2.3, 0);
-		Shape rectR = R.createTransformedShape(rect);
+		rectR = R.createTransformedShape(rect);
 		
 		try (ImageGraphics ig = new ImageGraphics(ip)) {
 			ig.setColor(255);
@@ -70,19 +77,36 @@ public class Make_Corner_Test_Image4 implements PlugIn {
 			g2.fill(rectR);
 		}
 		
-		
+		runTest(Method.None);
+		runTest(Method.QuadraticLeastSquares);
+
+
+		//IJ.runPlugIn(Find_Corners_Harris.class.getName(), null);
+	}
+	
+	
+	
+	// ---------------------------------------------------------------------------------------
+	
+	void runTest(Method subPixelMethod) {
 		Parameters params = new Parameters();
 		params.doCleanUp = false;
 		params.border = 5;
-		params.maxLocatorMethod = Method.QuadraticLeastSquares; //Method.Quartic; //Method.Parabolic; //Method.None; //
+		params.maxLocatorMethod = subPixelMethod; //Method.QuadraticLeastSquares; //Method.Quartic; //Method.Parabolic; //Method.None; //
 		GradientCornerDetector cd = new HarrisCornerDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
 		
-		CornerOverlay.DefaultMarkerSize = 3;
-		CornerOverlay oly = new CornerOverlay();
-		oly.strokeColor(Color.green);
-		oly.strokeWidth(1.0);
-		oly.addItems(corners);
+		CornerOverlay.DefaultMarkerSize = 5;
+		CornerOverlay oly = new CornerOverlay(); //new CornerOverlay();
+//		oly.strokeColor(Color.green.darker());
+//		oly.strokeWidth(2.0);
+//		oly.addItems(corners);
+		for (Corner c : corners) {
+			ShapeRoi cross = this.makeCrossShape(c.getX(), c.getY());
+			cross.setStrokeWidth(2);
+			cross.setStrokeColor(cornerColor);
+			oly.add(this.makeCrossShape(c.getX(), c.getY()));
+		}
 		
 		
 		// draw the true rectangle
@@ -91,7 +115,7 @@ public class Make_Corner_Test_Image4 implements PlugIn {
 		Roi roiR = new ShapeRoi(rectR);
 		roiR.setStrokeColor(Color.blue);
 		roiR.setStrokeWidth(0.25);
-		oly.addRoi(roiR);
+		oly.add(roiR);
 			
 		// find the closest corner for each rectangle point
 		List<Point> cornerPoints = new LinkedList<>();
@@ -106,15 +130,16 @@ public class Make_Corner_Test_Image4 implements PlugIn {
 		Roi roiC = makePolygon(cornerPoints);
 		roiC.setStrokeColor(Color.red);
 		roiC.setStrokeWidth(0.25);
-		oly.addRoi(roiC, true);
+		oly.add(roiC);
 		
 		
-		ImagePlus im = new ImagePlus("Corner Test", ip);
+		ImagePlus im = new ImagePlus(subPixelMethod.name(), ip);
 		im.setOverlay(oly);
 		im.show();
-
-		//IJ.runPlugIn(Find_Corners_Harris.class.getName(), null);
 	}
+	
+	
+	// ---------------------------------------------------------------------------------------
 	
 	void listPoints(Shape s) {
 		IJ.log("rectangle: ");
@@ -150,6 +175,17 @@ public class Make_Corner_Test_Image4 implements PlugIn {
 			}
 		}
 		return minCorner;
+	}
+	
+	// ---------------------------------------------------------------------------
+	
+	ShapeRoi makeCrossShape(double xc, double yc) {
+		Path2D path = new Path2D.Double();
+		path.moveTo(xc - cornerSize, yc);
+		path.lineTo(xc + cornerSize, yc);
+		path.moveTo(xc, yc - cornerSize);
+		path.lineTo(xc, yc + cornerSize);
+		return new ShapeRoi(path);
 	}
 	
 	ShapeRoi makePolygon(List<Point> points) {

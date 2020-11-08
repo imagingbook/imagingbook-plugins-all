@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
@@ -13,10 +12,6 @@ import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.Arrow;
-import ij.gui.Line;
-import ij.gui.PointRoi;
-import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.plugin.PlugIn;
@@ -27,75 +22,94 @@ import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector.Parameters;
+import imagingbook.pub.corners.subpixel.MaxLocator.Method;
 import imagingbook.pub.corners.util.CornerOverlay;
 import imagingbook.pub.geometry.basic.Point;
-import imagingbook.pub.corners.subpixel.MaxLocator.Method;
 
 /**
  * Creates a small image containing a single rotated rectangle.
  * @author WB
  *
  */
-public class Make_Corner_Test_Image4 implements PlugIn {
+public class Make_Corner_Test_Image5 implements PlugIn {
 	
 	// size of the original image
 	static int origWidth = 64;
 	static int origHeight = 64;
 	
+	static int angleDeg = 20; //40; //10; //30; //20; //11;
+	
 	static double rectW = 30;
 	static double rectH = 50;
-	static double angle = 0.2;
+	
+	double angle = angleDeg / 180.0 * Math.PI;
+	
+	double cornerSize = 1.5;
+	double cornerStrokeWidth = 0.25;
+	Color cornerColor = Color.blue;
+	
+	Color renderBoxColor = Color.red;
+	Color cornerBoxColor = Color.green.darker();
 
-
+	Rectangle2D rectOrig;
+	Shape rectRotated;
+	ByteProcessor ip;
+	
 	@Override
 	public void run(String arg) {
+		
+		IJ.log("angle = " + (angle / Math.PI * 180));
 
-		ByteProcessor ip = new ByteProcessor(origWidth, origHeight);
+		ip = new ByteProcessor(origWidth, origHeight);
 		ip.setColor(128);
 		ip.fill();
 		
 		double xc = 0.5 * origWidth;
 		double yc = 0.5 * origHeight;
 		
-		Rectangle2D rect = new Rectangle2D.Double(xc - rectW/2, yc - rectH/2, rectW, rectH);
+		rectOrig = new Rectangle2D.Double(xc - rectW/2, yc - rectH/2, rectW, rectH);
 		AffineTransform R = AffineTransform.getRotateInstance(angle, xc, yc);
 		
-		AffineTransform T = AffineTransform.getTranslateInstance(2.3, 0);
-		Shape rectR = R.createTransformedShape(rect);
+//		AffineTransform T = AffineTransform.getTranslateInstance(2.3, 0);
+		rectRotated = R.createTransformedShape(rectOrig);
 		
 		try (ImageGraphics ig = new ImageGraphics(ip)) {
 			ig.setColor(255);
 //			g.setLineWidth(0);
 			Graphics2D g2 = ig.getGraphics();
-			g2.fill(rectR);
+			g2.fill(rectRotated);
 		}
 		
-		
+		runTest(Method.QuadraticTaylor); //Method.QuadraticLeastSquares; //Method.Quartic; //Method.Parabolic; //Method.None; //
+		runTest(Method.Quartic);
+		runTest(Method.None);
+	}
+	
+	void runTest(Method subPixMethod) {
 		Parameters params = new Parameters();
 		params.doCleanUp = false;
-		params.border = 5;
-		params.maxLocatorMethod = Method.QuadraticLeastSquares; //Method.Quartic; //Method.Parabolic; //Method.None; //
+		params.border = 2;
+		params.maxLocatorMethod = subPixMethod;
 		GradientCornerDetector cd = new HarrisCornerDetector(ip, params);
 		List<Corner> corners = cd.getCorners();
 		
 		CornerOverlay.DefaultMarkerSize = 3;
 		CornerOverlay oly = new CornerOverlay();
-		oly.strokeColor(Color.green);
-		oly.strokeWidth(1.0);
-		oly.addItems(corners);
-		
-		
+//		oly.strokeColor(Color.green);
+//		oly.strokeWidth(1.0);
+		//oly.addItems(corners);
+
 		// draw the true rectangle
 //		List<Point> rectPoints = getPoints(rectR);
 //		Roi roiR = makePolygon(rectPoints);
-		Roi roiR = new ShapeRoi(rectR);
-		roiR.setStrokeColor(Color.blue);
+		Roi roiR = new ShapeRoi(rectRotated);
+		roiR.setStrokeColor(renderBoxColor);
 		roiR.setStrokeWidth(0.25);
 		oly.addRoi(roiR);
 			
 		// find the closest corner for each rectangle point
 		List<Point> cornerPoints = new LinkedList<>();
-		List<Point> rectPoints = getPoints(rectR);
+		List<Point> rectPoints = getPoints(rectRotated);
 		for (int i = 0; i < 4; i++) {
 			Point p = rectPoints.get(i);
 			Corner c = findClosest(p, corners);
@@ -104,16 +118,33 @@ public class Make_Corner_Test_Image4 implements PlugIn {
 			
 		// create the detected corner polygon
 		Roi roiC = makePolygon(cornerPoints);
-		roiC.setStrokeColor(Color.red);
+		roiC.setStrokeColor(cornerBoxColor);
 		roiC.setStrokeWidth(0.25);
 		oly.addRoi(roiC, true);
 		
 		
-		ImagePlus im = new ImagePlus("Corner Test", ip);
+		// add corners (on top)
+		for (Corner c : corners) {
+			oly.addRoi(makeCrossShape(c.getX(), c.getY()), true);
+		}
+		
+		ImagePlus im = new ImagePlus("RectCorners-" + angleDeg + "-" + subPixMethod.name(), ip);
 		im.setOverlay(oly);
 		im.show();
-
-		//IJ.runPlugIn(Find_Corners_Harris.class.getName(), null);
+	}
+	
+	// ---------------------------------------------------------------------
+	
+	ShapeRoi makeCrossShape(double xc, double yc) {
+		Path2D path = new Path2D.Double();
+		path.moveTo(xc - cornerSize, yc);
+		path.lineTo(xc + cornerSize, yc);
+		path.moveTo(xc, yc - cornerSize);
+		path.lineTo(xc, yc + cornerSize);
+		ShapeRoi cross = new ShapeRoi(path);
+		cross.setStrokeWidth(cornerStrokeWidth);
+		cross.setStrokeColor(cornerColor);
+		return cross;
 	}
 	
 	void listPoints(Shape s) {
