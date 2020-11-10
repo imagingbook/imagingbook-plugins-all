@@ -22,7 +22,7 @@ import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector.Parameters;
-import imagingbook.pub.corners.subpixel.MaxLocator.Method;
+import imagingbook.pub.corners.subpixel.SubpixelMaxInterpolator.Method;
 import imagingbook.pub.corners.util.CornerOverlay;
 import imagingbook.pub.geometry.basic.Point;
 
@@ -80,8 +80,8 @@ public class Make_Corner_Test_Image5 implements PlugIn {
 			g2.fill(rectRotated);
 		}
 		
-		runTest(Method.QuadraticTaylor); //Method.QuadraticLeastSquares; //Method.Quartic; //Method.Parabolic; //Method.None; //
-		runTest(Method.Quartic);
+//		runTest(Method.QuadraticTaylorCoeff); //Method.QuadraticLeastSquares; //Method.Quartic; //Method.Parabolic; //Method.None; //
+		runTest(Method.QuarticInterpolation);
 		runTest(Method.None);
 	}
 	

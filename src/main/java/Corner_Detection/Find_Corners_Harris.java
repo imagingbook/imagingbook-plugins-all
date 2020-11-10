@@ -19,7 +19,7 @@ import imagingbook.lib.ij.GenericDialogPlus;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector;
-import imagingbook.pub.corners.subpixel.MaxLocator.Method;
+import imagingbook.pub.corners.subpixel.SubpixelMaxInterpolator.Method;
 import imagingbook.pub.corners.util.CornerOverlay;
 
 /**
