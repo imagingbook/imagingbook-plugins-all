@@ -12,6 +12,7 @@ Color_Images
 Color_Quantization
 Colorimetric_Color_Spaces
 Corner_Detection
+Corner_Detection_Tests
 Edge_Preserving_Smoothing
 Edges_Contours
 Filters
