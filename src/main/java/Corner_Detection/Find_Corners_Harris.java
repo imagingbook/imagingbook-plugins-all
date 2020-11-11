@@ -76,7 +76,6 @@ public class Find_Corners_Harris implements PlugInFilter {
 		dlg.addNumericField("Sensitivity (\u03B1)", params.alpha, 3);
 		dlg.addNumericField("Corner response threshold (th)", params.scoreThreshold, 0);
 		dlg.addEnumChoice("Subpixel localization", params.maxLocatorMethod);
-				
 		// -----------
 		dlg.addNumericField("Border distance", params.border, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);
