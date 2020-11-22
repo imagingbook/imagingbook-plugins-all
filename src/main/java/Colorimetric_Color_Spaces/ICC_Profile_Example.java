@@ -23,6 +23,7 @@ import imagingbook.lib.settings.PrintPrecision;
 /**
  * This plugin lists a user-selected ICC profile file
  * to the console.
+ * See package imagingbook.lib.color.icc for the associated code.
  * 
  * @author W. Burger
  *

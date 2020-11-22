@@ -12,63 +12,46 @@ import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import ij.IJ;
 import ij.gui.GenericDialog;
-import ij.io.LogStream;
 import ij.plugin.PlugIn;
 import imagingbook.lib.math.Matrix;
-import imagingbook.lib.util.ResourceUtils;
-
+import imagingbook.lib.util.ResourceDirectory;
 
 /**
- * This plugin lists a user-selected ICC profile that is retrieved
+ * This plugin lists the contents of a user-selected ICC profile that is retrieved
  * from a Java resource.
+ * See package imagingbook.lib.color.icc for the associated code.
  * 
  * @author W. Burger
  *
  */
 public class ICC_Profile_Example_From_Jar implements PlugIn {
-	
-	static {
-		LogStream.redirectSystem();
-	}
-	
-	static final String ProfileDirectory = "sample-icc-profiles/";
 
-	String[] choices;
-	String theChoice;
+	String[] choices = null;
+	String theChoice = null;
 	
 	public void run(String arg) {
-		Class<?> clazz = imagingbook.lib.color.CssColor.class;
-		List<String> profileList = new ArrayList<String>();
-		Path[] paths = ResourceUtils.listResources(clazz, ProfileDirectory);
-		for (Path p : paths) {
-			String name = p.getFileName().toString();
-			profileList.add(name);
-		}
 		
-		Collections.sort(profileList);
-		choices = profileList.toArray(new String[0]);
+		ResourceDirectory rd = new imagingbook.lib.color.iccProfiles.Resources();
+		
+		IJ.log("Reading from JAR: " + (rd.isInsideJAR()));
+		choices = rd.getResourceNames();
 		
 		if (!showDialog())
 			return;
 		
-		System.out.println("selected ICC profile: " + theChoice);
+		IJ.log("selected ICC profile: " + theChoice);
 		
 		ICC_Profile profile = null;
 		try {
-//			InputStream strm = ResourceUtils.getResourceStream(clazz, ProfileDirectory + "/" + theChoice);
-			InputStream strm = clazz.getResourceAsStream(ProfileDirectory + theChoice);
+			InputStream strm = rd.getResourceAsStream(theChoice);
 			if (strm != null)
 				profile = ICC_Profile.getInstance(strm);
 		} catch (IOException e) { }
 		
-		System.out.println("profile = " + profile);
+		IJ.log("profile = " + profile);
 
 		ICC_ColorSpace iccColorSpace = new ICC_ColorSpace(profile);
 		int nComp = iccColorSpace.getNumComponents();
@@ -115,28 +98,29 @@ public class ICC_Profile_Example_From_Jar implements PlugIn {
 		}
 	}
 	
-	String warning(float[] col1, float[] col2) {
+	private String warning(float[] col1, float[] col2) {
 		float t = 0.05f;
-		for (int i=0; i<col1.length; i++) {
+		for (int i = 0; i < col1.length; i++) {
 			if (Math.abs(col1[i] - col2[i]) > t)
 				return " ***";
 		}
 		return "";
 	}
 	
-	boolean showDialog() {
+	// -----------------------------------------------------------
+	
+	
+	private boolean showDialog() {
 		GenericDialog gd = new GenericDialog(ICC_Profile_Example_From_Jar.class.getSimpleName());
 		gd.addMessage("Select an ICC profile:");
 		gd.addChoice("Profile:", choices, choices[0]);
-		
+
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return false;
 		int mi = gd.getNextChoiceIndex();
 		theChoice = choices[mi];
-		
+
 		return true;
 	}
-	
-
 }
