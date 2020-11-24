@@ -34,10 +34,10 @@ public class ICC_Profile_Example_From_Jar implements PlugIn {
 	
 	public void run(String arg) {
 		
-		ResourceLocation rd = new imagingbook.lib.color.iccProfiles.Resources();
+		ResourceLocation loc = new imagingbook.lib.color.DATA.iccProfiles.Resources();
 		
-		IJ.log("Reading from JAR: " + (rd.isInsideJAR()));
-		choices = rd.getResourceNames();
+		IJ.log("Reading from JAR: " + (loc.isInsideJAR()));
+		choices = loc.getResourceNames();
 		
 		if (!showDialog())
 			return;
@@ -46,7 +46,7 @@ public class ICC_Profile_Example_From_Jar implements PlugIn {
 		
 		ICC_Profile profile = null;
 		try {
-			InputStream strm = rd.getResourceAsStream(theChoice);
+			InputStream strm = loc.getResourceAsStream(theChoice);
 			if (strm != null)
 				profile = ICC_Profile.getInstance(strm);
 		} catch (IOException e) { }
