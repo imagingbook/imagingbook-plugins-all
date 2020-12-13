@@ -116,7 +116,7 @@ public class Find_Straight_Lines2 implements PlugInFilter {
 //				lineColor = Toolbar.getForegroundColor();
 //			}
 
-			HoughLineOverlay oly = new HoughLineOverlay();
+			HoughLineOverlay oly = new HoughLineOverlay(ip.getWidth(), ip.getHeight());
 			oly.strokeColor(LineColor);
 			oly.strokeWidth(LineWidth);
 			oly.addItems(Arrays.asList(lines));
