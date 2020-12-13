@@ -13,13 +13,13 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.pub.hough.HoughTransformLines;
-import imagingbook.pub.hough.HoughTransformLines.Parameters;
 import imagingbook.pub.hough.lines.HoughLine;
 
 /** 
  * This plugin implements a simple Hough transform for straight lines.
  * It expects a binary (8-bit) image, with background = 0 and foreground (contour) 
  * pixels with values &gt; 0.
+ * Output of results is text-only.
  * 
  * @author WB
  * @version 2018/12/25
@@ -31,12 +31,14 @@ public class Find_Straight_Lines_Simple implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
-		Parameters params = new Parameters();
+		
+		HoughTransformLines.Parameters params = new HoughTransformLines.Parameters();
 		params.nAng = 256;		// = m
 		params.nRad = 256;		// = n
 
 		// compute the Hough Transform:
 		HoughTransformLines ht = new HoughTransformLines(ip, params);
+		
 		// retrieve the 5 strongest lines with min. 50 points
 		HoughLine[] lines = ht.getLines(50, 5);
 		
