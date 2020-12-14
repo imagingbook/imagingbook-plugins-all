@@ -9,15 +9,11 @@
 package Hough_Transform;
 
 import java.awt.Color;
-import java.awt.geom.Path2D;
+import java.util.Arrays;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
-import ij.gui.Overlay;
-import ij.gui.Roi;
-import ij.gui.ShapeRoi;
-import ij.gui.Toolbar;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
@@ -25,6 +21,7 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.hough.HoughTransformLines;
 import imagingbook.pub.hough.lines.HoughLine;
+import imagingbook.pub.hough.lines.HoughLineOverlay;
 
 /** 
  * This ImageJ plugin demonstrates the use of the {@link HoughTransformLines}
@@ -33,13 +30,9 @@ import imagingbook.pub.hough.lines.HoughLine;
  * pixels with values &gt; 0.
  * A vector overlay is used to display the detected lines.
  * 
- * TODO: Show marker as overlay. 
- * TODO: Use CustomOverlay?
- * 
  * @author W. Burger
  * @version 2020/12/13
  */
-
 public class Find_Straight_Lines implements PlugInFilter {
 
 	static int MaxLines = 5;			// number of strongest lines to be found
@@ -52,9 +45,9 @@ public class Find_Straight_Lines implements PlugInFilter {
 	static boolean ShowLines = true;
 	static boolean InvertOriginal = true;
 	
-	static double  LineWidth = 1.0;
-	static Color   DefaultLineColor = Color.magenta;
-	static boolean UsePickedColor = false;
+	static double  LineWidth = 0.5;
+	static Color   LineColor = Color.magenta;
+	
 	static boolean ShowReferencePoint = true;
 	static Color   ReferencePointColor = Color.green;
 
@@ -105,54 +98,26 @@ public class Find_Straight_Lines implements PlugInFilter {
 				IJ.log(i + ": " + lines[i].toString());
 			}
 		}
-
+		
 		if (ShowLines) {
-			Color lineColor = DefaultLineColor;
 			ColorProcessor lineIp = ip.convertToColorProcessor();
 			if (InvertOriginal) lineIp.invert();
-			if (UsePickedColor) {
-				lineColor = Toolbar.getForegroundColor();
-			}
 
-			Overlay oly = new Overlay();
-			
-			for (HoughLine hl : lines){
-				//hl.draw(lineIp, LineWidth);	// was brute-force painting
-				Roi roi = hl.makeLineRoi();
-				roi.setStrokeColor(lineColor);
-				oly.add(roi);
-			}
+			HoughLineOverlay oly = new HoughLineOverlay(ip.getWidth(), ip.getHeight());
+			oly.strokeColor(LineColor);
+			oly.strokeWidth(LineWidth);
+			oly.addItems(Arrays.asList(lines));
 
 			if (ShowReferencePoint) {
-//				lineIp.setColor(ReferencePointColor);
-//				int ur = (int) Math.round(ht.getXref());
-//				int vr = (int) Math.round(ht.getYref());
-//				drawCross(lineIp, ur, vr, 2);
-				
-				double markerSize = 2.0;
-				double xc = ht.getXref();
-				double yc = ht.getYref();
-				Path2D path = new Path2D.Double();
-				path.moveTo(xc - markerSize, yc);
-				path.lineTo(xc + markerSize, yc);
-				path.moveTo(xc, yc - markerSize);
-				path.lineTo(xc, yc + markerSize);
-				ShapeRoi cross = new ShapeRoi(path);
-				cross.setStrokeWidth(0.3);
-				cross.setStrokeColor(ReferencePointColor);
-				oly.add(cross);
+				oly.strokeColor(ReferencePointColor);
+				oly.strokeWidth(1.0);
+				oly.markPoint(ht.getXref(), ht.getYref(), ReferencePointColor);
 			}
 
 			ImagePlus him = new ImagePlus(imp.getShortTitle()+"-lines", lineIp);
-			oly.translate(0.5, 0.5);	// shift to run through pixel centers
 			him.setOverlay(oly);
 			him.show();
 		}
-	}
-
-	private void drawCross(ImageProcessor ip, int uu, int vv, int size) {
-		ip.drawLine(uu - size, vv, uu + size, vv);
-		ip.drawLine(uu, vv - size, uu, vv + size);
 	}
 
 	// -----------------------------------------------------------------
@@ -170,7 +135,6 @@ public class Find_Straight_Lines implements PlugInFilter {
 		dlg.addCheckbox("List strongest lines", ListStrongestLines);
 		dlg.addCheckbox("Show lines", ShowLines);
 		dlg.addNumericField("Line width", LineWidth, 1);
-		dlg.addCheckbox("Draw with picked color", UsePickedColor);
 		dlg.addCheckbox("Show reference point", ShowReferencePoint);
 		dlg.showDialog();
 		if(dlg.wasCanceled())
@@ -185,7 +149,6 @@ public class Find_Straight_Lines implements PlugInFilter {
 		ListStrongestLines = dlg.getNextBoolean();
 		ShowLines = dlg.getNextBoolean();
 		LineWidth = dlg.getNextNumber();
-		UsePickedColor = dlg.getNextBoolean();
 		ShowReferencePoint = dlg.getNextBoolean();
 		if(dlg.invalidNumber()) {
 			IJ.showMessage("Error", "Invalid input number");
