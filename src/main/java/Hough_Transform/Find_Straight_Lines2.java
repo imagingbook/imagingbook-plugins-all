@@ -131,7 +131,7 @@ public class Find_Straight_Lines2 implements PlugInFilter {
 			if (ShowReferencePoint) {
 				oly.strokeColor(ReferencePointColor);
 				oly.strokeWidth(1.0);
-				oly.markReferencePoint(ht.getXref(), ht.getYref(), ReferencePointColor);
+				oly.markPoint(ht.getXref(), ht.getYref(), ReferencePointColor);
 			}
 
 			ImagePlus him = new ImagePlus(imp.getShortTitle()+"-lines", lineIp);

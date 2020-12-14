@@ -118,7 +118,7 @@ public class Find_Straight_Lines implements PlugInFilter {
 			
 			for (HoughLine hl : lines){
 				//hl.draw(lineIp, LineWidth);	// was brute-force painting
-				Roi roi = hl.makeLine();
+				Roi roi = hl.makeLineRoi();
 				roi.setStrokeColor(lineColor);
 				oly.add(roi);
 			}
