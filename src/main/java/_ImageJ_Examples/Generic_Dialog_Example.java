@@ -33,8 +33,7 @@ public class Generic_Dialog_Example implements PlugIn {
 		width = (int) gd.getNextNumber();
 		height = (int) gd.getNextNumber();
 
-		ImagePlus imp = NewImage.createByteImage(title, width, height, 1,
-				NewImage.FILL_WHITE);
+		ImagePlus imp = NewImage.createByteImage(title, width, height, 1, NewImage.FILL_WHITE);
 		imp.show();
 	}
 }

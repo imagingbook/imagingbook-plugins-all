@@ -18,6 +18,7 @@ import ij.process.ImageProcessor;
  * from our own PlugInFilter using the IJ.run() method.
  * Note that PlugInFilter locks the current image until is is finished,
  * thus we need to unlock() it before running the other command.
+ * 
  * @author WB
  */
 public class Run_Command_From_PlugInFilter implements PlugInFilter {

@@ -20,6 +20,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.regions.RegionContourLabeling;
 import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
@@ -30,9 +31,10 @@ import imagingbook.pub.geometry.hulls.ConvexHull;
  * It performs region segmentation, calculates the convex hull
  * for each region found and then draws the result into a new color
  * image.
+ * Requires a binary (segmented) image.
  * 
  * @author W. Burger
- * @version 2020/10/11
+ * @version 2020/12/17
  * 
  */
 public class Convex_Hull_Demo implements PlugInFilter {
@@ -47,6 +49,12 @@ public class Convex_Hull_Demo implements PlugInFilter {
 	}
 	
 	public void run(ImageProcessor ip) {
+		
+		if (!IjUtils.isBinary(ip)) {
+			IJ.showMessage("Plugin requires a binary image!");
+			return;
+		}
+		
 		RegionContourLabeling segmenter = new RegionContourLabeling((ByteProcessor) ip);
 //		RegionLabeling segmenter = new DepthFirstLabeling((ByteProcessor) ip);
 		
@@ -63,11 +71,6 @@ public class Convex_Hull_Demo implements PlugInFilter {
 			//ConvexHull hull = new ConvexHull(r);					// takes all region points
 			ConvexHull hull = new ConvexHull(r.getOuterContour());	// takes only outer contour points
 			
-			// Variant 1
-//			Point[] vertices = hull.getVertices();
-//			drawHull(cp, vertices);
-			
-			// Variant 2
 			Line2D[] segments = hull.getSegments();
 			drawHull(cp, segments);
 		}
@@ -76,16 +79,6 @@ public class Convex_Hull_Demo implements PlugInFilter {
 	}
 	
 	// ----------------------------------------------------
-	
-	private void drawHull(ImageProcessor ip, Point[] vertices) {
-		ip.setColor(ConvexHullColor);
-		ip.setLineWidth(1);
-		for (int i = 0; i < vertices.length; i++) {
-			Point p1 = vertices[i];
-			Point p2 = vertices[(i + 1) % vertices.length];
-			drawSegment(ip, p1, p2);
-		}
-	}
 	
 	private void drawHull(ImageProcessor ip, Line2D[] segments) {
 		for (Line2D line : segments) {

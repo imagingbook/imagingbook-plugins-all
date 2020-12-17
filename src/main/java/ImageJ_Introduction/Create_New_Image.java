@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Histograms_Statistics;
+package ImageJ_Introduction;
 
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;

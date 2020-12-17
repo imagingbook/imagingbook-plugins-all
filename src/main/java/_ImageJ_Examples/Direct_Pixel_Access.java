@@ -13,6 +13,15 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 
+/**
+ * This ImageJ plugin shows how to access the one-dimensional pixel array
+ * of a 8-bit (= byte) grayscale image.
+ * Each pixel value is increased by 10 without range limiting, i.e., bright values
+ * wrap back to black etc.
+ * 
+ * @author WB
+ *
+ */
 public class Direct_Pixel_Access implements PlugInFilter {
 
 	public int setup(String arg, ImagePlus img) {
@@ -20,16 +29,15 @@ public class Direct_Pixel_Access implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
-		if (!(ip instanceof ByteProcessor)) return;
-		if (!(ip.getPixels() instanceof byte[])) return;
-		byte[] pixels = (byte[]) ip.getPixels();
-		int w = ip.getWidth();
-		int h = ip.getHeight();
+		ByteProcessor bp = (ByteProcessor) ip;	// DOES_8G only, thus this must work
+		byte[] pixels = (byte[]) bp.getPixels();
+		int w = bp.getWidth();
+		int h = bp.getHeight();
 
 		for (int v = 0; v < h; v++) {
 			for (int u = 0; u < w; u++) {
-				int p = 0xFF & pixels[v * w + u]; 
-				p = p + 1;
+				int p = 0xFF & pixels[v * w + u]; // bitmask 0xFF is needed for unsigned values
+				p = p + 10;
 				pixels[v * w + u] = (byte) (0xFF & p); 
 			}
 		}

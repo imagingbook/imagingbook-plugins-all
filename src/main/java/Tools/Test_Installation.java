@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package _Setup_Test;
+package Tools;
 
 import ij.IJ;
 import ij.plugin.PlugIn;
@@ -15,6 +15,7 @@ import imagingbook.lib.util.FileUtils;
 
 /**
  * A simple ImageJ plugin for testing the 'imagingbook' installation.
+ * 
  * @author W. Burger
  * @version 2016/03/23
  */

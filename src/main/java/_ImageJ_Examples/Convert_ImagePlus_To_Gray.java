@@ -8,24 +8,29 @@
  *******************************************************************************/
 package _ImageJ_Examples;
 
+import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.filter.PlugInFilter;
+import ij.plugin.PlugIn;
+import ij.process.ByteProcessor;
 import ij.process.ImageConverter;
-import ij.process.ImageProcessor;
 
-public class Convert_ImagePlus_To_Gray8 implements PlugInFilter {
-	ImagePlus imp = null;
+/**
+ * This ImageJ plugin shows how to change the type of the current
+ * image 'in place', i.e., without copying the image.
+ * 
+ * @author WB
+ * @version 2020/12/17
+ */
+public class Convert_ImagePlus_To_Gray implements PlugIn {
 
-	public int setup(String arg, ImagePlus imp) {
-		this.imp = imp;
-		return DOES_ALL; 	// this plugin accepts any image
-	}
-
-	public void run(ImageProcessor ip) {
-		ImageConverter iConv = new ImageConverter(imp);
+	@Override
+	public void run(String arg) {
+		ImagePlus im = IJ.getImage();	// im can be of any type
+		
+		ImageConverter iConv = new ImageConverter(im);
 		iConv.convertToGray8();
-		ip = imp.getProcessor();	// ip is now of type ByteProcessor
-		// process grayscale image ...
-		ip.sharpen();
+		
+		ByteProcessor ip = (ByteProcessor) im.getProcessor();	// bp is of type ByteProcessor
+		ip.sharpen(); // process the grayscale image ...
 	}
 }

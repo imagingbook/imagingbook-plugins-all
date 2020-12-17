@@ -61,14 +61,14 @@ public class Integral_Image_GetRoiStatistics implements PlugInFilter {
 
 	}
 	
-	float[][] toFloatArray(long[][] A) {
-		float[][] B = new float[A.length][A[0].length];
-		for (int i = 0; i < A.length; i++) {
-			for (int j = 0; j < A[0].length; j++) {
-				B[i][j] = (float) A[i][j];
-			}
-		}
-		return B;
-	}
+//	private float[][] toFloatArray(long[][] A) {
+//		float[][] B = new float[A.length][A[0].length];
+//		for (int i = 0; i < A.length; i++) {
+//			for (int j = 0; j < A[0].length; j++) {
+//				B[i][j] = (float) A[i][j];
+//			}
+//		}
+//		return B;
+//	}
 
 }

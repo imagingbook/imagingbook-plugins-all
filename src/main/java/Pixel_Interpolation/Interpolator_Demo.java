@@ -24,6 +24,8 @@ import imagingbook.lib.util.Enums;
  * (parameters can be specified). Note the use if the
  * {@link ImageAccessor} class which gives uniform access
  * to all types of images.
+ * See also {@link InterpolationMethod}, {@link OutOfBoundsStrategy}, 
+ * {@link ImageAccessor}.
  * 
  * @author W. Burger
  * @version 2015/12/17

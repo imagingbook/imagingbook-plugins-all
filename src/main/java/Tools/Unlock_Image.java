@@ -11,7 +11,6 @@ public class Unlock_Image implements PlugIn {
 		ImagePlus img = IJ.getImage();
 		if (img.isLocked()) {
 			img.unlock();
-			IJ.log("unlocked image");
 		}
 	}
 

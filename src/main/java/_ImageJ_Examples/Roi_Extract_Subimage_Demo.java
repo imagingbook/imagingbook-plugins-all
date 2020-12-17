@@ -22,12 +22,15 @@ import java.awt.Rectangle;
  * of the same type as the original.
  * 
  * @author WB
- * @version 2015/03/23
+ * @version 2020/12/17
  */
 public class Roi_Extract_Subimage_Demo implements PlugInFilter {
 	boolean showMask = true;
+	
+	ImagePlus im = null;
 
-	public int setup(String arg, ImagePlus imp) {
+	public int setup(String arg, ImagePlus im) {
+		this.im = im;
 		return DOES_ALL + ROI_REQUIRED;
 	}
 
@@ -39,6 +42,6 @@ public class Roi_Extract_Subimage_Demo implements PlugInFilter {
 		}
 
 		ImageProcessor ip2 = ip.crop();
-		new ImagePlus("Extracted image", ip2).show();
+		new ImagePlus(im.getShortTitle() + "-extracted", ip2).show();
 	}
 }

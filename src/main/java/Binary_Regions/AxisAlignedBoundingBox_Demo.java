@@ -18,6 +18,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.geometry.hulls.AxisAlignedBoundingBox;
 import imagingbook.pub.regions.RegionContourLabeling;
@@ -27,6 +28,10 @@ import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
  * This plugin creates a binary region segmentation, calculates 
  * the center and major axis and subsequently the major axis-aligned
  * bounding box for each region.
+ * Requires a binary (segmented) image.
+ * 
+ * @author WB
+ * @version 2020/12/17
  */
 public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 	
@@ -41,7 +46,12 @@ public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 	}
 	
 	public void run(ImageProcessor ip) {
-	   	
+		
+		if (!IjUtils.isBinary(ip)) {
+			IJ.showMessage("Plugin requires a binary image!");
+			return;
+		}
+		
 		RegionContourLabeling segmenter = new RegionContourLabeling((ByteProcessor) ip);
 		List<BinaryRegion> regions = segmenter.getRegions();
 		if (regions.isEmpty()) {
@@ -54,8 +64,9 @@ public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 		
 		
 		for (BinaryRegion r: regions) {
-			int uc = (int) Math.round(r.getXc());
-			int vc = (int) Math.round(r.getYc());
+			Point xc = r.getCenterPoint();
+			int uc = (int) Math.round(xc.getX());
+			int vc = (int) Math.round(xc.getY());
 			Point[] box = (new AxisAlignedBoundingBox(r)).getCornerPoints();
 			if (box != null) {
 				//double[][] box = getAxisAlignedBoundingBox(r);

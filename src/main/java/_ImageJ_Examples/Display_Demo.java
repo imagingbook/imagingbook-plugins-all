@@ -13,6 +13,13 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 
+/**
+ * This ImageJ plugin modifies and re-displays the current image 
+ * repeatedly.
+ * 
+ * @author WB
+ *
+ */
 public class Display_Demo implements PlugInFilter {
 	ImagePlus im = null;
 

@@ -17,7 +17,7 @@ import ij.process.ImageProcessor;
 
 import java.awt.Color;
 
-public class ShowSobelEdges_Color implements PlugInFilter {
+public class Sobel_Edges_Colored implements PlugInFilter {
     static float[] sobelX = {
     		-1, 0, 1,
             -2, 0, 2,

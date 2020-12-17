@@ -54,7 +54,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 		// Get the list of detected regions (sort by size):
 		List<BinaryRegion> regions = seg.getRegions(true);
 		if (regions.isEmpty()) {
-			IJ.error("No regions detected!");
+			IJ.showMessage("No regions detected!");
 			return;
 		}
 
@@ -92,7 +92,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 		}
 	}
 	
-	boolean getUserInput() {
+	private boolean getUserInput() {
 		GenericDialog gd = new GenericDialog(Region_Contours_Demo.class.getSimpleName());
 		gd.addCheckbox("List regions", ListRegions);
 		gd.addCheckbox("List contour points", ListContourPoints);

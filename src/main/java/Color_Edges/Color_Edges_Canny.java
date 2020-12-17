@@ -23,6 +23,7 @@ import imagingbook.pub.color.edge.CannyEdgeDetector.Parameters;
 
 /**
  * This plugin implements the Canny edge detector for all types of images.
+ * 
  * @author W. Burger
  * @version 2014/12/03
  */
@@ -93,7 +94,7 @@ public class Color_Edges_Canny implements PlugInFilter {
 		}	
 		// update Canny parameters:
 		params.gSigma = (float) gd.getNextNumber();
-		if (params.gSigma < 0.5f) params.gSigma = 0.5f;
+		if (params.gSigma < 0.5) params.gSigma = 0.5;
 		if (params.gSigma > 20) params.gSigma = 20;
 		params.loThr = (float) gd.getNextNumber();
 		params.hiThr = (float) gd.getNextNumber();

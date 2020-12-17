@@ -30,8 +30,8 @@ import imagingbook.lib.util.Enums;
  */
 public class Interpolator_Demo implements PlugInFilter {
 	
-	static InterpolationMethod ipm = InterpolationMethod.Bicubic;
-	static OutOfBoundsStrategy obs = OutOfBoundsStrategy.NearestBorder;
+	static InterpolationMethod IPM = InterpolationMethod.Bicubic;
+	static OutOfBoundsStrategy OBS = OutOfBoundsStrategy.NearestBorder;
 	
 	static double dx = 10.50;	// translation parameters
 	static double dy = -3.25;
@@ -51,7 +51,7 @@ public class Interpolator_Demo implements PlugInFilter {
     	ImageProcessor target = source.createProcessor(w, h);
     	
     	// create an ImageAccessor for the source image:
-    	ImageAccessor sA = ImageAccessor.create(source, obs, ipm);
+    	ImageAccessor sA = ImageAccessor.create(source, OBS, IPM);
     	
     	// create an ImageAccessor for the target image:
     	ImageAccessor tA = ImageAccessor.create(target);
@@ -77,18 +77,18 @@ public class Interpolator_Demo implements PlugInFilter {
 		gd.addNumericField("dy", dy, 2);
 		
 		String[] ipmOptions = Enums.getEnumNames(InterpolationMethod.class);
-		gd.addChoice("Interpolation method", ipmOptions, ipm.name());
+		gd.addChoice("Interpolation method", ipmOptions, IPM.name());
 		
 		String[] obsOptions = Enums.getEnumNames(OutOfBoundsStrategy.class);
-		gd.addChoice("Out-of-bounds strategy", obsOptions, obs.name());
+		gd.addChoice("Out-of-bounds strategy", obsOptions, OBS.name());
 
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return false;
 		dx = gd.getNextNumber();
 		dy = gd.getNextNumber();
-		ipm = InterpolationMethod.valueOf(gd.getNextChoice());
-		obs = OutOfBoundsStrategy.valueOf(gd.getNextChoice());
+		IPM = InterpolationMethod.valueOf(gd.getNextChoice());
+		OBS = OutOfBoundsStrategy.valueOf(gd.getNextChoice());
 		return true;
 	}
 }

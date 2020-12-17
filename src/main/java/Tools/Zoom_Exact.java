@@ -18,6 +18,8 @@ import imagingbook.lib.ij.GuiTools;
  */
 public class Zoom_Exact implements PlugIn {
 	
+	private static boolean LOG_OUTPUT = false;
+	
 	public void run(String arg) {
 		ImagePlus im = WindowManager.getCurrentImage();
 		if (im == null) {
@@ -27,10 +29,12 @@ public class Zoom_Exact implements PlugIn {
 		
 		GenericDialog gd = new GenericDialog("Zoom Exact");
 		gd.addNumericField("Magnification (%): ", GuiTools.getMagnification(im) * 100, 0);
+		gd.addCheckbox("Log output", LOG_OUTPUT);
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return;
 		double mag = gd.getNextNumber() / 100.0;
+		LOG_OUTPUT = gd.getNextBoolean();
 		
 		if (mag < 0.001) {
 			IJ.showMessage(String.format("Out of range magnification:\n%.3f", mag));
@@ -38,7 +42,9 @@ public class Zoom_Exact implements PlugIn {
 		}
 		
 		if (GuiTools.zoomExact(im, mag)) {
-			IJ.log(String.format("new magnification: %.3f",  GuiTools.getMagnification(im)));
+			if (LOG_OUTPUT) {
+				IJ.log(String.format("new magnification: %.3f",  GuiTools.getMagnification(im)));
+			}
 		}
 		else {
 			IJ.showMessage(Zoom_Exact.class.getSimpleName() + " failed");

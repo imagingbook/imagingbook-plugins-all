@@ -15,9 +15,9 @@ import ij.process.ImageProcessor;
 
 /**
  * This ImageJ plugin shows how data can be communicated from one
- * plugin to another. In this example, ANOTHER plugin ({@link Plugin_1})
+ * plugin to another. In this example, ANOTHER plugin ({@link DataTransfer_Plugin1})
  * calculates a histogram that is subsequently retrieved by THIS
- * plugin {@link Plugin_2}. Data are stored as a property of the associated
+ * plugin {@link DataTransfer_Plugin2}. Data are stored as a property of the associated
  * image (of type {@link ImagePlus}).
  * Note that the stored data should contain no instances of self-defined
  * classes, since these may be re-loaded when performing compile-and-run.
@@ -25,7 +25,7 @@ import ij.process.ImageProcessor;
  * @author W. Burger
  *
  */
-public class Plugin_2 implements PlugInFilter {
+public class DataTransfer_Plugin2 implements PlugInFilter {
 	ImagePlus im;
 	
 	public int setup(String arg, ImagePlus im) {
@@ -33,7 +33,7 @@ public class Plugin_2 implements PlugInFilter {
 		return DOES_ALL;}
 
 	public void run(ImageProcessor ip) {
-		String key = Plugin_1.HistKey;	
+		String key = DataTransfer_Plugin1.HistKey;	// get the property key from the other plugin class
 		int[] hist = (int[]) im.getProperty(key); 
 		if (hist == null){
 			IJ.error("found no histogram for image " + im.getTitle());

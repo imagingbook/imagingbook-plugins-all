@@ -17,7 +17,7 @@ import imagingbook.lib.ij.GuiTools;
  * the top-left corner of the current ROI (which may be of any type).
  * The magnification factor is determined from the width/height of the
  * ROI's bounding rectangle, such that the selected box always fits entirely
- * into the image window.
+ * into the current image window.
  * If the resulting view has no complete coverage by the source image,
  * the plugin does nothing.
  * The size of the existing image window is never changed.
@@ -28,9 +28,11 @@ import imagingbook.lib.ij.GuiTools;
  * 
  * 
  * @author WB
- * @version 2020/10/08
+ * @version 2020/12/17
  */
 public class Zoom_To_Selection implements PlugIn {
+	
+	private static boolean LOG_OUTPUT = false;
 	
 	@Override
 	public void run(String arg) {
@@ -46,6 +48,8 @@ public class Zoom_To_Selection implements PlugIn {
 		}
 		
 		Rectangle bounds = roi.getBounds();
+		IJ.log("bounds = " + bounds);
+		
 		if (bounds.width == 0 || bounds.height == 0) {
 			IJ.showMessage("Selected width and height must not be zero");
 			return;
@@ -59,6 +63,11 @@ public class Zoom_To_Selection implements PlugIn {
 		
 		if (srcRect == null) {
 			IJ.showMessage("Failed to set view");
+		}
+		else {
+			if (LOG_OUTPUT) {
+				IJ.log(String.format("new magnification: %.3f",  GuiTools.getMagnification(im)));
+			}
 		}
 	}
 	

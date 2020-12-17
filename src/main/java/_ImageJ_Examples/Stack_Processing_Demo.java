@@ -17,11 +17,12 @@ import ij.process.ImageProcessor;
  * This ImageJ plugin demonstrates how to iterate over the frames (slices)
  * of an image stack. In this case each frame is simply inverted. No new
  * frames are added to the stack. The result is automatically re-displayed
- * (unless {@literal NO_CHANGES} is specified).
+ * (unless {@link NO_CHANGES} is specified).
+ * 
  * @author W. Burger
  *
  */
-public class Stack_Demo implements PlugInFilter {
+public class Stack_Processing_Demo implements PlugInFilter {
 	
 	ImagePlus im = null;	// keep a reference to the associated ImagePlus object
 	

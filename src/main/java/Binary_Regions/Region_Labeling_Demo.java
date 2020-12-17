@@ -17,10 +17,12 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.IjUtils;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.regions.BreadthFirstLabeling;
 import imagingbook.pub.regions.DepthFirstLabeling;
+import imagingbook.pub.regions.LabelingMethod;
 import imagingbook.pub.regions.RecursiveLabeling;
 import imagingbook.pub.regions.RegionContourLabeling;
 import imagingbook.pub.regions.RegionLabeling;
@@ -33,20 +35,18 @@ import imagingbook.pub.regions.SequentialLabeling;
  * {@link BreadthFirstLabeling},
  * {@link DepthFirstLabeling},
  * {@link RecursiveLabeling},
- * {@link SequentialLabeling},
- * {@link RegionContourLabeling}.
+ * {@link RegionContourLabeling},
+ * {@link SequentialLabeling}.
  * One of four labeling types can be selected (see the {@code run()} method).
- * All should produce the same results.
+ * All should produce the same results (except {@link RegionContourLabeling},
+ * which may run out of memory easily).
+ * Requires a binary (segmented) image.
  * 
  * @author WB
- * @version 2020/04/01
+ * @version 2020/12/17
  * 
  */
 public class Region_Labeling_Demo implements PlugInFilter {
-	
-	public enum LabelingMethod {
-			BreadthFirst, DepthFirst, Recursive, Sequential, RegionAndContours
-	};
 
 	static LabelingMethod method = LabelingMethod.BreadthFirst;
 	static boolean recolor = false;
@@ -57,6 +57,12 @@ public class Region_Labeling_Demo implements PlugInFilter {
     }
 	
     public void run(ImageProcessor ip) {
+    	
+		if (!IjUtils.isBinary(ip)) {
+			IJ.showMessage("Plugin requires a binary image!");
+			return;
+		}
+		
     	if (!getUserInput())
     		return;
     	
@@ -67,16 +73,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	
     	// Copy the original to a new byte image:
     	ByteProcessor bp = ip.convertToByteProcessor(false);
-    
-		// Select a labeling method:
-		RegionLabeling segmenter = null;
-		switch (method) {
-			case BreadthFirst:		segmenter = new BreadthFirstLabeling(bp); break;
-			case DepthFirst:		segmenter = new DepthFirstLabeling(bp); break;
-			case Recursive:			segmenter = new RecursiveLabeling(bp); break; 
-			case Sequential:		segmenter = new SequentialLabeling(bp); break;
-			case RegionAndContours:	segmenter = new RegionContourLabeling(bp); break;
-		}
+		RegionLabeling segmenter = LabelingMethod.getInstance(method, bp);
 
 		// Retrieve the list of detected regions:
 		List<BinaryRegion> regions = segmenter.getRegions(true);	// regions are sorted by size
@@ -104,7 +101,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
 	 * @param r a binary region
 	 * @return
 	 */
-    double mu_11 (BinaryRegion r) {
+    private double mu_11 (BinaryRegion r) {
     	Point ctr = r.getCenterPoint();
     	final double xc = ctr.getX();	// centroid of this region
     	final double yc = ctr.getY();
@@ -116,7 +113,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	return mu11;
     }
     
-	boolean getUserInput() {
+    private boolean getUserInput() {
 		GenericDialog gd = new GenericDialog(Region_Labeling_Demo.class.getSimpleName());
 		String[] mNames = Enums.getEnumNames(LabelingMethod.class);
 		gd.addChoice("Labeling method", mNames, mNames[0]);

@@ -23,7 +23,7 @@ import imagingbook.lib.filters.GaussianFilter;
  * @version 2014-03-16
  */
 
-public class UnsharpMasking_Filter implements PlugInFilter {
+public class Unsharp_Masking_Filter implements PlugInFilter {
 
 	private static double radius = 1.0;	// radius (sigma of Gaussian)
 	private static double amount = 1.0; // amount of sharpening (1 = 100%)

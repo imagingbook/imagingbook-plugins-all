@@ -9,6 +9,7 @@
 package _ImageJ_Examples;
 
 import ij.ImagePlus;
+import ij.gui.Roi;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import java.awt.Rectangle;
@@ -16,43 +17,38 @@ import java.awt.Rectangle;
 /**
  * This ImageJ plugin shows how an image operation can be confined
  * to the currently selected region of interest (ROI). Note that
- * the ROI attached to an ImageProcessor object is a rectangle,
- * which is used to limit the range of visited pixels. In addition,
- * if the image has a mask attached, it is used to check if the
- * current pixel is inside an ROI of arbitrary shape.
- * Note that masks have their own coordinate system whose origin
- * is generally not the same as in the associated image.
+ * it uses the ROI attached to the associated {@link ImagePlus} instance.
+ * The plugin works for RGB color images and merely inverts the
+ * each pixel contained in the ROI.
  * 
  * @author WB
- * @version 2015/03/23
+ * @version 2020/12/17
  */
-public class Roi_Demo implements PlugInFilter {
-	boolean showMask = true;
+public class Roi_Processing_Demo implements PlugInFilter {
 
-	public int setup(String arg, ImagePlus imp) {
+	private ImagePlus im = null;
+
+	public int setup(String arg, ImagePlus im) {
+		this.im = im;
 		return DOES_RGB + ROI_REQUIRED;
 	}
 
 	public void run(ImageProcessor ip) {
-		Rectangle roi = ip.getRoi();
-		ImageProcessor mask = ip.getMask();
-		boolean hasMask = (mask != null);
-		if (hasMask && showMask) {
-			(new ImagePlus("The Mask", mask)).show();
-		}
+		Roi roi = im.getRoi();
+		Rectangle bounds = roi.getBounds();
 
 		// ROI corner coordinates: 
-		int rLeft = roi.x;
-		int rTop = roi.y;
-		int rRight = rLeft + roi.width;
-		int rBottom = rTop + roi.height;
+		int rLeft = bounds.x;
+		int rTop = bounds.y;
+		int rRight = rLeft + bounds.width;
+		int rBottom = rTop + bounds.height;
 
 		// process all pixels inside the ROI
 		for (int v = rTop; v < rBottom; v++) {
 			for (int u = rLeft; u < rRight; u++) {
-				if (!hasMask || mask.getPixel(u - rLeft, v - rTop) > 0) {
+				if (roi.contains(u, v)) {
 					int p = ip.getPixel(u, v);
-					ip.putPixel(u, v, ~p);
+					ip.putPixel(u, v, ~p);	// invert color values
 				}
 
 			}
