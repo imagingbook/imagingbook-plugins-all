@@ -40,8 +40,8 @@
 <span class="sourceLineNo">030</span><a id="line.30"> */</a>
 <span class="sourceLineNo">031</span><a id="line.31">public class Interpolator_Demo implements PlugInFilter {</a>
 <span class="sourceLineNo">032</span><a id="line.32">        </a>
-<span class="sourceLineNo">033</span><a id="line.33">        static InterpolationMethod ipm = InterpolationMethod.Bicubic;</a>
-<span class="sourceLineNo">034</span><a id="line.34">        static OutOfBoundsStrategy obs = OutOfBoundsStrategy.NearestBorder;</a>
+<span class="sourceLineNo">033</span><a id="line.33">        static InterpolationMethod IPM = InterpolationMethod.Bicubic;</a>
+<span class="sourceLineNo">034</span><a id="line.34">        static OutOfBoundsStrategy OBS = OutOfBoundsStrategy.NearestBorder;</a>
 <span class="sourceLineNo">035</span><a id="line.35">        </a>
 <span class="sourceLineNo">036</span><a id="line.36">        static double dx = 10.50;       // translation parameters</a>
 <span class="sourceLineNo">037</span><a id="line.37">        static double dy = -3.25;</a>
@@ -61,7 +61,7 @@
 <span class="sourceLineNo">051</span><a id="line.51">        ImageProcessor target = source.createProcessor(w, h);</a>
 <span class="sourceLineNo">052</span><a id="line.52">        </a>
 <span class="sourceLineNo">053</span><a id="line.53">        // create an ImageAccessor for the source image:</a>
-<span class="sourceLineNo">054</span><a id="line.54">        ImageAccessor sA = ImageAccessor.create(source, obs, ipm);</a>
+<span class="sourceLineNo">054</span><a id="line.54">        ImageAccessor sA = ImageAccessor.create(source, OBS, IPM);</a>
 <span class="sourceLineNo">055</span><a id="line.55">        </a>
 <span class="sourceLineNo">056</span><a id="line.56">        // create an ImageAccessor for the target image:</a>
 <span class="sourceLineNo">057</span><a id="line.57">        ImageAccessor tA = ImageAccessor.create(target);</a>
@@ -87,18 +87,18 @@
 <span class="sourceLineNo">077</span><a id="line.77">                gd.addNumericField("dy", dy, 2);</a>
 <span class="sourceLineNo">078</span><a id="line.78">                </a>
 <span class="sourceLineNo">079</span><a id="line.79">                String[] ipmOptions = Enums.getEnumNames(InterpolationMethod.class);</a>
-<span class="sourceLineNo">080</span><a id="line.80">                gd.addChoice("Interpolation method", ipmOptions, ipm.name());</a>
+<span class="sourceLineNo">080</span><a id="line.80">                gd.addChoice("Interpolation method", ipmOptions, IPM.name());</a>
 <span class="sourceLineNo">081</span><a id="line.81">                </a>
 <span class="sourceLineNo">082</span><a id="line.82">                String[] obsOptions = Enums.getEnumNames(OutOfBoundsStrategy.class);</a>
-<span class="sourceLineNo">083</span><a id="line.83">                gd.addChoice("Out-of-bounds strategy", obsOptions, obs.name());</a>
+<span class="sourceLineNo">083</span><a id="line.83">                gd.addChoice("Out-of-bounds strategy", obsOptions, OBS.name());</a>
 <span class="sourceLineNo">084</span><a id="line.84"></a>
 <span class="sourceLineNo">085</span><a id="line.85">                gd.showDialog();</a>
 <span class="sourceLineNo">086</span><a id="line.86">                if (gd.wasCanceled())</a>
 <span class="sourceLineNo">087</span><a id="line.87">                        return false;</a>
 <span class="sourceLineNo">088</span><a id="line.88">                dx = gd.getNextNumber();</a>
 <span class="sourceLineNo">089</span><a id="line.89">                dy = gd.getNextNumber();</a>
-<span class="sourceLineNo">090</span><a id="line.90">                ipm = InterpolationMethod.valueOf(gd.getNextChoice());</a>
-<span class="sourceLineNo">091</span><a id="line.91">                obs = OutOfBoundsStrategy.valueOf(gd.getNextChoice());</a>
+<span class="sourceLineNo">090</span><a id="line.90">                IPM = InterpolationMethod.valueOf(gd.getNextChoice());</a>
+<span class="sourceLineNo">091</span><a id="line.91">                OBS = OutOfBoundsStrategy.valueOf(gd.getNextChoice());</a>
 <span class="sourceLineNo">092</span><a id="line.92">                return true;</a>
 <span class="sourceLineNo">093</span><a id="line.93">        }</a>
 <span class="sourceLineNo">094</span><a id="line.94">}</a>

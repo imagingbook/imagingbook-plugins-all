@@ -64,7 +64,7 @@
 <span class="sourceLineNo">054</span><a id="line.54">                // Get the list of detected regions (sort by size):</a>
 <span class="sourceLineNo">055</span><a id="line.55">                List&lt;BinaryRegion&gt; regions = seg.getRegions(true);</a>
 <span class="sourceLineNo">056</span><a id="line.56">                if (regions.isEmpty()) {</a>
-<span class="sourceLineNo">057</span><a id="line.57">                        IJ.error("No regions detected!");</a>
+<span class="sourceLineNo">057</span><a id="line.57">                        IJ.showMessage("No regions detected!");</a>
 <span class="sourceLineNo">058</span><a id="line.58">                        return;</a>
 <span class="sourceLineNo">059</span><a id="line.59">                }</a>
 <span class="sourceLineNo">060</span><a id="line.60"></a>
@@ -102,7 +102,7 @@
 <span class="sourceLineNo">092</span><a id="line.92">                }</a>
 <span class="sourceLineNo">093</span><a id="line.93">        }</a>
 <span class="sourceLineNo">094</span><a id="line.94">        </a>
-<span class="sourceLineNo">095</span><a id="line.95">        boolean getUserInput() {</a>
+<span class="sourceLineNo">095</span><a id="line.95">        private boolean getUserInput() {</a>
 <span class="sourceLineNo">096</span><a id="line.96">                GenericDialog gd = new GenericDialog(Region_Contours_Demo.class.getSimpleName());</a>
 <span class="sourceLineNo">097</span><a id="line.97">                gd.addCheckbox("List regions", ListRegions);</a>
 <span class="sourceLineNo">098</span><a id="line.98">                gd.addCheckbox("List contour points", ListContourPoints);</a>

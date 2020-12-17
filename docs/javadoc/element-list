@@ -1,9 +1,4 @@
-_Delaunay
-_Graphics
 _ImageJ_Examples
-_Point_Fitting
-_Setup_Test
-_XXX
 Automatic_Thresholding
 Binary_Regions
 Color_Edges
@@ -12,7 +7,6 @@ Color_Images
 Color_Quantization
 Colorimetric_Color_Spaces
 Corner_Detection
-Corner_Detection_Tests
 Edge_Preserving_Smoothing
 Edges_Contours
 Filters

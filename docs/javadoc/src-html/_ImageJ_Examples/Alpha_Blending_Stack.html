@@ -30,85 +30,97 @@
 <span class="sourceLineNo">020</span><a id="line.20">import ij.process.ByteProcessor;</a>
 <span class="sourceLineNo">021</span><a id="line.21">import ij.process.ImageProcessor;</a>
 <span class="sourceLineNo">022</span><a id="line.22"></a>
-<span class="sourceLineNo">023</span><a id="line.23">public class Alpha_Blending_Stack implements PlugInFilter {</a>
-<span class="sourceLineNo">024</span><a id="line.24">        static int nFrames = 10;</a>
-<span class="sourceLineNo">025</span><a id="line.25"></a>
-<span class="sourceLineNo">026</span><a id="line.26">        ImagePlus fgIm; // foreground image (chosen interactively)</a>
-<span class="sourceLineNo">027</span><a id="line.27">        </a>
-<span class="sourceLineNo">028</span><a id="line.28">        public int setup(String arg, ImagePlus imp) {</a>
-<span class="sourceLineNo">029</span><a id="line.29">                return DOES_8G;</a>
-<span class="sourceLineNo">030</span><a id="line.30">        }</a>
-<span class="sourceLineNo">031</span><a id="line.31"></a>
-<span class="sourceLineNo">032</span><a id="line.32">        public void run(ImageProcessor bgIp) {</a>
-<span class="sourceLineNo">033</span><a id="line.33">                // bgIp = background image</a>
-<span class="sourceLineNo">034</span><a id="line.34">                if (runDialog()) { // open dialog box (returns false if cancelled)</a>
-<span class="sourceLineNo">035</span><a id="line.35">                        int w = bgIp.getWidth();</a>
-<span class="sourceLineNo">036</span><a id="line.36">                        int h = bgIp.getHeight();</a>
-<span class="sourceLineNo">037</span><a id="line.37"></a>
-<span class="sourceLineNo">038</span><a id="line.38">                        // prepare foreground image</a>
-<span class="sourceLineNo">039</span><a id="line.39">                        ImageProcessor fgIp = fgIm.getProcessor().convertToByte(false);</a>
-<span class="sourceLineNo">040</span><a id="line.40">                        ImageProcessor fgTmpIp = bgIp.duplicate();</a>
+<span class="sourceLineNo">023</span><a id="line.23">/**</a>
+<span class="sourceLineNo">024</span><a id="line.24"> * This imageJ plugin demonstrates blending of two images</a>
+<span class="sourceLineNo">025</span><a id="line.25"> * and generating a stack of intermediate images.</a>
+<span class="sourceLineNo">026</span><a id="line.26"> * At least two images must be open. The active image is </a>
+<span class="sourceLineNo">027</span><a id="line.27"> * taken as the first image, the second image may be selected</a>
+<span class="sourceLineNo">028</span><a id="line.28"> * interactively.</a>
+<span class="sourceLineNo">029</span><a id="line.29"> * </a>
+<span class="sourceLineNo">030</span><a id="line.30"> * @author WB</a>
+<span class="sourceLineNo">031</span><a id="line.31"> *</a>
+<span class="sourceLineNo">032</span><a id="line.32"> */</a>
+<span class="sourceLineNo">033</span><a id="line.33">public class Alpha_Blending_Stack implements PlugInFilter {</a>
+<span class="sourceLineNo">034</span><a id="line.34">        static int nFrames = 10;</a>
+<span class="sourceLineNo">035</span><a id="line.35"></a>
+<span class="sourceLineNo">036</span><a id="line.36">        ImagePlus fgIm = null; // foreground image (chosen interactively)</a>
+<span class="sourceLineNo">037</span><a id="line.37">        </a>
+<span class="sourceLineNo">038</span><a id="line.38">        public int setup(String arg, ImagePlus imp) {</a>
+<span class="sourceLineNo">039</span><a id="line.39">                return DOES_8G;</a>
+<span class="sourceLineNo">040</span><a id="line.40">        }</a>
 <span class="sourceLineNo">041</span><a id="line.41"></a>
-<span class="sourceLineNo">042</span><a id="line.42">                        // create image stack</a>
-<span class="sourceLineNo">043</span><a id="line.43">                        ImagePlus movie = NewImage.createByteImage("Movie", w, h, nFrames, 0); </a>
-<span class="sourceLineNo">044</span><a id="line.44">                        ImageStack stack = movie.getStack();</a>
-<span class="sourceLineNo">045</span><a id="line.45"></a>
-<span class="sourceLineNo">046</span><a id="line.46">                        // loop over stack frames</a>
-<span class="sourceLineNo">047</span><a id="line.47">                        for (int i = 0; i &lt; nFrames; i++) {</a>
-<span class="sourceLineNo">048</span><a id="line.48">                                // transparency of foreground image</a>
-<span class="sourceLineNo">049</span><a id="line.49">                                double iAlpha = 1.0 - (double) i / (nFrames - 1);</a>
-<span class="sourceLineNo">050</span><a id="line.50">                                ImageProcessor iFrame = stack.getProcessor(i + 1); </a>
-<span class="sourceLineNo">051</span><a id="line.51">                                // copy background image to frame i</a>
-<span class="sourceLineNo">052</span><a id="line.52">                                iFrame.insert(bgIp, 0, 0);</a>
-<span class="sourceLineNo">053</span><a id="line.53">                                iFrame.multiply(iAlpha);</a>
+<span class="sourceLineNo">042</span><a id="line.42">        public void run(ImageProcessor bgIp) {</a>
+<span class="sourceLineNo">043</span><a id="line.43">                // bgIp = background image</a>
+<span class="sourceLineNo">044</span><a id="line.44">                if (!runDialog()) { // open dialog box (returns false if cancelled)</a>
+<span class="sourceLineNo">045</span><a id="line.45">                        return;</a>
+<span class="sourceLineNo">046</span><a id="line.46">                }</a>
+<span class="sourceLineNo">047</span><a id="line.47">                </a>
+<span class="sourceLineNo">048</span><a id="line.48">                int w = bgIp.getWidth();</a>
+<span class="sourceLineNo">049</span><a id="line.49">                int h = bgIp.getHeight();</a>
+<span class="sourceLineNo">050</span><a id="line.50"></a>
+<span class="sourceLineNo">051</span><a id="line.51">                // prepare foreground image</a>
+<span class="sourceLineNo">052</span><a id="line.52">                ImageProcessor fgIp = fgIm.getProcessor().convertToByte(false);</a>
+<span class="sourceLineNo">053</span><a id="line.53">                ImageProcessor fgTmpIp = bgIp.duplicate();</a>
 <span class="sourceLineNo">054</span><a id="line.54"></a>
-<span class="sourceLineNo">055</span><a id="line.55">                                // copy foreground image and make transparent</a>
-<span class="sourceLineNo">056</span><a id="line.56">                                fgTmpIp.insert(fgIp, 0, 0);</a>
-<span class="sourceLineNo">057</span><a id="line.57">                                fgTmpIp.multiply(1 - iAlpha);</a>
+<span class="sourceLineNo">055</span><a id="line.55">                // create image stack</a>
+<span class="sourceLineNo">056</span><a id="line.56">                ImagePlus movie = NewImage.createByteImage("Movie", w, h, nFrames, 0); </a>
+<span class="sourceLineNo">057</span><a id="line.57">                ImageStack stack = movie.getStack();</a>
 <span class="sourceLineNo">058</span><a id="line.58"></a>
-<span class="sourceLineNo">059</span><a id="line.59">                                // add foreground image frame \Code{i}</a>
-<span class="sourceLineNo">060</span><a id="line.60">                                ByteBlitter blitter = new ByteBlitter((ByteProcessor) iFrame);</a>
-<span class="sourceLineNo">061</span><a id="line.61">                                blitter.copyBits(fgTmpIp, 0, 0, Blitter.ADD);</a>
-<span class="sourceLineNo">062</span><a id="line.62">                        }</a>
-<span class="sourceLineNo">063</span><a id="line.63"></a>
-<span class="sourceLineNo">064</span><a id="line.64">                        // display movie (image stack)</a>
-<span class="sourceLineNo">065</span><a id="line.65">                        movie.show();</a>
-<span class="sourceLineNo">066</span><a id="line.66">                }</a>
-<span class="sourceLineNo">067</span><a id="line.67">        }</a>
-<span class="sourceLineNo">068</span><a id="line.68">        </a>
-<span class="sourceLineNo">069</span><a id="line.69">        boolean runDialog() {</a>
-<span class="sourceLineNo">070</span><a id="line.70">                // get list of open images</a>
-<span class="sourceLineNo">071</span><a id="line.71">                int[] windowList = WindowManager.getIDList(); </a>
-<span class="sourceLineNo">072</span><a id="line.72">                if (windowList == null) {</a>
-<span class="sourceLineNo">073</span><a id="line.73">                        IJ.noImage(); </a>
-<span class="sourceLineNo">074</span><a id="line.74">                        return false;</a>
+<span class="sourceLineNo">059</span><a id="line.59">                // loop over stack frames</a>
+<span class="sourceLineNo">060</span><a id="line.60">                for (int i = 0; i &lt; nFrames; i++) {</a>
+<span class="sourceLineNo">061</span><a id="line.61">                        // transparency of foreground image</a>
+<span class="sourceLineNo">062</span><a id="line.62">                        double iAlpha = 1.0 - (double) i / (nFrames - 1);</a>
+<span class="sourceLineNo">063</span><a id="line.63">                        ImageProcessor iFrame = stack.getProcessor(i + 1); </a>
+<span class="sourceLineNo">064</span><a id="line.64">                        // copy background image to frame i</a>
+<span class="sourceLineNo">065</span><a id="line.65">                        iFrame.insert(bgIp, 0, 0);</a>
+<span class="sourceLineNo">066</span><a id="line.66">                        iFrame.multiply(iAlpha);</a>
+<span class="sourceLineNo">067</span><a id="line.67"></a>
+<span class="sourceLineNo">068</span><a id="line.68">                        // copy foreground image and make transparent</a>
+<span class="sourceLineNo">069</span><a id="line.69">                        fgTmpIp.insert(fgIp, 0, 0);</a>
+<span class="sourceLineNo">070</span><a id="line.70">                        fgTmpIp.multiply(1 - iAlpha);</a>
+<span class="sourceLineNo">071</span><a id="line.71"></a>
+<span class="sourceLineNo">072</span><a id="line.72">                        // add foreground image frame \Code{i}</a>
+<span class="sourceLineNo">073</span><a id="line.73">                        ByteBlitter blitter = new ByteBlitter((ByteProcessor) iFrame);</a>
+<span class="sourceLineNo">074</span><a id="line.74">                        blitter.copyBits(fgTmpIp, 0, 0, Blitter.ADD);</a>
 <span class="sourceLineNo">075</span><a id="line.75">                }</a>
-<span class="sourceLineNo">076</span><a id="line.76">                String[] windowTitles = new String[windowList.length];</a>
-<span class="sourceLineNo">077</span><a id="line.77">                for (int i = 0; i &lt; windowList.length; i++) {</a>
-<span class="sourceLineNo">078</span><a id="line.78">                        ImagePlus imp = WindowManager.getImage(windowList[i]); </a>
-<span class="sourceLineNo">079</span><a id="line.79">                        if (imp != null)</a>
-<span class="sourceLineNo">080</span><a id="line.80">                                windowTitles[i] = imp.getShortTitle(); </a>
-<span class="sourceLineNo">081</span><a id="line.81">                        else</a>
-<span class="sourceLineNo">082</span><a id="line.82">                                windowTitles[i] = "untitled";</a>
-<span class="sourceLineNo">083</span><a id="line.83">                }</a>
-<span class="sourceLineNo">084</span><a id="line.84">                GenericDialog gd = new GenericDialog("Alpha Blending"); </a>
-<span class="sourceLineNo">085</span><a id="line.85">                gd.addChoice("Foreground image:", </a>
-<span class="sourceLineNo">086</span><a id="line.86">                windowTitles, windowTitles[0]);</a>
-<span class="sourceLineNo">087</span><a id="line.87">                gd.addNumericField("Frames:", nFrames, 0); </a>
-<span class="sourceLineNo">088</span><a id="line.88">                gd.showDialog(); </a>
-<span class="sourceLineNo">089</span><a id="line.89">                if (gd.wasCanceled()) </a>
-<span class="sourceLineNo">090</span><a id="line.90">                        return false;</a>
-<span class="sourceLineNo">091</span><a id="line.91">                else {</a>
-<span class="sourceLineNo">092</span><a id="line.92">                        int img2Index = gd.getNextChoiceIndex(); </a>
-<span class="sourceLineNo">093</span><a id="line.93">                        fgIm = WindowManager.getImage(windowList[img2Index]);</a>
-<span class="sourceLineNo">094</span><a id="line.94">                        nFrames = (int) gd.getNextNumber(); </a>
-<span class="sourceLineNo">095</span><a id="line.95">                        if (nFrames &lt; 2)</a>
-<span class="sourceLineNo">096</span><a id="line.96">                                nFrames = 2;</a>
-<span class="sourceLineNo">097</span><a id="line.97">                        return true;</a>
-<span class="sourceLineNo">098</span><a id="line.98">                }</a>
-<span class="sourceLineNo">099</span><a id="line.99">        }</a>
-<span class="sourceLineNo">100</span><a id="line.100"></a>
-<span class="sourceLineNo">101</span><a id="line.101">}</a>
+<span class="sourceLineNo">076</span><a id="line.76"></a>
+<span class="sourceLineNo">077</span><a id="line.77">                // display movie (image stack)</a>
+<span class="sourceLineNo">078</span><a id="line.78">                movie.show();</a>
+<span class="sourceLineNo">079</span><a id="line.79">        }</a>
+<span class="sourceLineNo">080</span><a id="line.80">        </a>
+<span class="sourceLineNo">081</span><a id="line.81">        private boolean runDialog() {</a>
+<span class="sourceLineNo">082</span><a id="line.82">                // get list of open images</a>
+<span class="sourceLineNo">083</span><a id="line.83">                int[] windowList = WindowManager.getIDList(); </a>
+<span class="sourceLineNo">084</span><a id="line.84">                if (windowList == null) {</a>
+<span class="sourceLineNo">085</span><a id="line.85">                        IJ.noImage(); </a>
+<span class="sourceLineNo">086</span><a id="line.86">                        return false;</a>
+<span class="sourceLineNo">087</span><a id="line.87">                }</a>
+<span class="sourceLineNo">088</span><a id="line.88">                String[] windowTitles = new String[windowList.length];</a>
+<span class="sourceLineNo">089</span><a id="line.89">                for (int i = 0; i &lt; windowList.length; i++) {</a>
+<span class="sourceLineNo">090</span><a id="line.90">                        ImagePlus imp = WindowManager.getImage(windowList[i]); </a>
+<span class="sourceLineNo">091</span><a id="line.91">                        if (imp != null)</a>
+<span class="sourceLineNo">092</span><a id="line.92">                                windowTitles[i] = imp.getShortTitle(); </a>
+<span class="sourceLineNo">093</span><a id="line.93">                        else</a>
+<span class="sourceLineNo">094</span><a id="line.94">                                windowTitles[i] = "untitled";</a>
+<span class="sourceLineNo">095</span><a id="line.95">                }</a>
+<span class="sourceLineNo">096</span><a id="line.96">                GenericDialog gd = new GenericDialog("Alpha Blending"); </a>
+<span class="sourceLineNo">097</span><a id="line.97">                gd.addChoice("Foreground image:", </a>
+<span class="sourceLineNo">098</span><a id="line.98">                windowTitles, windowTitles[0]);</a>
+<span class="sourceLineNo">099</span><a id="line.99">                gd.addNumericField("Frames:", nFrames, 0); </a>
+<span class="sourceLineNo">100</span><a id="line.100">                gd.showDialog(); </a>
+<span class="sourceLineNo">101</span><a id="line.101">                if (gd.wasCanceled()) </a>
+<span class="sourceLineNo">102</span><a id="line.102">                        return false;</a>
+<span class="sourceLineNo">103</span><a id="line.103">                else {</a>
+<span class="sourceLineNo">104</span><a id="line.104">                        int img2Index = gd.getNextChoiceIndex(); </a>
+<span class="sourceLineNo">105</span><a id="line.105">                        fgIm = WindowManager.getImage(windowList[img2Index]);</a>
+<span class="sourceLineNo">106</span><a id="line.106">                        nFrames = (int) gd.getNextNumber(); </a>
+<span class="sourceLineNo">107</span><a id="line.107">                        if (nFrames &lt; 2)</a>
+<span class="sourceLineNo">108</span><a id="line.108">                                nFrames = 2;</a>
+<span class="sourceLineNo">109</span><a id="line.109">                        return true;</a>
+<span class="sourceLineNo">110</span><a id="line.110">                }</a>
+<span class="sourceLineNo">111</span><a id="line.111">        }</a>
+<span class="sourceLineNo">112</span><a id="line.112"></a>
+<span class="sourceLineNo">113</span><a id="line.113">}</a>
 
 
 
