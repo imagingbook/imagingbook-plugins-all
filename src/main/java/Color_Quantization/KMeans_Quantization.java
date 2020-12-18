@@ -10,11 +10,11 @@ package Color_Quantization;
 
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
+import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.ij.IjLogStream;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.color.quantize.ColorQuantizer;
 import imagingbook.pub.color.quantize.KMeansClusteringQuantizer;
@@ -35,7 +35,7 @@ public class KMeans_Quantization implements PlugInFilter {
 	private static boolean LIST_COLOR_TABLE = false;
 	
 	static {
-		IjLogStream.redirectSystem();
+		LogStream.redirectSystem();
 	}
 	
 	public int setup(String arg, ImagePlus imp) {

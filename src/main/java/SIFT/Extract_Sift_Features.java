@@ -15,10 +15,10 @@ import java.util.List;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
+import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.ij.IjLogStream;
 import imagingbook.pub.sift.SiftDescriptor;
 import imagingbook.pub.sift.SiftDetector;
 import imagingbook.pub.sift.util.Colors;
@@ -38,7 +38,7 @@ import imagingbook.pub.sift.util.SiftOverlay;
 public class Extract_Sift_Features implements PlugInFilter {
 	
 	static {
-		IjLogStream.redirectSystem();
+		LogStream.redirectSystem();
 	}
 
 	private static double FeatureScale = 1.0; // 1.5;
