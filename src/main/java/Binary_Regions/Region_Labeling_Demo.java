@@ -23,6 +23,7 @@ import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.regions.BreadthFirstLabeling;
 import imagingbook.pub.regions.DepthFirstLabeling;
 import imagingbook.pub.regions.LabelingMethod;
+import imagingbook.pub.regions.Neighborhood;
 import imagingbook.pub.regions.RecursiveLabeling;
 import imagingbook.pub.regions.RegionContourLabeling;
 import imagingbook.pub.regions.RegionLabeling;
@@ -44,7 +45,7 @@ import imagingbook.pub.regions.utils.Images;
  * Requires a binary (segmented) image.
  * 
  * @author WB
- * @version 2020/12/17
+ * @version 2020/12/20
  * 
  */
 public class Region_Labeling_Demo implements PlugInFilter {
@@ -76,6 +77,10 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	// Copy the original to a new byte image:
     	ByteProcessor bp = ip.convertToByteProcessor(false);
 		RegionLabeling segmenter = LabelingMethod.getInstance(method, bp);
+		segmenter.neighborhood = Neighborhood.four;
+		if (!segmenter.segment()) {
+			IJ.error("Segmentation failed!");
+		}
 
 		// Retrieve the list of detected regions:
 		List<BinaryRegion> regions = segmenter.getRegions(true);	// regions are sorted by size
