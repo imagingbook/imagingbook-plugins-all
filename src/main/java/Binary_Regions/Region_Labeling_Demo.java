@@ -19,11 +19,10 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.lib.util.Enums;
-import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.regions.BreadthFirstLabeling;
 import imagingbook.pub.regions.DepthFirstLabeling;
 import imagingbook.pub.regions.LabelingMethod;
-import imagingbook.pub.regions.Neighborhood;
+import imagingbook.pub.regions.NeighborhoodType;
 import imagingbook.pub.regions.RecursiveLabeling;
 import imagingbook.pub.regions.RegionContourLabeling;
 import imagingbook.pub.regions.RegionLabeling;
@@ -77,7 +76,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	// Copy the original to a new byte image:
     	ByteProcessor bp = ip.convertToByteProcessor(false);
 		RegionLabeling segmenter = LabelingMethod.getInstance(method, bp);
-		segmenter.neighborhood = Neighborhood.four;
+		segmenter.neighborhood = NeighborhoodType.N4;
 		if (!segmenter.segment()) {
 			IJ.error("Segmentation failed!");
 		}
@@ -106,23 +105,23 @@ public class Region_Labeling_Demo implements PlugInFilter {
 //		}
     }
     
-	/**
-	 * This method demonstrates how a particular region's central moment
-     * mu_11 could be calculated from the finished region labeling.
-	 * @param r a binary region
-	 * @return
-	 */
-    private double mu_11 (BinaryRegion r) {
-    	Point ctr = r.getCenterPoint();
-    	final double xc = ctr.getX();	// centroid of this region
-    	final double yc = ctr.getY();
-    	double mu11 = 0;
-    	// iterate through all pixels of regions r:
-    	for (Point p : r) {
-    		mu11 = mu11 + (p.getX() - xc) * (p.getY() - yc);
-    	}
-    	return mu11;
-    }
+//	/**
+//	 * This method demonstrates how a particular region's central moment
+//     * mu_11 could be calculated from the finished region labeling.
+//	 * @param r a binary region
+//	 * @return
+//	 */
+//    private double mu_11 (BinaryRegion r) {
+//    	Point ctr = r.getCenterPoint();
+//    	final double xc = ctr.getX();	// centroid of this region
+//    	final double yc = ctr.getY();
+//    	double mu11 = 0;
+//    	// iterate through all pixels of regions r:
+//    	for (Point p : r) {
+//    		mu11 = mu11 + (p.getX() - xc) * (p.getY() - yc);
+//    	}
+//    	return mu11;
+//    }
     
     private boolean getUserInput() {
 		GenericDialog gd = new GenericDialog(Region_Labeling_Demo.class.getSimpleName());
