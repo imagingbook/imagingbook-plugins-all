@@ -16,10 +16,10 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.regions.Contour;
-import imagingbook.pub.regions.ContourOverlay;
 import imagingbook.pub.regions.RegionContourLabeling;
 import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
-
+import imagingbook.pub.regions.utils.ContourOverlay;
+import imagingbook.pub.regions.utils.Images;
 import imagingbook.pub.geometry.basic.Point;
 import java.util.List;
 
@@ -29,7 +29,7 @@ import java.util.List;
  * The resulting contours are displayed as a non-destructive vector overlay.
  * 
  * @author WB
- * @version 2020/04/01
+ * @version 2020/12/20
  */
 public class Region_Contours_Demo implements PlugInFilter {
 	
@@ -84,7 +84,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 		
 		// Display the contours if desired:
 		if (ShowContours) {
-			ImageProcessor lip = seg.makeLabelImage(false);
+			ImageProcessor lip = Images.makeLabelImage(seg, false);
 			ImagePlus lim = new ImagePlus("Region labels and contours", lip);
 			Overlay oly = new ContourOverlay(seg);
 			lim.setOverlay(oly);

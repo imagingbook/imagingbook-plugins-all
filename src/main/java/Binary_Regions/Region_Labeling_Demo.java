@@ -28,6 +28,7 @@ import imagingbook.pub.regions.RegionContourLabeling;
 import imagingbook.pub.regions.RegionLabeling;
 import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
 import imagingbook.pub.regions.SequentialLabeling;
+import imagingbook.pub.regions.utils.Images;
 
 /**
  * This ImageJ plugin is an example for how to use the region
@@ -49,8 +50,9 @@ import imagingbook.pub.regions.SequentialLabeling;
 public class Region_Labeling_Demo implements PlugInFilter {
 
 	static LabelingMethod method = LabelingMethod.BreadthFirst;
-	static boolean recolor = false;
-	static boolean listRegions = true;
+	
+	static boolean ColorRegions = false;
+	static boolean ListRegions = false;
 	
     public int setup(String arg, ImagePlus im) {
 		return DOES_8G + NO_CHANGES;
@@ -77,22 +79,26 @@ public class Region_Labeling_Demo implements PlugInFilter {
 
 		// Retrieve the list of detected regions:
 		List<BinaryRegion> regions = segmenter.getRegions(true);	// regions are sorted by size
-		if (listRegions) {
-			IJ.log("Detected regions (sorted by size): " + regions.size());
+		
+		IJ.log("Detected regions: " + regions.size());
+		IJ.log("MaxLabel: " + segmenter.getMaxLabel());
+		
+		if (ListRegions) {
+			IJ.log("Regions sorted by size: ");
 			for (BinaryRegion r: regions) {
 				IJ.log(r.toString());
 			}
 		}
 		
 		// Show the resulting labeling as a random color image
-		ImageProcessor labelIp = segmenter.makeLabelImage(recolor);
-		(new ImagePlus("Label Image", labelIp)).show();
+		ImageProcessor labelIp = Images.makeLabelImage(segmenter, ColorRegions);
+		(new ImagePlus(method.name(), labelIp)).show();
 		
 		// Example for processing all regions:
-		for (BinaryRegion r : regions) {
-			double mu11 = mu_11(r);	// example for calculating region statistics (see below)
-			IJ.log("Region " + r.getLabel() + ": mu11=" + mu11);
-		}
+//		for (BinaryRegion r : regions) {
+//			double mu11 = mu_11(r);	// example for calculating region statistics (see below)
+//			IJ.log("Region " + r.getLabel() + ": mu11=" + mu11);
+//		}
     }
     
 	/**
@@ -117,15 +123,15 @@ public class Region_Labeling_Demo implements PlugInFilter {
 		GenericDialog gd = new GenericDialog(Region_Labeling_Demo.class.getSimpleName());
 		String[] mNames = Enums.getEnumNames(LabelingMethod.class);
 		gd.addChoice("Labeling method", mNames, mNames[0]);
-		gd.addCheckbox("Color result", recolor);
-		gd.addCheckbox("List regions", listRegions);
+		gd.addCheckbox("Color result", ColorRegions);
+		gd.addCheckbox("List regions", ListRegions);
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			return false;
 		}
 		method = LabelingMethod.valueOf(gd.getNextChoice());
-		recolor = gd.getNextBoolean();
-		listRegions = gd.getNextBoolean();
+		ColorRegions = gd.getNextBoolean();
+		ListRegions = gd.getNextBoolean();
 		return true;
 	}
     
