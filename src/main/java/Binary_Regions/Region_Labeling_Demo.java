@@ -76,7 +76,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	// Copy the original to a new byte image:
     	ByteProcessor bp = ip.convertToByteProcessor(false);
 		RegionLabeling segmenter = LabelingMethod.getInstance(method, bp);
-		segmenter.neighborhood = NeighborhoodType.N4;
+		//segmenter.neighborhood = NeighborhoodType.N4;
 		if (!segmenter.segment()) {
 			IJ.error("Segmentation failed!");
 		}
