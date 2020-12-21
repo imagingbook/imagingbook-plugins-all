@@ -16,6 +16,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.regions.Contour;
+import imagingbook.pub.regions.NeighborhoodType;
 import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.regions.utils.ContourOverlay;
@@ -33,7 +34,9 @@ import java.util.List;
  */
 public class Region_Contours_Demo implements PlugInFilter {
 	
-	static boolean ListRegions = true;
+	static NeighborhoodType Neighborhood = NeighborhoodType.N8;
+	
+	static boolean ListRegions = false;
 	static boolean ListContourPoints = false;
 	static boolean ShowContours = true;
 	
@@ -49,7 +52,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 	   	ByteProcessor I = ip.convertToByteProcessor();
 	   	
 	   	// Create the region labeler / contour tracer:
-		SegmentationRegionContour seg = new SegmentationRegionContour(I);
+		SegmentationRegionContour seg = new SegmentationRegionContour(I, Neighborhood);
 		
 		// Get the list of detected regions (sort by size):
 		List<BinaryRegion> regions = seg.getRegions(true);
@@ -60,7 +63,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 
 		if (ListRegions) {
 			IJ.log("Detected regions: " + regions.size());
-			for (BinaryRegion r: regions) {
+			for (BinaryRegion r : regions) {
 				IJ.log(r.toString());
 			}
 		}
@@ -92,8 +95,11 @@ public class Region_Contours_Demo implements PlugInFilter {
 		}
 	}
 	
+	// --------------------------------------------------------------------------
+	
 	private boolean getUserInput() {
 		GenericDialog gd = new GenericDialog(Region_Contours_Demo.class.getSimpleName());
+		gd.addEnumChoice("Neighborhood type", Neighborhood);
 		gd.addCheckbox("List regions", ListRegions);
 		gd.addCheckbox("List contour points", ListContourPoints);
 		gd.addCheckbox("Show contours", ShowContours);
@@ -101,6 +107,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 		if (gd.wasCanceled()) {
 			return false;
 		}
+		Neighborhood = gd.getNextEnumChoice(NeighborhoodType.class);
 		ListRegions = gd.getNextBoolean();
 		ListContourPoints = gd.getNextBoolean();
 		ShowContours = gd.getNextBoolean();

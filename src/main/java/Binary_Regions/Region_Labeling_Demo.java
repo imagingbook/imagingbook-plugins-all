@@ -9,6 +9,9 @@
 package Binary_Regions;
 
 
+import static imagingbook.pub.regions.LabelingMethod.BreadthFirst;
+import static imagingbook.pub.regions.LabelingMethod.Recursive;
+
 import java.util.List;
 
 import ij.IJ;
@@ -18,15 +21,14 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
-import imagingbook.lib.util.Enums;
-import imagingbook.pub.regions.SegmentationBreadthFirst;
-import imagingbook.pub.regions.SegmentationDepthFirst;
-import imagingbook.pub.regions.LabelingMethod;
-import imagingbook.pub.regions.NeighborhoodType;
-import imagingbook.pub.regions.SegmentationRecursive;
-import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.BinaryRegionSegmentation;
 import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
+import imagingbook.pub.regions.LabelingMethod;
+import imagingbook.pub.regions.NeighborhoodType;
+import imagingbook.pub.regions.SegmentationBreadthFirst;
+import imagingbook.pub.regions.SegmentationDepthFirst;
+import imagingbook.pub.regions.SegmentationRecursive;
+import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.SegmentationSequential;
 import imagingbook.pub.regions.utils.Images;
 
@@ -49,7 +51,8 @@ import imagingbook.pub.regions.utils.Images;
  */
 public class Region_Labeling_Demo implements PlugInFilter {
 
-	static LabelingMethod method = LabelingMethod.BreadthFirst;
+	static LabelingMethod Method = BreadthFirst;
+	static NeighborhoodType Neighborhood = NeighborhoodType.N8;
 	
 	static boolean ColorRegions = false;
 	static boolean ListRegions = false;
@@ -68,14 +71,14 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	if (!getUserInput())
     		return;
     	
-    	if (method == LabelingMethod.Recursive && 
+    	if (Method == Recursive && 
     			!IJ.showMessageWithCancel("Recursive labeling", "This may run out of stack memory!\n" + "Continue?")) {
 			return;
     	}
     	
     	// Copy the original to a new byte image:
     	ByteProcessor bp = ip.convertToByteProcessor(false);
-		BinaryRegionSegmentation segmenter = LabelingMethod.getInstance(method, bp, NeighborhoodType.N4);
+		BinaryRegionSegmentation segmenter = LabelingMethod.getInstance(Method, bp, Neighborhood);
 
 //		if (!segmenter.segment()) {
 //			IJ.error("Segmentation failed!");
@@ -101,7 +104,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
 		
 		// Show the resulting labeling as a random color image
 		ImageProcessor labelIp = Images.makeLabelImage(segmenter, ColorRegions);
-		(new ImagePlus(method.name(), labelIp)).show();
+		(new ImagePlus(Method.name(), labelIp)).show();
 		
 		// Example for processing all regions:
 //		for (BinaryRegion r : regions) {
@@ -130,15 +133,16 @@ public class Region_Labeling_Demo implements PlugInFilter {
     
     private boolean getUserInput() {
 		GenericDialog gd = new GenericDialog(Region_Labeling_Demo.class.getSimpleName());
-		String[] mNames = Enums.getEnumNames(LabelingMethod.class);
-		gd.addChoice("Labeling method", mNames, mNames[0]);
+		gd.addEnumChoice("Segmentation method", Method);
+		gd.addEnumChoice("Neighborhood type", Neighborhood);
 		gd.addCheckbox("Color result", ColorRegions);
 		gd.addCheckbox("List regions", ListRegions);
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			return false;
 		}
-		method = LabelingMethod.valueOf(gd.getNextChoice());
+		Method = gd.getNextEnumChoice(LabelingMethod.class);
+		Neighborhood = gd.getNextEnumChoice(NeighborhoodType.class);
 		ColorRegions = gd.getNextBoolean();
 		ListRegions = gd.getNextBoolean();
 		return true;
