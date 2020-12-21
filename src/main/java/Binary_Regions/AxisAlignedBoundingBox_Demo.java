@@ -21,8 +21,8 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.geometry.hulls.AxisAlignedBoundingBox;
-import imagingbook.pub.regions.RegionContourLabeling;
-import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
+import imagingbook.pub.regions.SegmentationRegionContour;
+import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
 
 /**
  * This plugin creates a binary region segmentation, calculates 
@@ -52,7 +52,7 @@ public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 			return;
 		}
 		
-		RegionContourLabeling segmenter = new RegionContourLabeling((ByteProcessor) ip);
+		SegmentationRegionContour segmenter = new SegmentationRegionContour((ByteProcessor) ip);
 		List<BinaryRegion> regions = segmenter.getRegions();
 		if (regions.isEmpty()) {
 			IJ.error("No regions detected!");

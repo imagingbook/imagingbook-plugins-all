@@ -23,7 +23,7 @@ import imagingbook.pub.fd.FourierDescriptor;
 import imagingbook.pub.fd.FourierDescriptorUniform;
 import imagingbook.pub.geometry.basic.Point;
 import imagingbook.pub.regions.Contour;
-import imagingbook.pub.regions.RegionContourLabeling;
+import imagingbook.pub.regions.SegmentationRegionContour;
 
 
 /**
@@ -62,7 +62,7 @@ public class Fourier_Descriptor_RegularSampling extends CommonSetup implements P
 		ByteProcessor bp = (ByteProcessor) ip;
 		
 		// segment the image and select the longest outer region contour:
-		RegionContourLabeling labeling = new RegionContourLabeling(bp);
+		SegmentationRegionContour labeling = new SegmentationRegionContour(bp);
 		List<Contour> outerContours = labeling.getOuterContours(true);
 		if (outerContours.isEmpty()) {
 			IJ.error("no regions found");

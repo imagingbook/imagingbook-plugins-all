@@ -19,27 +19,27 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.lib.util.Enums;
-import imagingbook.pub.regions.BreadthFirstLabeling;
-import imagingbook.pub.regions.DepthFirstLabeling;
+import imagingbook.pub.regions.SegmentationBreadthFirst;
+import imagingbook.pub.regions.SegmentationDepthFirst;
 import imagingbook.pub.regions.LabelingMethod;
 import imagingbook.pub.regions.NeighborhoodType;
-import imagingbook.pub.regions.RecursiveLabeling;
-import imagingbook.pub.regions.RegionContourLabeling;
-import imagingbook.pub.regions.RegionLabeling;
-import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
-import imagingbook.pub.regions.SequentialLabeling;
+import imagingbook.pub.regions.SegmentationRecursive;
+import imagingbook.pub.regions.SegmentationRegionContour;
+import imagingbook.pub.regions.BinaryRegionSegmentation;
+import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
+import imagingbook.pub.regions.SegmentationSequential;
 import imagingbook.pub.regions.utils.Images;
 
 /**
  * This ImageJ plugin is an example for how to use the region
  * labeling classes in the "regions" package:
- * {@link BreadthFirstLabeling},
- * {@link DepthFirstLabeling},
- * {@link RecursiveLabeling},
- * {@link RegionContourLabeling},
- * {@link SequentialLabeling}.
+ * {@link SegmentationBreadthFirst},
+ * {@link SegmentationDepthFirst},
+ * {@link SegmentationRecursive},
+ * {@link SegmentationRegionContour},
+ * {@link SegmentationSequential}.
  * One of four labeling types can be selected (see the {@code run()} method).
- * All should produce the same results (except {@link RegionContourLabeling},
+ * All should produce the same results (except {@link SegmentationRegionContour},
  * which may run out of memory easily).
  * Requires a binary (segmented) image.
  * 
@@ -75,8 +75,8 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	
     	// Copy the original to a new byte image:
     	ByteProcessor bp = ip.convertToByteProcessor(false);
-		RegionLabeling segmenter = LabelingMethod.getInstance(method, bp);
-		//segmenter.neighborhood = NeighborhoodType.N4;
+		BinaryRegionSegmentation segmenter = LabelingMethod.getInstance(method, bp, NeighborhoodType.N4);
+
 		if (!segmenter.segment()) {
 			IJ.error("Segmentation failed!");
 		}

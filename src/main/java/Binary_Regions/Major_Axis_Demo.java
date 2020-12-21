@@ -14,8 +14,8 @@ import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.geometry.basic.Point;
-import imagingbook.pub.regions.RegionContourLabeling;
-import imagingbook.pub.regions.RegionLabeling.BinaryRegion;
+import imagingbook.pub.regions.SegmentationRegionContour;
+import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
 
 /**
  * Shows each region's major axis as a vector scaled by the region's eccentricity.
@@ -48,7 +48,7 @@ public class Major_Axis_Demo implements PlugInFilter {
 		}
 		
 		// perform region segmentation:
-		RegionContourLabeling segmenter = new RegionContourLabeling((ByteProcessor) ip);
+		SegmentationRegionContour segmenter = new SegmentationRegionContour((ByteProcessor) ip);
 		List<BinaryRegion> regions = segmenter.getRegions(true);
 
 		// calculate and register certain region properties:
