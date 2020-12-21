@@ -64,7 +64,7 @@ public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 		
 		
 		for (BinaryRegion r: regions) {
-			Point xc = r.getCenterPoint();
+			Point xc = r.getCentroid();
 			int uc = (int) Math.round(xc.getX());
 			int vc = (int) Math.round(xc.getY());
 			Point[] box = (new AxisAlignedBoundingBox(r)).getCornerPoints();

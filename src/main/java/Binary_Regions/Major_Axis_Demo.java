@@ -64,7 +64,7 @@ public class Major_Axis_Demo implements PlugInFilter {
 		
 		for (BinaryRegion r : regions) {
 			if (r.getSize() > 10) {
-				Point xc = r.getCenterPoint();
+				Point xc = r.getCentroid();
 				int u0 = (int) Math.round(xc.getX());
 				int v0 = (int) Math.round(xc.getY());
 				
@@ -84,7 +84,7 @@ public class Major_Axis_Demo implements PlugInFilter {
 	
 	private void calculateRegionProperties(BinaryRegion r) {
 		// calculate central moment mu11, mu20, mu02:
-		Point xctr = r.getCenterPoint();
+		Point xctr = r.getCentroid();
 		double xc = xctr.getX();
 		double yc = xctr.getY();
 		double mu11 = 0;

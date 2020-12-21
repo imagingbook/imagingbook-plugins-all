@@ -9,9 +9,6 @@
 package Binary_Regions;
 
 
-import static imagingbook.pub.regions.LabelingMethod.BreadthFirst;
-import static imagingbook.pub.regions.LabelingMethod.Recursive;
-
 import java.util.List;
 
 import ij.IJ;
@@ -23,7 +20,6 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.regions.BinaryRegionSegmentation;
 import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
-import imagingbook.pub.regions.LabelingMethod;
 import imagingbook.pub.regions.NeighborhoodType;
 import imagingbook.pub.regions.SegmentationBreadthFirst;
 import imagingbook.pub.regions.SegmentationDepthFirst;
@@ -50,8 +46,16 @@ import imagingbook.pub.regions.utils.Images;
  * 
  */
 public class Region_Labeling_Demo implements PlugInFilter {
+	
+	private enum LabelingMethod {
+		BreadthFirst, 
+		DepthFirst, 
+		Sequential,
+		RegionAndContours,
+		Recursive
+	}
 
-	static LabelingMethod Method = BreadthFirst;
+	static LabelingMethod Method = LabelingMethod.BreadthFirst;
 	static NeighborhoodType Neighborhood = NeighborhoodType.N8;
 	
 	static boolean ColorRegions = false;
@@ -62,7 +66,6 @@ public class Region_Labeling_Demo implements PlugInFilter {
     }
 	
     public void run(ImageProcessor ip) {
-    	
 		if (!IjUtils.isBinary(ip)) {
 			IJ.showMessage("Plugin requires a binary image!");
 			return;
@@ -71,18 +74,28 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	if (!getUserInput())
     		return;
     	
-    	if (Method == Recursive && 
+    	if (Method == LabelingMethod.Recursive && 
     			!IJ.showMessageWithCancel("Recursive labeling", "This may run out of stack memory!\n" + "Continue?")) {
 			return;
     	}
     	
     	// Copy the original to a new byte image:
     	ByteProcessor bp = ip.convertToByteProcessor(false);
-		BinaryRegionSegmentation segmenter = LabelingMethod.getInstance(Method, bp, Neighborhood);
-
-//		if (!segmenter.segment()) {
-//			IJ.error("Segmentation failed!");
-//		}
+    	
+    	
+		BinaryRegionSegmentation segmenter = null;
+		switch(Method) {
+		case BreadthFirst : 	
+			segmenter = new SegmentationBreadthFirst(bp, Neighborhood); break;
+		case DepthFirst : 		
+			segmenter = new SegmentationDepthFirst(bp, Neighborhood); break;
+		case Sequential : 		
+			segmenter = new SegmentationSequential(bp, Neighborhood); break;
+		case RegionAndContours : 
+			segmenter = new SegmentationRegionContour(bp, Neighborhood); break;
+		case Recursive : 
+			segmenter = new SegmentationRecursive(bp, Neighborhood); break;
+		}
 
 		// Retrieve the list of detected regions:
 		List<BinaryRegion> regions = segmenter.getRegions(true);	// regions are sorted by size
@@ -93,7 +106,6 @@ public class Region_Labeling_Demo implements PlugInFilter {
 		}
 		
 		IJ.log("Detected regions: " + regions.size());
-		IJ.log("MaxLabel: " + segmenter.getMaxLabel());
 		
 		if (ListRegions) {
 			IJ.log("Regions sorted by size: ");

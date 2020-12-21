@@ -111,7 +111,7 @@ public class Private_Ellipse_Superposition_Animation implements PlugInFilter {
 		//IJ.log("tracing done");
 		
 		// extract contours and regions
-		List<Contour> outerContours = tracer.getOuterContours(true);
+		List<? extends Contour> outerContours = tracer.getOuterContours(true);
 		if (outerContours.isEmpty()) {
 			IJ.error("no regions found");
 			return;

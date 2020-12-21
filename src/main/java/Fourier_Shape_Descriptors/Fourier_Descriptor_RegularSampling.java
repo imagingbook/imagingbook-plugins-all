@@ -63,7 +63,7 @@ public class Fourier_Descriptor_RegularSampling extends CommonSetup implements P
 		
 		// segment the image and select the longest outer region contour:
 		SegmentationRegionContour labeling = new SegmentationRegionContour(bp);
-		List<Contour> outerContours = labeling.getOuterContours(true);
+		List<? extends Contour> outerContours = labeling.getOuterContours(true);
 		if (outerContours.isEmpty()) {
 			IJ.error("no regions found");
 			return;
