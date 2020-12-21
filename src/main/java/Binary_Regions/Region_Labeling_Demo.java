@@ -77,12 +77,17 @@ public class Region_Labeling_Demo implements PlugInFilter {
     	ByteProcessor bp = ip.convertToByteProcessor(false);
 		BinaryRegionSegmentation segmenter = LabelingMethod.getInstance(method, bp, NeighborhoodType.N4);
 
-		if (!segmenter.segment()) {
-			IJ.error("Segmentation failed!");
-		}
+//		if (!segmenter.segment()) {
+//			IJ.error("Segmentation failed!");
+//		}
 
 		// Retrieve the list of detected regions:
 		List<BinaryRegion> regions = segmenter.getRegions(true);	// regions are sorted by size
+		
+		if (regions == null || regions.isEmpty()) {
+			IJ.showMessage("No regions detected!");
+			return;
+		}
 		
 		IJ.log("Detected regions: " + regions.size());
 		IJ.log("MaxLabel: " + segmenter.getMaxLabel());

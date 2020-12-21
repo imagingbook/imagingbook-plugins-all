@@ -50,11 +50,10 @@ public class Region_Contours_Demo implements PlugInFilter {
 	   	
 	   	// Create the region labeler / contour tracer:
 		SegmentationRegionContour seg = new SegmentationRegionContour(I);
-		seg.segment();
 		
 		// Get the list of detected regions (sort by size):
 		List<BinaryRegion> regions = seg.getRegions(true);
-		if (regions.isEmpty()) {
+		if (regions == null || regions.isEmpty()) {
 			IJ.showMessage("No regions detected!");
 			return;
 		}
