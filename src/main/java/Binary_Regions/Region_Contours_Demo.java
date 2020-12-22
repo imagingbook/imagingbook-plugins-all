@@ -80,10 +80,9 @@ public class Region_Contours_Demo implements PlugInFilter {
 			}
 			
 			// Get all inner contours of the largest region:
-			List<Contour> ics = largestRegion.getInnerContours();
+			List<? extends Contour> ics = largestRegion.getInnerContours();
 			IJ.log("Inner regions (holes): " + ics.size());
 		}
-		
 		
 		// Display the contours if desired:
 		if (ShowContours) {
