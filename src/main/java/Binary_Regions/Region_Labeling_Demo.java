@@ -26,7 +26,7 @@ import imagingbook.pub.regions.SegmentationDepthFirst;
 import imagingbook.pub.regions.SegmentationRecursive;
 import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.SegmentationSequential;
-import imagingbook.pub.regions.utils.Images;
+import imagingbook.pub.regions.utils.Display;
 
 /**
  * This ImageJ plugin is an example for how to use the region
@@ -115,7 +115,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
 		}
 		
 		// Show the resulting labeling as a random color image
-		ImageProcessor labelIp = Images.makeLabelImage(segmenter, ColorRegions);
+		ImageProcessor labelIp = Display.makeLabelImage(segmenter, ColorRegions);
 		(new ImagePlus(Method.name(), labelIp)).show();
 		
 		// Example for processing all regions:

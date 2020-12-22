@@ -20,7 +20,7 @@ import imagingbook.pub.regions.NeighborhoodType;
 import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.regions.utils.ContourOverlay;
-import imagingbook.pub.regions.utils.Images;
+import imagingbook.pub.regions.utils.Display;
 import imagingbook.pub.geometry.basic.Point;
 import java.util.List;
 
@@ -86,7 +86,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 		
 		// Display the contours if desired:
 		if (ShowContours) {
-			ImageProcessor lip = Images.makeLabelImage(seg, false);
+			ImageProcessor lip = Display.makeLabelImage(seg, false);
 			ImagePlus lim = new ImagePlus("Region labels and contours", lip);
 			Overlay oly = new ContourOverlay(seg);
 			lim.setOverlay(oly);
