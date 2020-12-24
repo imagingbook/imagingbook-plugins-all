@@ -36,8 +36,8 @@ public class Region_Contours_Demo implements PlugInFilter {
 	
 	static NeighborhoodType Neighborhood = NeighborhoodType.N8;
 	
-	static boolean ListRegions = false;
-	static boolean ListContourPoints = false;
+	static boolean ListRegions = true;
+	static boolean ListContours = true;
 	static boolean ShowContours = true;
 	
 	public int setup(String arg, ImagePlus im) { 
@@ -62,26 +62,41 @@ public class Region_Contours_Demo implements PlugInFilter {
 		}
 
 		if (ListRegions) {
-			IJ.log("Detected regions: " + regions.size());
+			IJ.log("\nDetected regions: " + regions.size());
 			for (BinaryRegion r : regions) {
 				IJ.log(r.toString());
 			}
 		}
 			
-		if (ListContourPoints) {
-			// Get the outer contour of the largest region:
-			BinaryRegion largestRegion = regions.get(0);
-			Contour oc =  largestRegion.getOuterContour();
-			IJ.log("Points along outer contour of largest region:");
-			Point[] points = oc.getPointArray();
-			for (int i = 0; i < points.length; i++) {
-				Point p = points[i];
-				IJ.log("Point " + i + ": " + p.toString());
+		if (ListContours) {
+			IJ.log("\nCountours:");
+			for (BinaryRegion r : regions) {
+				IJ.log("   " + r.toString());
+				Contour oc =  r.getOuterContour();
+				IJ.log("       " + oc.toString());
+				
+				List<? extends Contour> ics = r.getInnerContours();
+				if (ics != null && !ics.isEmpty()) {
+					for(Contour ic : r.getInnerContours()) {
+						IJ.log("       " + ic.toString());
+					}
+				}
 			}
 			
-			// Get all inner contours of the largest region:
-			List<? extends Contour> ics = largestRegion.getInnerContours();
-			IJ.log("Inner regions (holes): " + ics.size());
+			
+//			// Get the outer contour of the largest region:
+//			BinaryRegion largestRegion = regions.get(0);
+//			Contour oc =  largestRegion.getOuterContour();
+//			IJ.log("Points along outer contour of largest region:");
+//			Point[] points = oc.getPointArray();
+//			for (int i = 0; i < points.length; i++) {
+//				Point p = points[i];
+//				IJ.log("Point " + i + ": " + p.toString());
+//			}
+//			
+//			// Get all inner contours of the largest region:
+//			List<? extends Contour> ics = largestRegion.getInnerContours();
+//			IJ.log("Inner regions (holes): " + ics.size());
 		}
 		
 		// Display the contours if desired:
@@ -100,15 +115,15 @@ public class Region_Contours_Demo implements PlugInFilter {
 		GenericDialog gd = new GenericDialog(Region_Contours_Demo.class.getSimpleName());
 		gd.addEnumChoice("Neighborhood type", Neighborhood);
 		gd.addCheckbox("List regions", ListRegions);
-		gd.addCheckbox("List contour points", ListContourPoints);
+		gd.addCheckbox("List contours", ListContours);
 		gd.addCheckbox("Show contours", ShowContours);
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			return false;
 		}
 		Neighborhood = gd.getNextEnumChoice(NeighborhoodType.class);
-		ListRegions = gd.getNextBoolean();
-		ListContourPoints = gd.getNextBoolean();
+		ListRegions  = gd.getNextBoolean();
+		ListContours = gd.getNextBoolean();
 		ShowContours = gd.getNextBoolean();
 		return true;
 	}
