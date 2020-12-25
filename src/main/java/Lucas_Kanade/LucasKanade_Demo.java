@@ -19,7 +19,9 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageExtractor;
 import imagingbook.lib.math.Matrix;
 import imagingbook.lib.settings.PrintPrecision;
-import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.basic.Pnt2d;
+import imagingbook.pub.geometry.basic.Pnt2d.PntDouble;
+import imagingbook.pub.geometry.basic.Pnt2d.PntInt;
 import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 import imagingbook.pub.lucaskanade.LucasKanadeForwardMatcher;
 import imagingbook.pub.lucaskanade.LucasKanadeInverseMatcher;
@@ -96,8 +98,8 @@ public class LucasKanade_Demo implements PlugInFilter {
 		FloatProcessor R = new FloatProcessor(roiR.width, roiR.height);
 		
 		// Step 3: Perturb the ROI corners to form the quad QQ and extract the reference image R:
-		Point[] Q  = getCornerPoints(roiR);
-		Point[] QQ = perturbGaussian(Q);
+		Pnt2d[] Q  = getCornerPoints(roiR);
+		Pnt2d[] QQ = perturbGaussian(Q);
 		(new ImageExtractor(I)).extractImage(R, QQ);
 		//(new ImagePlus("R", R)).show();
 		
@@ -148,17 +150,17 @@ public class LucasKanade_Demo implements PlugInFilter {
 			IJ.log("  Tfinal = " + Matrix.toString(matcher.getParameters(TfinalP)));
 	
 			IJ.log("Corners of reference patch:");
-			Point[] ptsRef = Treal.applyTo(matcher.getReferencePoints());
-			for(Point pt : ptsRef) {
+			Pnt2d[] ptsRef = Treal.applyTo(matcher.getReferencePoints());
+			for(Pnt2d pt : ptsRef) {
 				IJ.log("  pt = " + pt.toString());
 			}
 			IJ.log("Corners for best match:");
-			Point[] ptsFinal = Tfinal.applyTo(matcher.getReferencePoints());
-			for(Point pt : ptsFinal) {
+			Pnt2d[] ptsFinal = Tfinal.applyTo(matcher.getReferencePoints());
+			for(Pnt2d pt : ptsFinal) {
 				IJ.log("  pt = " + pt.toString());
 			}
 			
-			Point test0 = Point.create(0, 0);
+			Pnt2d test0 = PntInt.from(0, 0);
 			IJ.log(" (0,0) by Treal  = " + Treal.applyTo(test0).toString());
 			IJ.log(" (0,0) by Tfinal = " + Tfinal.applyTo(test0).toString());
 			
@@ -177,40 +179,40 @@ public class LucasKanade_Demo implements PlugInFilter {
 	
 	// ----------------------------------------------------------
 	
-	private Point[] getCornerPoints(Rectangle2D r) {	
+	private Pnt2d[] getCornerPoints(Rectangle2D r) {	
 		//IJ.log("getpoints2:  r = " + r.toString());
 		double x = r.getX();
 		double y = r.getY();
 		double w = r.getWidth();
 		double h = r.getHeight();
-		Point[] pts = new Point[4];
-		pts[0] = Point.create(x, y);
-		pts[1] = Point.create(x + w - 1, y);	// TODO: does -1 matter? YES - it seems WRONG!!!
-		pts[2] = Point.create(x + w - 1, y + h - 1);
-		pts[3] = Point.create(x, y + h - 1);
+		Pnt2d[] pts = new Pnt2d[4];
+		pts[0] = PntDouble.from(x, y);
+		pts[1] = PntDouble.from(x + w - 1, y);	// TODO: does -1 matter? YES - it seems WRONG!!!
+		pts[2] = PntDouble.from(x + w - 1, y + h - 1);
+		pts[3] = PntDouble.from(x, y + h - 1);
 		//IJ.log("getpoints2:  p1-4 = " + pts[0] + ", " + pts[1] + ", " + pts[2] + ", " + pts[3]);
 		return pts;
 	}
 	
 	private final Random rg = new Random();
 	
-	private Point perturbGaussian(Point p) {
+	private Pnt2d perturbGaussian(Pnt2d p) {
 		double x = p.getX();
 		double y = p.getY();
 		x = x + rg.nextGaussian() * sigma;
 		y = y + rg.nextGaussian() * sigma;
-		return Point.create(x, y);
+		return PntDouble.from(x, y);
 	}
 	
-	private Point[] perturbGaussian(Point[] pntsIn) {
-		Point[] pntsOut = pntsIn.clone();
+	private Pnt2d[] perturbGaussian(Pnt2d[] pntsIn) {
+		Pnt2d[] pntsOut = pntsIn.clone();
 		for (int i = 0; i < pntsIn.length; i++) {
 			pntsOut[i] = perturbGaussian(pntsIn[i]);
 		}
 		return pntsOut;
 	}
 	
-	private Roi makePolygon(Point[] points, double strokeWidth, Color color) {
+	private Roi makePolygon(Pnt2d[] points, double strokeWidth, Color color) {
 		Path2D poly = new Path2D.Double();
 		if (points.length > 0) {
 			poly.moveTo(points[0].getX(), points[0].getY());

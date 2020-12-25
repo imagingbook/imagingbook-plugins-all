@@ -13,7 +13,8 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.basic.Pnt2d;
+import imagingbook.pub.geometry.basic.Pnt2d.PntInt;
 import imagingbook.pub.geometry.mappings.linear.AffineMapping2D;
 
 public class Transform_Affine implements PlugInFilter {
@@ -23,16 +24,16 @@ public class Transform_Affine implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-    	Point[] P = {
-			Point.create(0, 0),
-			Point.create(400, 0),
-			Point.create(400, 400)
+    	Pnt2d[] P = {
+			PntInt.from(0, 0),
+			PntInt.from(400, 0),
+			PntInt.from(400, 400)
     	};
 
-    	Point[] Q = {
-			Point.create(0, 60),
-			Point.create(400, 20),
-			 Point.create(300, 400)
+    	Pnt2d[] Q = {
+			PntInt.from(0, 60),
+			PntInt.from(400, 20),
+			 PntInt.from(300, 400)
     	};
 
 		// inverse mapping (target to source):

@@ -21,7 +21,8 @@ import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
-import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.basic.Pnt2d;
+import imagingbook.pub.geometry.basic.Pnt2d.PntDouble;
 import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.geometry.hulls.ConvexHull;
@@ -82,11 +83,11 @@ public class Convex_Hull_Demo implements PlugInFilter {
 	
 	private void drawHull(ImageProcessor ip, Line2D[] segments) {
 		for (Line2D line : segments) {
-			drawSegment(ip, Point.create(line.getP1()), Point.create(line.getP2()));
+			drawSegment(ip, PntDouble.from(line.getP1()), PntDouble.from(line.getP2()));
 		}
 	}
 
-	private void drawSegment(ImageProcessor ip, Point p1, Point p2) {
+	private void drawSegment(ImageProcessor ip, Pnt2d p1, Pnt2d p2) {
 		int x1 = (int) Math.round(p1.getX());
 		int y1 = (int) Math.round(p1.getY());
 		int x2 = (int) Math.round(p2.getX());

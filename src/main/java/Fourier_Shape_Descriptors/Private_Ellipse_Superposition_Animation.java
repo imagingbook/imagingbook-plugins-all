@@ -33,7 +33,7 @@ import imagingbook.pub.fd.Colors;
 import imagingbook.pub.fd.FourierDescriptor;
 import imagingbook.pub.fd.FourierDescriptorUniform;
 import imagingbook.pub.fd.PolygonSampler;
-import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.regions.Contour;
 import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
@@ -118,7 +118,7 @@ public class Private_Ellipse_Superposition_Animation implements PlugInFilter {
 		}
 		
 		Contour contr = outerContours.get(0);	// contour of largest region
-		Point[] polygon = new PolygonSampler().samplePolygonUniformly(contr.getPointArray(), NumberOfContourSamples);
+		Pnt2d[] polygon = new PolygonSampler().samplePolygonUniformly(contr.getPointArray(), NumberOfContourSamples);
 		FourierDescriptor fd = new FourierDescriptorUniform(polygon);
 		//fd.print();
 		

@@ -21,7 +21,7 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.math.Complex;
 import imagingbook.pub.fd.FourierDescriptor;
 import imagingbook.pub.fd.FourierDescriptorUniform;
-import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.regions.Contour;
 import imagingbook.pub.regions.SegmentationRegionContour;
 
@@ -69,7 +69,7 @@ public class Fourier_Descriptor_RegularSampling extends CommonSetup implements P
 			return;
 		}
 		Contour contr = outerContours.get(0);	// select the longest contour
-		Point[] V = contr.getPointArray();
+		Pnt2d[] V = contr.getPointArray();
 		
 		// create the Fourier descriptor for 'V' with Mp coefficient pairs:
 		int Mp = FourierDescriptorPairs;

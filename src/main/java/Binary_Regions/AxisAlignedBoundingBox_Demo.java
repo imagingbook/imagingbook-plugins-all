@@ -19,7 +19,7 @@ import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
-import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.hulls.AxisAlignedBoundingBox;
 import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
@@ -64,10 +64,10 @@ public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 		
 		
 		for (BinaryRegion r: regions) {
-			Point xc = r.getCentroid();
+			Pnt2d xc = r.getCentroid();
 			int uc = (int) Math.round(xc.getX());
 			int vc = (int) Math.round(xc.getY());
-			Point[] box = (new AxisAlignedBoundingBox(r)).getCornerPoints();
+			Pnt2d[] box = (new AxisAlignedBoundingBox(r)).getCornerPoints();
 			if (box != null) {
 				//double[][] box = getAxisAlignedBoundingBox(r);
 				drawCenter(cp,  uc,  vc);
@@ -79,7 +79,7 @@ public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 	}
 	
 	
-	private void drawBox(ImageProcessor ip, Point[] box) {
+	private void drawBox(ImageProcessor ip, Pnt2d[] box) {
 		ip.setColor(BoundingBoxColor);
 		ip.setLineWidth(1);
 		drawLine(ip, box[0], box[1]);
@@ -88,7 +88,7 @@ public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 		drawLine(ip, box[3], box[0]);
 	}
 	
-	private void drawLine(ImageProcessor ip, Point p0, Point p1) {
+	private void drawLine(ImageProcessor ip, Pnt2d p0, Pnt2d p1) {
 		int u0 = (int) Math.round(p0.getX());
 		int v0 = (int) Math.round(p0.getY());
 		int u1 = (int) Math.round(p1.getX());

@@ -13,7 +13,7 @@ import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
-import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
 
@@ -64,7 +64,7 @@ public class Major_Axis_Demo implements PlugInFilter {
 		
 		for (BinaryRegion r : regions) {
 			if (r.getSize() > 10) {
-				Point xc = r.getCentroid();
+				Pnt2d xc = r.getCentroid();
 				int u0 = (int) Math.round(xc.getX());
 				int v0 = (int) Math.round(xc.getY());
 				
@@ -84,13 +84,13 @@ public class Major_Axis_Demo implements PlugInFilter {
 	
 	private void calculateRegionProperties(BinaryRegion r) {
 		// calculate central moment mu11, mu20, mu02:
-		Point xctr = r.getCentroid();
+		Pnt2d xctr = r.getCentroid();
 		double xc = xctr.getX();
 		double yc = xctr.getY();
 		double mu11 = 0;
 		double mu20 = 0;
 		double mu02 = 0;
-		for (Point p : r) {
+		for (Pnt2d p : r) {
 			double dx = (p.getX() - xc);
 			double dy = (p.getY() - yc);
 			mu11 = mu11 + dx * dy;

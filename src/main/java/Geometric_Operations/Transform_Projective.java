@@ -13,7 +13,8 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.basic.Point;
+import imagingbook.pub.geometry.basic.Pnt2d;
+import imagingbook.pub.geometry.basic.Pnt2d.PntInt;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 
@@ -38,18 +39,18 @@ public class Transform_Projective implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
 
-    	Point[] P = {
-			Point.create(0, 0),
-			Point.create(400, 0),
-			Point.create(400, 400),
-			Point.create(0, 400)
+    	Pnt2d[] P = {
+			PntInt.from(0, 0),
+			PntInt.from(400, 0),
+			PntInt.from(400, 400),
+			PntInt.from(0, 400)
     	};
 
-    	Point[] Q = {
-			Point.create(0, 60),
-			Point.create(400, 20),
-			 Point.create(300, 400),
-			 Point.create(30, 200)
+    	Pnt2d[] Q = {
+			PntInt.from(0, 60),
+			PntInt.from(400, 20),
+			 PntInt.from(300, 400),
+			 PntInt.from(30, 200)
     	};
     	
 		// We need the target-to source mapping, i.e. Q -> P. There are 2 alternatives:
