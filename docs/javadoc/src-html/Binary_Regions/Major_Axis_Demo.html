@@ -23,9 +23,9 @@
 <span class="sourceLineNo">013</span><a id="line.13">import ij.process.ColorProcessor;</a>
 <span class="sourceLineNo">014</span><a id="line.14">import ij.process.ImageProcessor;</a>
 <span class="sourceLineNo">015</span><a id="line.15">import imagingbook.lib.ij.IjUtils;</a>
-<span class="sourceLineNo">016</span><a id="line.16">import imagingbook.pub.geometry.basic.Point;</a>
-<span class="sourceLineNo">017</span><a id="line.17">import imagingbook.pub.regions.RegionContourLabeling;</a>
-<span class="sourceLineNo">018</span><a id="line.18">import imagingbook.pub.regions.RegionLabeling.BinaryRegion;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import imagingbook.pub.geometry.basic.Pnt2d;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import imagingbook.pub.regions.SegmentationRegionContour;</a>
+<span class="sourceLineNo">018</span><a id="line.18">import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;</a>
 <span class="sourceLineNo">019</span><a id="line.19"></a>
 <span class="sourceLineNo">020</span><a id="line.20">/**</a>
 <span class="sourceLineNo">021</span><a id="line.21"> * Shows each region's major axis as a vector scaled by the region's eccentricity.</a>
@@ -58,7 +58,7 @@
 <span class="sourceLineNo">048</span><a id="line.48">                }</a>
 <span class="sourceLineNo">049</span><a id="line.49">                </a>
 <span class="sourceLineNo">050</span><a id="line.50">                // perform region segmentation:</a>
-<span class="sourceLineNo">051</span><a id="line.51">                RegionContourLabeling segmenter = new RegionContourLabeling((ByteProcessor) ip);</a>
+<span class="sourceLineNo">051</span><a id="line.51">                SegmentationRegionContour segmenter = new SegmentationRegionContour((ByteProcessor) ip);</a>
 <span class="sourceLineNo">052</span><a id="line.52">                List&lt;BinaryRegion&gt; regions = segmenter.getRegions(true);</a>
 <span class="sourceLineNo">053</span><a id="line.53"></a>
 <span class="sourceLineNo">054</span><a id="line.54">                // calculate and register certain region properties:</a>
@@ -74,7 +74,7 @@
 <span class="sourceLineNo">064</span><a id="line.64">                </a>
 <span class="sourceLineNo">065</span><a id="line.65">                for (BinaryRegion r : regions) {</a>
 <span class="sourceLineNo">066</span><a id="line.66">                        if (r.getSize() &gt; 10) {</a>
-<span class="sourceLineNo">067</span><a id="line.67">                                Point xc = r.getCenterPoint();</a>
+<span class="sourceLineNo">067</span><a id="line.67">                                Pnt2d xc = r.getCentroid();</a>
 <span class="sourceLineNo">068</span><a id="line.68">                                int u0 = (int) Math.round(xc.getX());</a>
 <span class="sourceLineNo">069</span><a id="line.69">                                int v0 = (int) Math.round(xc.getY());</a>
 <span class="sourceLineNo">070</span><a id="line.70">                                </a>
@@ -94,13 +94,13 @@
 <span class="sourceLineNo">084</span><a id="line.84">        </a>
 <span class="sourceLineNo">085</span><a id="line.85">        private void calculateRegionProperties(BinaryRegion r) {</a>
 <span class="sourceLineNo">086</span><a id="line.86">                // calculate central moment mu11, mu20, mu02:</a>
-<span class="sourceLineNo">087</span><a id="line.87">                Point xctr = r.getCenterPoint();</a>
+<span class="sourceLineNo">087</span><a id="line.87">                Pnt2d xctr = r.getCentroid();</a>
 <span class="sourceLineNo">088</span><a id="line.88">                double xc = xctr.getX();</a>
 <span class="sourceLineNo">089</span><a id="line.89">                double yc = xctr.getY();</a>
 <span class="sourceLineNo">090</span><a id="line.90">                double mu11 = 0;</a>
 <span class="sourceLineNo">091</span><a id="line.91">                double mu20 = 0;</a>
 <span class="sourceLineNo">092</span><a id="line.92">                double mu02 = 0;</a>
-<span class="sourceLineNo">093</span><a id="line.93">                for (Point p : r) {</a>
+<span class="sourceLineNo">093</span><a id="line.93">                for (Pnt2d p : r) {</a>
 <span class="sourceLineNo">094</span><a id="line.94">                        double dx = (p.getX() - xc);</a>
 <span class="sourceLineNo">095</span><a id="line.95">                        double dy = (p.getY() - yc);</a>
 <span class="sourceLineNo">096</span><a id="line.96">                        mu11 = mu11 + dx * dy;</a>

@@ -43,10 +43,10 @@
 <span class="sourceLineNo">033</span><a id="line.33">import imagingbook.pub.fd.FourierDescriptor;</a>
 <span class="sourceLineNo">034</span><a id="line.34">import imagingbook.pub.fd.FourierDescriptorUniform;</a>
 <span class="sourceLineNo">035</span><a id="line.35">import imagingbook.pub.fd.PolygonSampler;</a>
-<span class="sourceLineNo">036</span><a id="line.36">import imagingbook.pub.geometry.basic.Point;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import imagingbook.pub.geometry.basic.Pnt2d;</a>
 <span class="sourceLineNo">037</span><a id="line.37">import imagingbook.pub.regions.Contour;</a>
-<span class="sourceLineNo">038</span><a id="line.38">import imagingbook.pub.regions.RegionContourLabeling;</a>
-<span class="sourceLineNo">039</span><a id="line.39">import imagingbook.pub.regions.RegionLabeling.BinaryRegion;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import imagingbook.pub.regions.SegmentationRegionContour;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;</a>
 <span class="sourceLineNo">040</span><a id="line.40"></a>
 <span class="sourceLineNo">041</span><a id="line.41">/**</a>
 <span class="sourceLineNo">042</span><a id="line.42"> * @version 2020/04/01</a>
@@ -117,18 +117,18 @@
 <span class="sourceLineNo">107</span><a id="line.107">                ByteProcessor ip = (ByteProcessor) ip1.duplicate();</a>
 <span class="sourceLineNo">108</span><a id="line.108">                </a>
 <span class="sourceLineNo">109</span><a id="line.109">                //  label regions and trace contours</a>
-<span class="sourceLineNo">110</span><a id="line.110">                RegionContourLabeling tracer = new RegionContourLabeling((ByteProcessor)ip);</a>
+<span class="sourceLineNo">110</span><a id="line.110">                SegmentationRegionContour tracer = new SegmentationRegionContour((ByteProcessor)ip);</a>
 <span class="sourceLineNo">111</span><a id="line.111">                //IJ.log("tracing done");</a>
 <span class="sourceLineNo">112</span><a id="line.112">                </a>
 <span class="sourceLineNo">113</span><a id="line.113">                // extract contours and regions</a>
-<span class="sourceLineNo">114</span><a id="line.114">                List&lt;Contour&gt; outerContours = tracer.getOuterContours(true);</a>
+<span class="sourceLineNo">114</span><a id="line.114">                List&lt;? extends Contour&gt; outerContours = tracer.getOuterContours(true);</a>
 <span class="sourceLineNo">115</span><a id="line.115">                if (outerContours.isEmpty()) {</a>
 <span class="sourceLineNo">116</span><a id="line.116">                        IJ.error("no regions found");</a>
 <span class="sourceLineNo">117</span><a id="line.117">                        return;</a>
 <span class="sourceLineNo">118</span><a id="line.118">                }</a>
 <span class="sourceLineNo">119</span><a id="line.119">                </a>
 <span class="sourceLineNo">120</span><a id="line.120">                Contour contr = outerContours.get(0);   // contour of largest region</a>
-<span class="sourceLineNo">121</span><a id="line.121">                Point[] polygon = new PolygonSampler().samplePolygonUniformly(contr.getPointArray(), NumberOfContourSamples);</a>
+<span class="sourceLineNo">121</span><a id="line.121">                Pnt2d[] polygon = new PolygonSampler().samplePolygonUniformly(contr.getPointArray(), NumberOfContourSamples);</a>
 <span class="sourceLineNo">122</span><a id="line.122">                FourierDescriptor fd = new FourierDescriptorUniform(polygon);</a>
 <span class="sourceLineNo">123</span><a id="line.123">                //fd.print();</a>
 <span class="sourceLineNo">124</span><a id="line.124">                </a>
