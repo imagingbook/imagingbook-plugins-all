@@ -16,7 +16,6 @@ import ij.gui.ShapeRoi;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.image.ImageExtractor;
 import imagingbook.lib.math.Matrix;
 import imagingbook.lib.settings.PrintPrecision;
 import imagingbook.pub.geometry.basic.Pnt2d;
@@ -26,7 +25,7 @@ import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 import imagingbook.pub.lucaskanade.LucasKanadeForwardMatcher;
 import imagingbook.pub.lucaskanade.LucasKanadeInverseMatcher;
 import imagingbook.pub.lucaskanade.LucasKanadeMatcher;
-
+import imagingbook.pub.lucaskanade.utils.ImageExtractor;
 
 import java.awt.Color;
 import java.awt.Rectangle;
