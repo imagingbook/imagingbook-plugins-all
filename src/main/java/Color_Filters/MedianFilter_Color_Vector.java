@@ -51,6 +51,7 @@ public class MedianFilter_Color_Vector implements PlugInFilter {
 		
 		gd.showDialog();
 		if(gd.wasCanceled()) return false;
+		
 		params.radius = Math.max(gd.getNextNumber(),0.5);
 		params.distanceNorm = NormType.valueOf(gd.getNextChoice());
 		params.markModifiedPixels = gd.getNextBoolean();
