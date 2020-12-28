@@ -11,7 +11,7 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.image.ImageAccessor;
+import imagingbook.lib.image.access.ImageAccessor;
 
 /**
  * 

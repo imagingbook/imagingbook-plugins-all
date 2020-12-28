@@ -12,8 +12,8 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.image.ImageAccessor;
-import imagingbook.lib.image.OutOfBoundsStrategy;
+import imagingbook.lib.image.access.ImageAccessor;
+import imagingbook.lib.image.access.OutOfBoundsStrategy;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.lib.util.Enums;
 

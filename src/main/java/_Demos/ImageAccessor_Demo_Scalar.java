@@ -11,7 +11,7 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.image.ImageAccessor;
+import imagingbook.lib.image.access.ScalarAccessor;
 
 /**
  * 
@@ -29,7 +29,7 @@ public class ImageAccessor_Demo_Scalar implements PlugInFilter {
 		final int width = ip.getWidth();
 		final int height = ip.getHeight();
 		
-		ImageAccessor.Scalar ia = ImageAccessor.Scalar.create(ip, null, null);
+		ScalarAccessor ia = ScalarAccessor.create(ip, null, null);
 		
 		for (int u = 0; u < width; u++) {
 			for (int v = 0; v < height; v++) {
