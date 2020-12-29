@@ -14,6 +14,7 @@ import ij.process.*;
 
 import imagingbook.lib.filters.Kernel2D;
 import imagingbook.lib.filters.LinearFilter2D;
+import imagingbook.lib.image.access.OutOfBoundsStrategy;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
@@ -35,7 +36,9 @@ public class Linear_Filter_3x3 implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-		new LinearFilter2D(new Kernel2D(H)).applyTo(ip);
+		LinearFilter2D filter = new LinearFilter2D(new Kernel2D(H));
+		filter.setOutOfBoundsStrategy(OutOfBoundsStrategy.NEAREST_BORDER);
+		filter.applyTo(ip);
     }
 
 }

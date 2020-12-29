@@ -33,7 +33,7 @@ import imagingbook.lib.util.Enums;
 public class Interpolator_Demo implements PlugInFilter {
 	
 	static InterpolationMethod ipm = InterpolationMethod.Bicubic;
-	static OutOfBoundsStrategy obs = OutOfBoundsStrategy.NearestBorder;
+	static OutOfBoundsStrategy obs = OutOfBoundsStrategy.NEAREST_BORDER;
 	
 	static double dx = 10.50;	// translation parameters
 	static double dy = -3.25;
