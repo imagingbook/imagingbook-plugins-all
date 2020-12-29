@@ -12,7 +12,7 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filters.GenericFilter;
+import imagingbook.lib.filters.GenericFilter2D;
 import imagingbook.lib.math.VectorNorm.NormType;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.edgepreservingfilters.BilateralFilter;
@@ -36,7 +36,7 @@ public class Bilateral_Filter implements PlugInFilter {
 	}
 	
 	public void run(ImageProcessor ip) {
-		GenericFilter filter = new BilateralFilter(params);
+		GenericFilter2D filter = new BilateralFilter(params);
 		filter.applyTo(ip);
 	}
 

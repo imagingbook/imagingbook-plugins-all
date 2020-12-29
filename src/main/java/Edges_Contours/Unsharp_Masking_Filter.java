@@ -15,7 +15,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.Blitter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filters.GaussianFilter;
+import imagingbook.lib.filters.GaussianKernel1D;
 
 /**
  * This plugin implements an Unsharp Masking filter similar to Photoshop 
@@ -40,7 +40,7 @@ public class Unsharp_Masking_Filter implements PlugInFilter {
 		
 		//create a blurred version of the original
 		ImageProcessor J = I.duplicate();
-		float[] H = GaussianFilter.makeGaussKernel1D(radius);
+		float[] H = GaussianKernel1D.makeGaussKernel1D(radius);
 		Convolver cv = new Convolver();
 		cv.setNormalize(true);
 		cv.convolve(J, H, 1, H.length);

@@ -12,7 +12,7 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filters.GenericFilter;
+import imagingbook.lib.filters.GenericFilter2D;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilter;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilter.Parameters;
 
@@ -35,7 +35,7 @@ public class Nagao_Matsuyama_Filter implements PlugInFilter {
 	}
 	
     public void run(ImageProcessor ip) {
-    	GenericFilter filter = new NagaoMatsuyamaFilter(params);
+    	GenericFilter2D filter = new NagaoMatsuyamaFilter(params);
     	filter.applyTo(ip);
     }
     
