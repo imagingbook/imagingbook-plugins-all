@@ -41,7 +41,7 @@ public class Linear_Filter2_3x3 implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
 		LinearFilter filter = new LinearFilter(ip, new Kernel2D(H), null);
-		(new ImagePlus("Result", filter.apply())).show();
+		(new ImagePlus("Result", filter.apply(true))).show();
     }
 
 }

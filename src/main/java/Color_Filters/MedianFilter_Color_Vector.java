@@ -35,8 +35,8 @@ public class MedianFilter_Color_Vector implements PlugInFilter {
     	params.distanceNorm = NormType.L1;
     	params.radius = 3.0;
 
-    	VectorMedianFilter filter = new VectorMedianFilter(params);
-    	filter.applyTo(ip);
+    	VectorMedianFilter filter = new VectorMedianFilter(ip, params);
+    	filter.apply();
     	
  //   	IJ.log("Pixels modified: " + filter.modifiedCount + " of " + (ip.getPixelCount()));
     }

@@ -33,7 +33,7 @@ public class Generic_Filter2_Scalar_3x3 implements PlugInFilter {
     public void run(ImageProcessor ip) {
     	
     	ExampleFilterScalar filter = new ExampleFilterScalar(ip, null);
-    	(new ImagePlus("Result", filter.apply())).show();
+    	(new ImagePlus("Result", filter.apply(true))).show();
 
     }
 

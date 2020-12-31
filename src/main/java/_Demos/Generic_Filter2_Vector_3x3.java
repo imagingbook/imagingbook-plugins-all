@@ -33,7 +33,7 @@ public class Generic_Filter2_Vector_3x3 implements PlugInFilter {
     public void run(ImageProcessor ip) {
     	
     	ExampleFilterVector filter = new ExampleFilterVector(ip, null);
-    	(new ImagePlus("Result", filter.apply())).show();
+    	(new ImagePlus("Result", filter.apply(true))).show();
     
     }
 

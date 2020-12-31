@@ -36,8 +36,8 @@ public class MedianFilter_Color_VectorSharpen implements PlugInFilter {
     	if (!setParameters(params))
     		return;
 
-    	VectorMedianFilterSharpen filter = new VectorMedianFilterSharpen(params);
-    	filter.applyTo(ip);
+    	VectorMedianFilterSharpen filter = new VectorMedianFilterSharpen(ip, params);
+    	filter.apply();
     	
  //   	IJ.log("Pixels modified: " + filter.modifiedCount + " of " + (ip.getPixelCount()));
     }

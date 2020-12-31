@@ -42,7 +42,7 @@ public class Linear_Filter_Separable2 implements PlugInFilter {
 		IJ.log("kernelY = " + kernelY.getXc());
 		
 		GenericFilterScalar filter = new LinearFilterSeparable(ip, kernelX, kernelY, null);
-		(new ImagePlus("Result", filter.apply())).show();
+		(new ImagePlus("Result", filter.apply(true))).show();
     }
 
 }
