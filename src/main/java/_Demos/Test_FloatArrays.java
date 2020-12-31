@@ -8,13 +8,11 @@
  *******************************************************************************/
 package _Demos;
 
-import ij.*;
+import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.*;
-
-import imagingbook.lib.filters.Kernel2D;
-import imagingbook.lib.filters.LinearFilter2D;
-import imagingbook.lib.image.access.OutOfBoundsStrategy;
+import ij.process.ImageProcessor;
+import imagingbook.lib.filter.kernel.Kernel2D;
+import imagingbook.lib.filtersOBSOLETE.LinearFilter2D;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
@@ -24,21 +22,18 @@ import imagingbook.lib.image.access.OutOfBoundsStrategy;
  * @author WB
  *
  */
-public class Linear_Filter_3x3 implements PlugInFilter {
+public class Test_FloatArrays implements PlugInFilter {
 	
-	private static float[][] H = {
-			{1, 2, 1},
-			{2, 4, 2},
-			{1, 2, 1}};
-
     public int setup(String arg, ImagePlus imp) {
         return DOES_ALL;
     }
 
     public void run(ImageProcessor ip) {
-		LinearFilter2D filter = new LinearFilter2D(new Kernel2D(H));
-		filter.setOutOfBoundsStrategy(OutOfBoundsStrategy.NEAREST_BORDER);
-		filter.applyTo(ip);
+//    	float[][] sources = FloatArrays.fromImageProcessor(ip);
+//    	ImageProcessor ip2 = ip.duplicate();
+//    	FloatArrays.copyToImageProcessor(sources, ip2);
+//    	(new ImagePlus("Result", ip2)).show();
+
     }
 
 }

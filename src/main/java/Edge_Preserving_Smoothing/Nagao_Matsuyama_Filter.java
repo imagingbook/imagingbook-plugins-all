@@ -12,7 +12,7 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filters.GenericFilter2D;
+import imagingbook.lib.filtersOBSOLETE.GenericFilter2D;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilter;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilter.Parameters;
 

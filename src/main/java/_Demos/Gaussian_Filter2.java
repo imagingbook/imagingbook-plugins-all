@@ -11,35 +11,31 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.image.access.ImageAccessor;
+import imagingbook.lib.filter.LinearFilter;
+import imagingbook.lib.filter.kernel.Kernel2D;
+import imagingbook.lib.filtersOBSOLETE.GaussianKernel2D;
+import imagingbook.lib.filtersOBSOLETE.LinearFilter2D;
 
 /**
- * 
+ * This ImageJ plugin shows how to construct a generic linear filter
+ * using the classes {@link LinearFilter2D} and {@link Kernel2D}.
+ * This plugin works for all types of images.
  * 
  * @author WB
  *
  */
-public class ImageAccessor_Demo_RGB implements PlugInFilter {
+public class Gaussian_Filter2 implements PlugInFilter {
+	
+	static double SIGMA = 3.0;
 
-	public int setup(String arg, ImagePlus img) {
-		return DOES_RGB + DOES_8G;
-	}
+    public int setup(String arg, ImagePlus imp) {
+        return DOES_ALL;
+    }
 
-	public void run(ImageProcessor ip) {
-		final int width = ip.getWidth();
-		final int height = ip.getHeight();
-		
-		ImageAccessor ia = ImageAccessor.create(ip, null, null);
-		
-		for (int u = 0; u < width; u++) {
-			for (int v = 0; v < height; v++) {
-				float[] val = ia.getPix(u, v);
-				val[0] += 20;
-				val[1] += 20;
-				val[2] += 20;
-				ia.setPix(u, v, val);
-			}
-		}
-	}
+    public void run(ImageProcessor ip) {	
+		Kernel2D kernel = new GaussianKernel2D(SIGMA);
+		LinearFilter filter = new LinearFilter(ip, kernel, null);
+		(new ImagePlus("Result", filter.apply())).show();
+    }
 
 }

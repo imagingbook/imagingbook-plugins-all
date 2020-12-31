@@ -8,13 +8,12 @@
  *******************************************************************************/
 package _Demos;
 
-import ij.*;
+import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.*;
-import imagingbook.lib.filters.GaussianFilter;
-import imagingbook.lib.filters.Kernel2D;
-import imagingbook.lib.filters.LinearFilter2D;
-import imagingbook.lib.image.access.OutOfBoundsStrategy;
+import ij.process.ImageProcessor;
+import imagingbook.lib.filter.examples.ExampleFilterVector;
+import imagingbook.lib.filter.kernel.Kernel2D;
+import imagingbook.lib.filtersOBSOLETE.LinearFilter2D;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
@@ -24,18 +23,18 @@ import imagingbook.lib.image.access.OutOfBoundsStrategy;
  * @author WB
  *
  */
-public class Gaussian_Filter implements PlugInFilter {
-	
-	static double SIGMA = 3.0;
+public class Generic_Filter2_Vector_3x3 implements PlugInFilter {
+
 
     public int setup(String arg, ImagePlus imp) {
-        return DOES_ALL;
+        return DOES_ALL + NO_CHANGES;
     }
 
     public void run(ImageProcessor ip) {
-		GaussianFilter filter = new GaussianFilter(SIGMA);
-		filter.setOutOfBoundsStrategy(OutOfBoundsStrategy.NEAREST_BORDER);	// default
-		filter.applyTo(ip);
+    	
+    	ExampleFilterVector filter = new ExampleFilterVector(ip, null);
+    	(new ImagePlus("Result", filter.apply())).show();
+    
     }
 
 }
