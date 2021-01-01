@@ -12,13 +12,12 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.filter.LinearFilter;
+import imagingbook.lib.filter.kernel.GaussianKernel2D;
 import imagingbook.lib.filter.kernel.Kernel2D;
-import imagingbook.lib.filtersOBSOLETE.GaussianKernel2D;
-import imagingbook.lib.filtersOBSOLETE.LinearFilter2D;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
- * using the classes {@link LinearFilter2D} and {@link Kernel2D}.
+ * using the classes {@link LinearFilter} and {@link Kernel2D}.
  * This plugin works for all types of images.
  * 
  * @author WB

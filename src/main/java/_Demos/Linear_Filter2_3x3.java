@@ -13,11 +13,10 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.filter.LinearFilter;
 import imagingbook.lib.filter.kernel.Kernel2D;
-import imagingbook.lib.filtersOBSOLETE.LinearFilter2D;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
- * using the classes {@link LinearFilter2D} and {@link Kernel2D}.
+ * using the classes {@link LinearFilter} and {@link Kernel2D}.
  * This plugin works for all types of images.
  * 
  * @author WB
@@ -40,8 +39,7 @@ public class Linear_Filter2_3x3 implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-		LinearFilter filter = new LinearFilter(ip, new Kernel2D(H), null);
-		(new ImagePlus("Result", filter.apply(true))).show();
+		new LinearFilter(ip, new Kernel2D(H), null).apply();
     }
 
 }

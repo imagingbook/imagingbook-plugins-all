@@ -15,7 +15,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.Blitter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filtersOBSOLETE.GaussianKernel1D;
+import imagingbook.lib.filter.kernel.GaussianKernel1D;
 
 /**
  * This plugin implements an Unsharp Masking filter similar to Photoshop 

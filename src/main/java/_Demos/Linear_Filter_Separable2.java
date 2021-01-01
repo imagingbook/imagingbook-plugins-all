@@ -12,15 +12,14 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filter.GenericFilterScalar;
+import imagingbook.lib.filter.LinearFilter;
 import imagingbook.lib.filter.LinearFilterSeparable;
 import imagingbook.lib.filter.kernel.Kernel1D;
 import imagingbook.lib.filter.kernel.Kernel2D;
-import imagingbook.lib.filtersOBSOLETE.LinearFilter2D;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
- * using the classes {@link LinearFilter2D} and {@link Kernel2D}.
+ * using the classes {@link LinearFilter} and {@link Kernel2D}.
  * This plugin works for all types of images.
  * 
  * @author WB
@@ -31,7 +30,7 @@ public class Linear_Filter_Separable2 implements PlugInFilter {
 	static double SIGMA = 3.0;
 
     public int setup(String arg, ImagePlus imp) {
-        return DOES_ALL + NO_CHANGES;
+        return DOES_ALL;
     }
 
     public void run(ImageProcessor ip) {	
@@ -41,8 +40,7 @@ public class Linear_Filter_Separable2 implements PlugInFilter {
 		IJ.log("kernelX = " + kernelX.getXc());
 		IJ.log("kernelY = " + kernelY.getXc());
 		
-		GenericFilterScalar filter = new LinearFilterSeparable(ip, kernelX, kernelY, null);
-		(new ImagePlus("Result", filter.apply(true))).show();
+		new LinearFilterSeparable(ip, kernelX, kernelY, null).apply();
     }
 
 }

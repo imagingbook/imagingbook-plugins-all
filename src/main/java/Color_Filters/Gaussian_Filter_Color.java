@@ -14,8 +14,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filtersOBSOLETE.GaussianFilter;
-import imagingbook.lib.filtersOBSOLETE.GenericFilter2D;
+import imagingbook.lib.filter.GaussianFilter;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.color.image.ColorStack;
 import imagingbook.pub.color.image.ColorStack.ColorStackType;
@@ -54,12 +53,12 @@ public class Gaussian_Filter_Color implements PlugInFilter {
 			return;
     	}
     	
-    	GenericFilter2D filter = new GaussianFilter(sigma);
     	FloatProcessor[] processors = ColorStack.getProcessors(colStack);
     	
        	for (int k = 0; k < nIterations; k++) {
        		for (FloatProcessor fp : processors) {
-       			filter.applyTo(fp);
+       			new GaussianFilter(fp, sigma).apply();
+       			
        		}
     	}
        	
