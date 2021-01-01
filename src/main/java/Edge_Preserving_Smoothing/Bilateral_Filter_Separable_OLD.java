@@ -15,8 +15,8 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.filtersOBSOLETE.GenericFilter2D;
 import imagingbook.lib.math.VectorNorm.NormType;
 import imagingbook.lib.util.Enums;
-import imagingbook.pub.edgepreservingfilters.BilateralFilterSeparable;
-import imagingbook.pub.edgepreservingfilters.BilateralFilter.Parameters;
+import imagingbook.pub.edgepreservingfilters.BilateralFilterSeparable_OLD;
+import imagingbook.pub.edgepreservingfilters.BilateralFilter_OLD.Parameters;
 
 /**
  * Plugin demonstrating the use of the x/y-separated Bilateral filter.
@@ -24,7 +24,7 @@ import imagingbook.pub.edgepreservingfilters.BilateralFilter.Parameters;
  * @author W. Burger
  * @version 2014-03-16
  */
-public class Bilateral_Filter_Separable implements PlugInFilter {
+public class Bilateral_Filter_Separable_OLD implements PlugInFilter {
 	
 	private Parameters params = new Parameters();
 
@@ -36,7 +36,7 @@ public class Bilateral_Filter_Separable implements PlugInFilter {
 	}
 	
 	public void run(ImageProcessor ip) {
-		GenericFilter2D filter = new BilateralFilterSeparable(params);
+		GenericFilter2D filter = new BilateralFilterSeparable_OLD(params);
 		filter.applyTo(ip);
 	}
 
