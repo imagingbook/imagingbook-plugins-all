@@ -11,6 +11,7 @@ package Edge_Preserving_Smoothing;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
+import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterScalar;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterScalar.Parameters;
@@ -30,12 +31,14 @@ public class Bilateral_Filter_Scalar implements PlugInFilter {
 	
 	private Parameters params = new Parameters();
 	private static boolean UseSeparableFilter = false;
+	private boolean isColor;
 	
 	public int setup(String arg0, ImagePlus imp) {
 		return DOES_ALL;
 	}
 	
 	public void run(ImageProcessor ip) {
+		isColor = (ip instanceof ColorProcessor);
 		if (!getParameters())
 			return;
 		if (UseSeparableFilter) {

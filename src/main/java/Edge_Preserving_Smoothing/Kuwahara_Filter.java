@@ -12,43 +12,57 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.pub.edgepreservingfilters.KuwaharaFilter;
-import imagingbook.pub.edgepreservingfilters.KuwaharaFilter.Parameters;
+import ij.process.ColorProcessor;
+import imagingbook.pub.edgepreservingfilters.KuwaharaFilterScalar;
+import imagingbook.pub.edgepreservingfilters.KuwaharaFilterScalar.Parameters;
+import imagingbook.pub.edgepreservingfilters.KuwaharaFilterVector;
 
 /**
+ * Scalar version. Applied to color images, each color component is filtered separately.
  * This plugin demonstrates the use of the Kuwahara filter, similar to the filter suggested in 
  * Tomita and Tsuji (1977). It structures the filter region into  five overlapping, 
  * square subregions of size (r+1) x (r+1). Unlike the original Kuwahara filter,
  * it includes a centered subregion. This plugin works for all types of images and stacks.
- * @author W. Burger
- * @version 2014/03/16
+ * 
+ * @author WB
+ * @version 2021/01/02
  */
 public class Kuwahara_Filter implements PlugInFilter {
-	
+
 	private Parameters params = new Parameters();
-	
-    public int setup(String arg, ImagePlus imp) {
-		if (!getParameters(imp))
-			return DONE;
-		else
-			return DOES_ALL + DOES_STACKS;
+	private static boolean UseVectorFilter = false;
+	private boolean isColor;
+
+	public int setup(String arg, ImagePlus imp) {
+		return DOES_ALL + DOES_STACKS;
 	}
 
-    public void run(ImageProcessor ip) {
-    	KuwaharaFilter filter = new KuwaharaFilter(params);
-    	filter.applyTo(ip);
-    }
-    
-    private boolean getParameters(ImagePlus imp) {
+	public void run(ImageProcessor ip) {
+		isColor = (ip instanceof ColorProcessor);
+		if (!getParameters())
+			return;
+		if (isColor && UseVectorFilter) {
+			new KuwaharaFilterVector((ColorProcessor)ip, params).apply();
+		}
+		else {
+			new KuwaharaFilterScalar(ip, params).apply();
+		}
+	}
+
+	private boolean getParameters() {
 		GenericDialog gd = new GenericDialog("Median Filter");
 		gd.addNumericField("Radius (>1)", params.radius, 0);
 		gd.addNumericField("Variance threshold", params.tsigma, 0);
+		if (isColor)
+			gd.addCheckbox("Use vector filter", UseVectorFilter);
 		gd.showDialog();
 		if(gd.wasCanceled()) 
 			return false;
 		params.radius = (int) Math.max(gd.getNextNumber(), 1);
 		params.tsigma = Math.max(gd.getNextNumber(), 0);
+		if (isColor)
+			UseVectorFilter = gd.getNextBoolean();
 		return true;
-    }
+	}
 }
 

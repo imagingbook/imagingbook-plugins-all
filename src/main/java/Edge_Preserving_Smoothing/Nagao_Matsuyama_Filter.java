@@ -11,11 +11,11 @@ package Edge_Preserving_Smoothing;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
+import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filtersOBSOLETE.GenericFilter2D;
-import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilter;
-import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilter.Parameters;
-
+import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterScalar;
+import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterScalar.Parameters;
+import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterVector;
 
 /**
  * This plugin demonstrates the 5x5 Nagao-Matsuyama filter, as described in
@@ -26,25 +26,35 @@ import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilter.Parameters;
 public class Nagao_Matsuyama_Filter implements PlugInFilter {
 	
 	private Parameters params = new Parameters();
+	private static boolean UseVectorFilter = false;
+	private boolean isColor;
 
 	public int setup(String arg0, ImagePlus imp) {
-		if (!getParameters(imp))
-			return DONE;
-		else
-			return DOES_ALL + DOES_STACKS;
+			return DOES_ALL;
 	}
 	
     public void run(ImageProcessor ip) {
-    	GenericFilter2D filter = new NagaoMatsuyamaFilter(params);
-    	filter.applyTo(ip);
+    	isColor = (ip instanceof ColorProcessor);
+		if (!getParameters())
+			return;
+		if (isColor && UseVectorFilter) {
+			new NagaoMatsuyamaFilterVector((ColorProcessor)ip, params).apply();
+		}
+		else {
+			new NagaoMatsuyamaFilterScalar(ip, params).apply();
+		}
     }
     
-    private boolean getParameters(ImagePlus imp) {
+    private boolean getParameters() {
 		GenericDialog gd = new GenericDialog("5x5 Nagao-Matsuyama Filter");
 		gd.addNumericField("Variance threshold", params.varThreshold, 0);
+		if (isColor)
+			gd.addCheckbox("Use vector filter", UseVectorFilter);
 		gd.showDialog();
 		if (gd.wasCanceled()) return false;
 		params.varThreshold = Math.max(gd.getNextNumber(),0);
+		if (isColor)
+			UseVectorFilter = gd.getNextBoolean();
 		return true;
     }
     
