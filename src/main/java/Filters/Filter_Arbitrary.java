@@ -12,6 +12,11 @@ import ij.*;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.*;
 
+/**
+ * A hand-crafted linear filter for demo purposes only.
+ * @author WB
+ *
+ */
 public class Filter_Arbitrary implements PlugInFilter {
 
     public int setup(String arg, ImagePlus imp) {
@@ -33,8 +38,8 @@ public class Filter_Arbitrary implements PlugInFilter {
         double s = 1.0 / 23;	// scale factor (sum of filter coefficients is 23)
         
         // H[L][K] is the center element of H:
-        int K = H[0].length / 2;	// H[0].length = width of H
-        int L = H.length / 2;		// H.length = height of H
+        int K = (H[0].length - 1) / 2;	// x-center of kernel H
+        int L = (H.length - 1) / 2;		// Y-center of kernel H
         
         ImageProcessor copy = ip.duplicate();
 

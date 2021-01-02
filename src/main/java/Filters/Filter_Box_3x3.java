@@ -19,8 +19,9 @@ public class Filter_Box_3x3 implements PlugInFilter {
     }
 
     public void run(ImageProcessor orig) {
-        int M = orig.getWidth();
-        int N = orig.getHeight(); 
+        final int M = orig.getWidth();
+        final int N = orig.getHeight();
+        final double W = 9;
         ImageProcessor copy = orig.duplicate();
 
 		for (int u = 1; u <= M - 2; u++) {
@@ -33,7 +34,7 @@ public class Filter_Box_3x3 implements PlugInFilter {
                         sum = sum + p;
                     }
                 }
-                int q = (int) (sum / 9.0);
+                int q = (int) (sum / W);
 				orig.putPixel(u, v, q);
             }
         }

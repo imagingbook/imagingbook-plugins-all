@@ -14,9 +14,15 @@ import ij.process.ImageProcessor;
 
 import java.util.Arrays;
 
+/** 
+ * A hand-crafted median filter for 8-bit grayscale images.
+ * 
+ * @author WB
+ *
+ */
 public class Filter_Median implements PlugInFilter {
 
-	final int r = 3; // the size of the filter is (2n+1)x(2n+1)
+	final int r = 3; // the size of the filter is (2r+1)x(2r+1)
 
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
