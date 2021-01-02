@@ -12,53 +12,53 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filtersOBSOLETE.GenericFilter2D;
-import imagingbook.lib.math.VectorNorm.NormType;
-import imagingbook.lib.util.Enums;
-import imagingbook.pub.edgepreservingfilters.BilateralFilterSeparable_OLD;
-import imagingbook.pub.edgepreservingfilters.BilateralFilter_OLD.Parameters;
+import imagingbook.pub.edgepreservingfilters.BilateralFilterScalar;
+import imagingbook.pub.edgepreservingfilters.BilateralFilterScalar.Parameters;
+import imagingbook.pub.edgepreservingfilters.BilateralFilterScalarSeparable;
+
 
 /**
- * Plugin demonstrating the use of the x/y-separated Bilateral filter.
- * This plugin works for all types of images and stacks.
- * @author W. Burger
- * @version 2014-03-16
+ * This plugin demonstrates the use of the (full) BilateralFilter class.
+ * This plugin works for all types of images.
+ * When used on a color image, the filter is applied separately to
+ * each color component.
+ * 
+ * @author WB
+ * @version 2021/01/02
  */
-public class Bilateral_Filter_Separable_OLD implements PlugInFilter {
+public class Bilateral_Filter_Scalar implements PlugInFilter {
 	
 	private Parameters params = new Parameters();
-
+	private static boolean UseSeparableFilter = false;
+	
 	public int setup(String arg0, ImagePlus imp) {
-		if (!getParameters(imp))
-			return DONE;
-		else
-			return DOES_ALL + DOES_STACKS;
+		return DOES_ALL;
 	}
 	
 	public void run(ImageProcessor ip) {
-		GenericFilter2D filter = new BilateralFilterSeparable_OLD(params);
-		filter.applyTo(ip);
+		if (!getParameters())
+			return;
+		if (UseSeparableFilter) {
+			new BilateralFilterScalarSeparable(ip, params).apply();
+		}
+		else {
+			new BilateralFilterScalar(ip, params).apply();
+		}
+			
 	}
 
-	private boolean getParameters(ImagePlus imp) {
-    	boolean isColor = (imp.getType() == ImagePlus.COLOR_RGB);   //(ip instanceof ColorProcessor);
-		GenericDialog gd = new GenericDialog("Bilateral Filter");
+	private boolean getParameters() {
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addNumericField("Sigma_domain", params.sigmaD, 1);
 		gd.addNumericField("Sigma_range", params.sigmaR, 1);
-		if (isColor) {
-			gd.addChoice("Color norm", Enums.getEnumNames(NormType.class), params.colorNormType.name());
-		}
+		gd.addCheckbox("Use X/Y-separable filter", UseSeparableFilter);
 		gd.showDialog();
 		if (gd.wasCanceled()) return false;
 		params.sigmaD = Math.max(gd.getNextNumber(), 0.5);
 		params.sigmaR = Math.max(gd.getNextNumber(), 1);
-		if (isColor) {
-			params.colorNormType = NormType.valueOf(gd.getNextChoice());
-		}
+		UseSeparableFilter = gd.getNextBoolean();
 		return true;
     }
-    
 }
-
 
 
