@@ -12,8 +12,10 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterScalar;
-import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterScalar.Parameters;
+import imagingbook.lib.util.Enums;
+import imagingbook.pub.edgepreservingfilters.PeronaMalikFilter_OLD.ColorMode;
+import imagingbook.pub.edgepreservingfilters.PeronaMalikFilter_OLD.Parameters;
+import imagingbook.pub.edgepreservingfilters.PeronaMalikFilter_OLD;
 
 /**
  * This plugin demonstrates the use of the PeronaMalikFilter class.
@@ -21,31 +23,33 @@ import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterScalar.Parameters;
  * @author W. Burger
  * @version 2013/05/30
  */
-public class Perona_Malik_Filter implements PlugInFilter {
+public class Perona_Malik_Filter_OLD implements PlugInFilter {
 
 	private Parameters params = new Parameters();
 
 	public int setup(String arg0, ImagePlus imp) {
-		return DOES_ALL;
+		if (!getParameters(imp))
+			return DONE;
+		else
+			return DOES_ALL + DOES_STACKS;
 	}
 
 	public void run(ImageProcessor ip) {
-		if (!getParameters())
-			return;
-		new PeronaMalikFilterScalar(ip, params).apply();
+		PeronaMalikFilter_OLD filter = new PeronaMalikFilter_OLD(params);
+		filter.applyTo(ip);
 	}
 	
-	private boolean getParameters() {
-//    	boolean isColor = (imp.getType() == ImagePlus.COLOR_RGB);
+	private boolean getParameters(ImagePlus imp) {
+    	boolean isColor = (imp.getType() == ImagePlus.COLOR_RGB);
 		GenericDialog gd = new GenericDialog("Anisotropic Diffusion Filter");
 		gd.addNumericField("Number of iterations", params.iterations, 0);
 		gd.addNumericField("Alpha (0,..,0.25)", params.alpha, 2);
 		gd.addNumericField("K", params.kappa, 0);
 		gd.addCheckbox("Smoother regions", params.smoothRegions);
-//		if (isColor) {
-//			gd.addChoice("Color method", Enums.getEnumNames(ColorMode.class), params.colorMode.name());
-//			gd.addCheckbox("Use linear RGB", params.useLinearRgb);
-//		}
+		if (isColor) {
+			gd.addChoice("Color method", Enums.getEnumNames(ColorMode.class), params.colorMode.name());
+			gd.addCheckbox("Use linear RGB", params.useLinearRgb);
+		}
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return false;
@@ -53,10 +57,10 @@ public class Perona_Malik_Filter implements PlugInFilter {
 		params.alpha = (float) gd.getNextNumber();
 		params.kappa = (float) gd.getNextNumber();
 		params.smoothRegions = gd.getNextBoolean();
-//		if (isColor) {
-//			params.colorMode = ColorMode.valueOf(gd.getNextChoice());
-//			params.useLinearRgb = gd.getNextBoolean();
-//		}
+		if (isColor) {
+			params.colorMode = ColorMode.valueOf(gd.getNextChoice());
+			params.useLinearRgb = gd.getNextBoolean();
+		}
 		return true;
 	}
 }
