@@ -12,8 +12,8 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter;
-import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter.Parameters;
+import imagingbook.pub.edgepreservingfilters.OLD.TschumperleDericheFilter_OLD.Parameters;
+import imagingbook.pub.edgepreservingfilters.OLD.TschumperleDericheFilter_OLD;
 
 /**
  * This ImageJ plugin demonstrates the use of the Anisotropic Diffusion filter proposed 
@@ -24,7 +24,7 @@ import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter.Parameters
  * @version 2014/03/16
  */
 
-public class Tschumperle_Deriche_Filter implements PlugInFilter {
+public class Tschumperle_Deriche_Filter_OLD implements PlugInFilter {
 	
 	private Parameters params = new Parameters();
 
@@ -36,7 +36,7 @@ public class Tschumperle_Deriche_Filter implements PlugInFilter {
 	}
 	
 	public void run(ImageProcessor ip) {
-		TschumperleDericheFilter filter = new TschumperleDericheFilter(params);	
+		TschumperleDericheFilter_OLD filter = new TschumperleDericheFilter_OLD(params);	
 		filter.applyTo(ip);
 	}
 
