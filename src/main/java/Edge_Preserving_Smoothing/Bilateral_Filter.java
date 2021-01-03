@@ -8,16 +8,18 @@
  *******************************************************************************/
 package Edge_Preserving_Smoothing;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.math.VectorNorm.NormType;
+import imagingbook.pub.edgepreservingfilters.BilateralFilter.Parameters;
+import imagingbook.pub.edgepreservingfilters.BilateralFilterScalar;
+import imagingbook.pub.edgepreservingfilters.BilateralFilterScalarSeparable;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterVector;
-import imagingbook.pub.edgepreservingfilters.BilateralFilterVector.Parameters;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterVectorSeparable;
-
 
 /**
  * This plugin demonstrates the use of the (full) BilateralFilter class.
@@ -28,38 +30,59 @@ import imagingbook.pub.edgepreservingfilters.BilateralFilterVectorSeparable;
  * @author WB
  * @version 2021/01/02
  */
-public class Bilateral_Filter_Vector implements PlugInFilter {
+public class Bilateral_Filter implements PlugInFilter {
 	
 	private Parameters params = new Parameters();
+	private boolean isColor;
+	
 	private static boolean UseSeparableFilter = false;
+	private static boolean UseScalarFilter = false;
 	
 	public int setup(String arg0, ImagePlus imp) {
-		return DOES_RGB;	// only works on color images!
+		return DOES_ALL;
 	}
 	
 	public void run(ImageProcessor ip) {
+		isColor = (ip instanceof ColorProcessor);
 		if (!getParameters())
 			return;
-
-		if (UseSeparableFilter) {
-			new BilateralFilterVectorSeparable((ColorProcessor) ip, params).apply();
+		
+		if (isColor && !UseScalarFilter) {  // vector filter
+			ColorProcessor cp = (ColorProcessor)ip;
+			if (UseSeparableFilter) {
+				new BilateralFilterVectorSeparable(cp, params).apply();
+			}
+			else {
+				new BilateralFilterVector(cp, params).apply();
+			}
 		}
-		else {
-			new BilateralFilterVector((ColorProcessor) ip, params).apply();
+		else {	// scalar filter
+			if (UseSeparableFilter) {
+				new BilateralFilterScalarSeparable(ip, params).apply();
+			}
+			else {
+				new BilateralFilterScalar(ip, params).apply();
+			}
 		}
 	}
-
+		
 	private boolean getParameters() {
 		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addNumericField("Sigma domain", params.sigmaD, 1);
 		gd.addNumericField("Sigma range", params.sigmaR, 1);
-		gd.addEnumChoice("Color norm", params.colorNormType);
+		if (isColor) {
+			gd.addEnumChoice("Color norm", params.colorNormType);
+			gd.addCheckbox("Use scalar filter", UseScalarFilter );
+		}
 		gd.addCheckbox("Use X/Y-separable filter", UseSeparableFilter);
 		gd.showDialog();
 		if (gd.wasCanceled()) return false;
 		params.sigmaD = Math.max(gd.getNextNumber(), 0.5);
 		params.sigmaR = Math.max(gd.getNextNumber(), 1);
-		params.colorNormType = gd.getNextEnumChoice(NormType.class);
+		if (isColor) {
+			params.colorNormType = gd.getNextEnumChoice(NormType.class);
+			UseScalarFilter = gd.getNextBoolean();
+		}
 		UseSeparableFilter = gd.getNextBoolean();
 		return true;
     }
