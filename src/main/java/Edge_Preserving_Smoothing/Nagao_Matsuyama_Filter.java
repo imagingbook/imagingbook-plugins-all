@@ -13,8 +13,9 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaF;
+import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaF.Parameters;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterScalar;
-import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterScalar.Parameters;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterVector;
 
 /**
@@ -25,7 +26,7 @@ import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterVector;
  */
 public class Nagao_Matsuyama_Filter implements PlugInFilter {
 	
-	private Parameters params = new Parameters();
+	private NagaoMatsuyamaF.Parameters params = new NagaoMatsuyamaF.Parameters();
 	private static boolean UseVectorFilter = false;
 	private boolean isColor;
 

@@ -11,10 +11,10 @@ package Edge_Preserving_Smoothing;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.ImageProcessor;
 import ij.process.ColorProcessor;
+import ij.process.ImageProcessor;
+import imagingbook.pub.edgepreservingfilters.KuwaharaF.Parameters;
 import imagingbook.pub.edgepreservingfilters.KuwaharaFilterScalar;
-import imagingbook.pub.edgepreservingfilters.KuwaharaFilterScalar.Parameters;
 import imagingbook.pub.edgepreservingfilters.KuwaharaFilterVector;
 
 /**

@@ -8,14 +8,13 @@
  *******************************************************************************/
 package Edge_Preserving_Smoothing;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.math.VectorNorm.NormType;
-import imagingbook.pub.edgepreservingfilters.BilateralFilter.Parameters;
+import imagingbook.pub.edgepreservingfilters.BilateralF.Parameters;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterScalar;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterScalarSeparable;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterVector;
