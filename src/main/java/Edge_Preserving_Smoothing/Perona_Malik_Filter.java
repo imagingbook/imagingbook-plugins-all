@@ -16,8 +16,7 @@ import ij.process.ImageProcessor;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.ColorMode;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.Parameters;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterScalar;
-import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterVectorBrightGrad;
-import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterVectorColorGrad;
+import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterVector;
 
 /**
  * This plugin demonstrates the use of the PeronaMalikFilter class.
@@ -42,13 +41,11 @@ public class Perona_Malik_Filter implements PlugInFilter {
 		
 		if (isColor) {
 			ColorProcessor cp = (ColorProcessor) ip;
-			switch (params.colorMode) {
-			case SeparateChannels : 
-				new PeronaMalikFilterScalar(cp, params).apply(); break;
-			case BrightnessGradient:
-				new PeronaMalikFilterVectorBrightGrad(cp, params).apply(); break;
-			case ColorGradient:
-				new PeronaMalikFilterVectorColorGrad(cp, params).apply(); break;
+			if (params.colorMode == ColorMode.SeparateChannels) {
+				new PeronaMalikFilterScalar(cp, params).apply();
+			}
+			else {
+				new PeronaMalikFilterVector(cp, params).apply();
 			}
 		}
 		else {
