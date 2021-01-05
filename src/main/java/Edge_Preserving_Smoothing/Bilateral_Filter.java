@@ -31,11 +31,11 @@ import imagingbook.pub.edgepreservingfilters.BilateralFilterVectorSeparable;
  */
 public class Bilateral_Filter implements PlugInFilter {
 	
-	private Parameters params = new Parameters();
-	private boolean isColor;
-	
+	private static Parameters params = new Parameters();
 	private static boolean UseSeparableFilter = false;
 	private static boolean UseScalarFilter = false;
+	
+	private boolean isColor;
 	
 	public int setup(String arg0, ImagePlus imp) {
 		return DOES_ALL;

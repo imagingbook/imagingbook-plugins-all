@@ -29,8 +29,9 @@ import imagingbook.pub.edgepreservingfilters.KuwaharaFilterVector;
  */
 public class Kuwahara_Filter implements PlugInFilter {
 
-	private Parameters params = new Parameters();
+	private static Parameters params = new Parameters();
 	private static boolean UseVectorFilter = false;
+	
 	private boolean isColor;
 
 	public int setup(String arg, ImagePlus imp) {
@@ -50,7 +51,7 @@ public class Kuwahara_Filter implements PlugInFilter {
 	}
 
 	private boolean getParameters() {
-		GenericDialog gd = new GenericDialog("Median Filter");
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addNumericField("Radius (>1)", params.radius, 0);
 		gd.addNumericField("Variance threshold", params.tsigma, 0);
 		if (isColor)

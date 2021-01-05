@@ -42,7 +42,7 @@ public class Tschumperle_Deriche_Filter_OLD implements PlugInFilter {
 
 	private boolean getParameters(ImagePlus imp) {
     	boolean isColor = (imp.getType() == ImagePlus.COLOR_RGB);
-		GenericDialog gd = new GenericDialog("2D Anisotropic Diffusion Tschumperle-Deriche");
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addNumericField("Number of iterations", params.iterations, 0);
 		gd.addNumericField("dt (Time step)", params.dt, 1);
 		gd.addNumericField("Gradient smoothing (sigma_g)", params.sigmaG, 2);

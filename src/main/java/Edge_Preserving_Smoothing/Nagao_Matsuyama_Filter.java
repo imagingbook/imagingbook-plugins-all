@@ -13,7 +13,6 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaF;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaF.Parameters;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterScalar;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterVector;
@@ -26,7 +25,7 @@ import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterVector;
  */
 public class Nagao_Matsuyama_Filter implements PlugInFilter {
 	
-	private NagaoMatsuyamaF.Parameters params = new NagaoMatsuyamaF.Parameters();
+	private static Parameters params = new Parameters();
 	private static boolean UseVectorFilter = false;
 	private boolean isColor;
 
@@ -47,7 +46,7 @@ public class Nagao_Matsuyama_Filter implements PlugInFilter {
     }
     
     private boolean getParameters() {
-		GenericDialog gd = new GenericDialog("5x5 Nagao-Matsuyama Filter");
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addNumericField("Variance threshold", params.varThreshold, 0);
 		if (isColor)
 			gd.addCheckbox("Use vector filter", UseVectorFilter);

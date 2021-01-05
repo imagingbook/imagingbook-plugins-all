@@ -14,6 +14,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.ColorMode;
+import imagingbook.pub.edgepreservingfilters.PeronaMalikF.ConductanceFunction;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.Parameters;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterScalar;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterVector;
@@ -23,11 +24,12 @@ import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterVector;
  * This plugin works for all types of images and stacks.
  * 
  * @author W. Burger
- * @version 2021/01/03
+ * @version 2021/01/05
  */
 public class Perona_Malik_Filter implements PlugInFilter {
 
-	private Parameters params = new Parameters();
+	private static Parameters params = new Parameters();
+	
 	private boolean isColor;
 
 	public int setup(String arg0, ImagePlus imp) {
@@ -58,9 +60,9 @@ public class Perona_Malik_Filter implements PlugInFilter {
 		gd.addNumericField("Number of iterations", params.iterations, 0);
 		gd.addNumericField("Alpha (0,..,0.25)", params.alpha, 2);
 		gd.addNumericField("K", params.kappa, 0);
-		gd.addCheckbox("Smoother regions", params.smoothRegions);
+		gd.addEnumChoice("Conductance function", params.conductanceFunType);
 		if (isColor) {
-			gd.addEnumChoice("Color method", ColorMode.SeparateChannels);
+			gd.addEnumChoice("Color method", params.colorMode);
 			//gd.addCheckbox("Use linear RGB", params.useLinearRgb);
 		}
 		gd.showDialog();
@@ -69,7 +71,7 @@ public class Perona_Malik_Filter implements PlugInFilter {
 		params.iterations = (int) Math.max(gd.getNextNumber(), 1);
 		params.alpha = (float) gd.getNextNumber();
 		params.kappa = (float) gd.getNextNumber();
-		params.smoothRegions = gd.getNextBoolean();
+		params.conductanceFunType = gd.getNextEnumChoice(ConductanceFunction.Type.class);
 		if (isColor) {
 			params.colorMode = gd.getNextEnumChoice(ColorMode.class);
 			//params.useLinearRgb = gd.getNextBoolean();
