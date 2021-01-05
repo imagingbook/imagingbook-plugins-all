@@ -11,9 +11,9 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filter.LinearFilter;
 import imagingbook.lib.filter.examples.ExampleFilterScalar;
-import imagingbook.lib.filter.kernel.Kernel2D;
+import imagingbook.lib.filter.linear.Kernel2D;
+import imagingbook.lib.filter.linear.LinearFilter;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter

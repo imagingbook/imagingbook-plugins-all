@@ -11,11 +11,11 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filter.LinearFilter;
-import imagingbook.lib.filter.LinearFilterSeparable;
-import imagingbook.lib.filter.kernel.GaussianKernel1D;
-import imagingbook.lib.filter.kernel.Kernel1D;
-import imagingbook.lib.filter.kernel.Kernel2D;
+import imagingbook.lib.filter.linear.GaussianKernel1D;
+import imagingbook.lib.filter.linear.Kernel1D;
+import imagingbook.lib.filter.linear.Kernel2D;
+import imagingbook.lib.filter.linear.LinearFilter;
+import imagingbook.lib.filter.linear.LinearFilterSeparable;
 import imagingbook.lib.image.access.PixelPack;
 
 

@@ -14,7 +14,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filter.GaussianFilter;
+import imagingbook.lib.filter.linear.GaussianFilter;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.color.image.ColorStack;
 import imagingbook.pub.color.image.ColorStack.ColorStackType;

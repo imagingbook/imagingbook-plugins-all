@@ -11,9 +11,9 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filter.LinearFilter;
-import imagingbook.lib.filter.kernel.GaussianKernel2D;
-import imagingbook.lib.filter.kernel.Kernel2D;
+import imagingbook.lib.filter.linear.GaussianKernel2D;
+import imagingbook.lib.filter.linear.Kernel2D;
+import imagingbook.lib.filter.linear.LinearFilter;
 import imagingbook.lib.image.access.PixelPack;
 
 /**
