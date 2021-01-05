@@ -16,6 +16,7 @@ import imagingbook.lib.filter.LinearFilter;
 import imagingbook.lib.filter.LinearFilterSeparable;
 import imagingbook.lib.filter.kernel.Kernel1D;
 import imagingbook.lib.filter.kernel.Kernel2D;
+import imagingbook.lib.image.access.PixelPack;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
@@ -40,7 +41,7 @@ public class Linear_Filter_Separable2 implements PlugInFilter {
 		IJ.log("kernelX = " + kernelX.getXc());
 		IJ.log("kernelY = " + kernelY.getXc());
 		
-		new LinearFilterSeparable(ip, kernelX, kernelY, null).apply();
+		new LinearFilterSeparable(PixelPack.fromImageProcessor(ip, null), kernelX, kernelY).apply();
     }
 
 }

@@ -13,6 +13,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.filter.LinearFilter;
 import imagingbook.lib.filter.kernel.Kernel2D;
+import imagingbook.lib.image.access.PixelPack;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
@@ -39,7 +40,7 @@ public class Linear_Filter2_3x3 implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-		new LinearFilter(ip, new Kernel2D(H), null).apply();
+		new LinearFilter(PixelPack.fromImageProcessor(ip, null), new Kernel2D(H)).apply();
     }
 
 }

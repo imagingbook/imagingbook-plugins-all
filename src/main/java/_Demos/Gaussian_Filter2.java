@@ -14,6 +14,7 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.filter.LinearFilter;
 import imagingbook.lib.filter.kernel.GaussianKernel2D;
 import imagingbook.lib.filter.kernel.Kernel2D;
+import imagingbook.lib.image.access.PixelPack;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
@@ -33,8 +34,8 @@ public class Gaussian_Filter2 implements PlugInFilter {
 
     public void run(ImageProcessor ip) {	
 		Kernel2D kernel = new GaussianKernel2D(SIGMA);
-		LinearFilter filter = new LinearFilter(ip, kernel, null);
-		(new ImagePlus("Result", filter.apply(true))).show();
+		LinearFilter filter = new LinearFilter(PixelPack.fromImageProcessor(ip, null), kernel);
+		filter.apply();
     }
 
 }

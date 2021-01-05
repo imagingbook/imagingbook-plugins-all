@@ -12,10 +12,10 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.ImageProcessor;
 import ij.process.ColorProcessor;
-import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter.Parameters;
+import ij.process.ImageProcessor;
 import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter;
+import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter.Parameters;
 
 
 /**
