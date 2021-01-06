@@ -6,16 +6,18 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Edge_Preserving_Smoothing;
+package _Testing;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
+import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter;
-import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter.Parameters;
+import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilterGeneric.Parameters;
+import imagingbook.lib.settings.PrintPrecision;
+import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilterGeneric;
 
 
 /**
@@ -27,7 +29,12 @@ import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter.Parameters
  * @version 2014/03/16
  */
 
-public class Tschumperle_Deriche_Filter implements PlugInFilter {
+public class Tschumperle_Deriche_Filter_Generic implements PlugInFilter {
+	
+	static {
+		LogStream.redirectSystem();
+		PrintPrecision.set(6);
+	}
 	
 	private static Parameters params = new Parameters();
 	
@@ -42,7 +49,7 @@ public class Tschumperle_Deriche_Filter implements PlugInFilter {
 		if (!getParameters())
 			return;
 		if (isColor) {
-			new TschumperleDericheFilter((ColorProcessor)ip, params).apply();
+			new TschumperleDericheFilterGeneric((ColorProcessor)ip, params).apply();
 		}
 		else
 			IJ.log("Tschumperle_Deriche_Filter not implemented for non-color images yet");
