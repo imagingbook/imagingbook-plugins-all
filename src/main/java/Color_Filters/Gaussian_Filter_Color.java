@@ -15,6 +15,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.filter.linear.GaussianFilter;
+import imagingbook.lib.image.access.PixelPack;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.color.image.ColorStack;
 import imagingbook.pub.color.image.ColorStack.ColorStackType;
@@ -57,7 +58,7 @@ public class Gaussian_Filter_Color implements PlugInFilter {
     	
        	for (int k = 0; k < nIterations; k++) {
        		for (FloatProcessor fp : processors) {
-       			new GaussianFilter(fp, sigma).apply();
+       			new GaussianFilter(sigma).applyTo(PixelPack.pack(fp));
        			
        		}
     	}

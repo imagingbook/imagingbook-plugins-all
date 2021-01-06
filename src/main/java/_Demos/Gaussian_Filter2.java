@@ -34,8 +34,7 @@ public class Gaussian_Filter2 implements PlugInFilter {
 
     public void run(ImageProcessor ip) {	
 		Kernel2D kernel = new GaussianKernel2D(SIGMA);
-		LinearFilter filter = new LinearFilter(PixelPack.fromImageProcessor(ip, null), kernel);
-		filter.apply();
+		new LinearFilter(kernel).applyTo(PixelPack.pack(ip));
     }
 
 }

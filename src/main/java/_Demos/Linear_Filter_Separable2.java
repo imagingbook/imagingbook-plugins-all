@@ -41,7 +41,7 @@ public class Linear_Filter_Separable2 implements PlugInFilter {
 		IJ.log("kernelX = " + kernelX.getXc());
 		IJ.log("kernelY = " + kernelY.getXc());
 		
-		new LinearFilterSeparable(PixelPack.fromImageProcessor(ip, null), kernelX, kernelY).apply();
+		new LinearFilterSeparable(kernelX, kernelY).applyTo(PixelPack.pack(ip));
     }
 
 }

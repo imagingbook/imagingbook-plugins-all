@@ -37,7 +37,7 @@ public class Gaussian_Filter_Separable2 implements PlugInFilter {
 
     public void run(ImageProcessor ip) {	
 		Kernel1D kernel = new GaussianKernel1D(SIGMA);
-		new LinearFilterSeparable(PixelPack.fromImageProcessor(ip, null), kernel).apply();
+		new LinearFilterSeparable(kernel).applyTo(PixelPack.pack(ip));
     }
 
 }

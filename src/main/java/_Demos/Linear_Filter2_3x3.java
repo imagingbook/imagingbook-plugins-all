@@ -11,6 +11,7 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.filter.linear.GaussianFilter;
 import imagingbook.lib.filter.linear.Kernel2D;
 import imagingbook.lib.filter.linear.LinearFilter;
 import imagingbook.lib.image.access.PixelPack;
@@ -40,7 +41,7 @@ public class Linear_Filter2_3x3 implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-		new LinearFilter(PixelPack.fromImageProcessor(ip, null), new Kernel2D(H)).apply();
+		new LinearFilter(new Kernel2D(H)).applyTo(PixelPack.pack(ip));
     }
 
 }
