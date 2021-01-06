@@ -8,16 +8,15 @@
  *******************************************************************************/
 package _Testing;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilterGeneric.Parameters;
 import imagingbook.lib.settings.PrintPrecision;
 import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilterGeneric;
+import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilterGeneric.Parameters;
 
 
 /**
@@ -26,7 +25,7 @@ import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilterGeneric;
  * vector-valued images}", IEEE Signal Processing Magazine, vol. 19, no. 5, pp. 16-25 
  * (Sep. 2002). This plugin works for all types of images and stacks.
  * @author W. Burger
- * @version 2014/03/16
+ * @version 2021/01/06
  */
 
 public class Tschumperle_Deriche_Filter_Generic implements PlugInFilter {
@@ -46,13 +45,12 @@ public class Tschumperle_Deriche_Filter_Generic implements PlugInFilter {
 	
 	public void run(ImageProcessor ip) {
 		isColor = (ip instanceof ColorProcessor);
+		
 		if (!getParameters())
 			return;
-		if (isColor) {
-			new TschumperleDericheFilterGeneric((ColorProcessor)ip, params).apply();
-		}
-		else
-			IJ.log("Tschumperle_Deriche_Filter not implemented for non-color images yet");
+
+		new TschumperleDericheFilterGeneric(ip, params).apply();
+	
 	}
 
 	private boolean getParameters() {
