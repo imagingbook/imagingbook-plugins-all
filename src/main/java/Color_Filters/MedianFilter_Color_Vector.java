@@ -15,7 +15,7 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.math.VectorNorm.NormType;
 import imagingbook.lib.util.Enums;
 import imagingbook.pub.color.filters.VectorMedianFilter;
-import imagingbook.pub.color.filters.VectorMedianFilter.*;
+import imagingbook.pub.color.filters.VectorMedianFilter.Parameters;
 
 /**
  * This plugin applies a vector median filter to a RGB color image.
@@ -35,8 +35,8 @@ public class MedianFilter_Color_Vector implements PlugInFilter {
     	params.distanceNorm = NormType.L1;
     	params.radius = 3.0;
 
-    	VectorMedianFilter filter = new VectorMedianFilter(ip, params);
-    	filter.apply();
+    	VectorMedianFilter filter = new VectorMedianFilter(params);
+    	filter.applyTo(ip);
     	
  //   	IJ.log("Pixels modified: " + filter.modifiedCount + " of " + (ip.getPixelCount()));
     }

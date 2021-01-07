@@ -49,7 +49,7 @@ public class Tschumperle_Deriche_Filter_Generic implements PlugInFilter {
 		if (!getParameters())
 			return;
 
-		new TschumperleDericheFilterGeneric(ip, params).apply();
+		new TschumperleDericheFilterGeneric(params).applyTo(ip);
 	
 	}
 

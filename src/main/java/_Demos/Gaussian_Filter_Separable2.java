@@ -16,7 +16,6 @@ import imagingbook.lib.filter.linear.Kernel1D;
 import imagingbook.lib.filter.linear.Kernel2D;
 import imagingbook.lib.filter.linear.LinearFilter;
 import imagingbook.lib.filter.linear.LinearFilterSeparable;
-import imagingbook.lib.image.access.PixelPack;
 
 
 /**
@@ -37,7 +36,7 @@ public class Gaussian_Filter_Separable2 implements PlugInFilter {
 
     public void run(ImageProcessor ip) {	
 		Kernel1D kernel = new GaussianKernel1D(SIGMA);
-		new LinearFilterSeparable(kernel).applyTo(PixelPack.pack(ip));
+		new LinearFilterSeparable(kernel).applyTo(ip);
     }
 
 }

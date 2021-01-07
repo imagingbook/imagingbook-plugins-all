@@ -34,8 +34,8 @@ public class MedianFilter_Color_Scalar implements PlugInFilter {
     	Parameters params = new ScalarMedianFilter.Parameters();
     	if (!setParameters(params)) 
     		return;
-    	ScalarMedianFilter filter = new ScalarMedianFilter(ip, params);
-    	filter.apply();	// apply destructively
+    	ScalarMedianFilter filter = new ScalarMedianFilter(params);
+    	filter.applyTo(ip);	// apply destructively
     }
     
     boolean setParameters(Parameters params) {

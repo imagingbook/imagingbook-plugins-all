@@ -49,18 +49,18 @@ public class Bilateral_Filter implements PlugInFilter {
 		if (isColor && !UseScalarFilter) {  // vector filter
 			ColorProcessor cp = (ColorProcessor)ip;
 			if (UseSeparableFilter) {
-				new BilateralFilterVectorSeparable(cp, params).apply();
+				new BilateralFilterVectorSeparable(params).applyTo(cp);
 			}
 			else {
-				new BilateralFilterVector(cp, params).apply();
+				new BilateralFilterVector(params).applyTo(cp);
 			}
 		}
 		else {	// scalar filter
 			if (UseSeparableFilter) {
-				new BilateralFilterScalarSeparable(ip, params).apply();
+				new BilateralFilterScalarSeparable(params).applyTo(ip);
 			}
 			else {
-				new BilateralFilterScalar(ip, params).apply();
+				new BilateralFilterScalar(params).applyTo(ip);
 			}
 		}
 	}

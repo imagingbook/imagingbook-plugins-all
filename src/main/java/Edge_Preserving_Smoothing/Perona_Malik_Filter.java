@@ -44,14 +44,14 @@ public class Perona_Malik_Filter implements PlugInFilter {
 		if (isColor) {
 			ColorProcessor cp = (ColorProcessor) ip;
 			if (params.colorMode == ColorMode.SeparateChannels) {
-				new PeronaMalikFilterScalar(cp, params).apply();
+				new PeronaMalikFilterScalar(params).applyTo(cp);
 			}
 			else {
-				new PeronaMalikFilterVector(cp, params).apply();
+				new PeronaMalikFilterVector(params).applyTo(cp);
 			}
 		}
 		else {
-			new PeronaMalikFilterScalar(ip, params).apply();
+			new PeronaMalikFilterScalar(params).applyTo(ip);
 		}
 	}
 	

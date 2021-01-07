@@ -43,10 +43,10 @@ public class Kuwahara_Filter implements PlugInFilter {
 		if (!getParameters())
 			return;
 		if (isColor && UseVectorFilter) {
-			new KuwaharaFilterVector((ColorProcessor)ip, params).apply();
+			new KuwaharaFilterVector(params).applyTo((ColorProcessor)ip);
 		}
 		else {
-			new KuwaharaFilterScalar(ip, params).apply();
+			new KuwaharaFilterScalar(params).applyTo(ip);
 		}
 	}
 

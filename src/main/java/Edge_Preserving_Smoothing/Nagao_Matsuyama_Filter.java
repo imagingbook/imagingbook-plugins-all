@@ -38,10 +38,10 @@ public class Nagao_Matsuyama_Filter implements PlugInFilter {
 		if (!getParameters())
 			return;
 		if (isColor && UseVectorFilter) {
-			new NagaoMatsuyamaFilterVector((ColorProcessor)ip, params).apply();
+			new NagaoMatsuyamaFilterVector(params).applyTo((ColorProcessor)ip);
 		}
 		else {
-			new NagaoMatsuyamaFilterScalar(ip, params).apply();
+			new NagaoMatsuyamaFilterScalar(params).applyTo(ip);
 		}
     }
     
