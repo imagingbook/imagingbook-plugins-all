@@ -24,15 +24,15 @@ import imagingbook.lib.filter.linear.LinearFilter;
  */
 public class Linear_Filter2_3x3 implements PlugInFilter {
 	
-//	private static float[][] H = {
-//			{1, 2, 1},
-//			{2, 4, 2},
-//			{1, 2, 1}};
-//	
 	private static float[][] H = {
-			{0, 0, 0},
-			{0, 1, 0},
-			{0, 0, 0}};
+			{1, 2, 1},
+			{2, 4, 2},
+			{1, 2, 1}};
+	
+//	private static float[][] H = {
+//			{0, 0, 0},
+//			{0, 1, 0},
+//			{0, 0, 0}};
 
     public int setup(String arg, ImagePlus imp) {
         return DOES_ALL + NO_CHANGES;
