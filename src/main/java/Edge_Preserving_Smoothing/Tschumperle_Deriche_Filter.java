@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package _Testing;
+package Edge_Preserving_Smoothing;
 
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -15,9 +15,8 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.settings.PrintPrecision;
-import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilterGeneric;
-import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilterGeneric.Parameters;
-
+import imagingbook.pub.edgepreservingfilters.TschumperleDericheF.Parameters;
+import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter;
 
 /**
  * This ImageJ plugin demonstrates the use of the Anisotropic Diffusion filter proposed 
@@ -28,7 +27,7 @@ import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilterGeneric.Par
  * @version 2021/01/06
  */
 
-public class Tschumperle_Deriche_Filter_Generic implements PlugInFilter {
+public class Tschumperle_Deriche_Filter implements PlugInFilter {
 	
 	static {
 		LogStream.redirectSystem();
@@ -45,16 +44,12 @@ public class Tschumperle_Deriche_Filter_Generic implements PlugInFilter {
 	
 	public void run(ImageProcessor ip) {
 		isColor = (ip instanceof ColorProcessor);
-		
 		if (!getParameters())
 			return;
-
-		new TschumperleDericheFilterGeneric(params).applyTo(ip);
-	
+		new TschumperleDericheFilter(params).applyTo(ip);
 	}
 
 	private boolean getParameters() {
-
 		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addNumericField("Number of iterations", params.iterations, 0);
 		gd.addNumericField("dt (Time step)", params.dt, 1);
@@ -62,9 +57,9 @@ public class Tschumperle_Deriche_Filter_Generic implements PlugInFilter {
 		gd.addNumericField("Structure tensor smoothing (sigma_s)", params.sigmaS, 2);
 		gd.addNumericField("a1 (Diffusion limiter along minimal variations)", params.a1, 2);
 		gd.addNumericField("a2 (Diffusion limiter along maximal variations)", params.a2, 2);
-		if (isColor) {
-			gd.addCheckbox("Use linear RGB", params.useLinearRgb);
-		}
+//		if (isColor) {
+//			gd.addCheckbox("Use linear RGB", params.useLinearRgb);
+//		}
 		gd.addMessage("Incorrect values are replaced by defaults.");
 		
 		gd.showDialog();
@@ -76,9 +71,9 @@ public class Tschumperle_Deriche_Filter_Generic implements PlugInFilter {
 		params.sigmaS = gd.getNextNumber();
 		params.a1 = (float) gd.getNextNumber();
 		params.a2 = (float) gd.getNextNumber();
-		if (isColor) {
-			params.useLinearRgb = gd.getNextBoolean();
-		}
+//		if (isColor) {
+//			params.useLinearRgb = gd.getNextBoolean();
+//		}
 		return true;
 	}
     
