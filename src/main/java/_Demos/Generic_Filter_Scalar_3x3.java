@@ -11,6 +11,7 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.filter.examples.ExampleFilterScalar;
 import imagingbook.lib.filter.linear.Kernel2D;
 import imagingbook.lib.filter.linear.LinearFilter;
 
@@ -22,24 +23,15 @@ import imagingbook.lib.filter.linear.LinearFilter;
  * @author WB
  *
  */
-public class Linear_Filter2_3x3 implements PlugInFilter {
-	
-	private static float[][] H = {
-			{1, 2, 1},
-			{2, 4, 2},
-			{1, 2, 1}};
-	
-//	private static float[][] H = {
-//			{0, 0, 0},
-//			{0, 1, 0},
-//			{0, 0, 0}};
+public class Generic_Filter_Scalar_3x3 implements PlugInFilter {
+
 
     public int setup(String arg, ImagePlus imp) {
-        return DOES_ALL + NO_CHANGES;
+        return DOES_ALL;
     }
 
-    public void run(ImageProcessor ip) {
-		new LinearFilter(new Kernel2D(H)).applyTo(ip);
+    public void run(ImageProcessor ip) {	
+    	new ExampleFilterScalar().applyTo(ip);
     }
 
 }

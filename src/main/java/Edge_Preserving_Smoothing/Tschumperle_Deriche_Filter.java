@@ -14,6 +14,8 @@ import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.filter.FilterProgressListener;
+import imagingbook.lib.filter.GenericFilter;
 import imagingbook.lib.settings.PrintPrecision;
 import imagingbook.pub.edgepreservingfilters.TschumperleDericheF.Parameters;
 import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter;
@@ -27,7 +29,7 @@ import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter;
  * @version 2021/01/06
  */
 
-public class Tschumperle_Deriche_Filter implements PlugInFilter {
+public class Tschumperle_Deriche_Filter implements PlugInFilter, FilterProgressListener {
 	
 	static {
 		LogStream.redirectSystem();
@@ -46,7 +48,10 @@ public class Tschumperle_Deriche_Filter implements PlugInFilter {
 		isColor = (ip instanceof ColorProcessor);
 		if (!getParameters())
 			return;
-		new TschumperleDericheFilter(params).applyTo(ip);
+		
+		GenericFilter filter = new TschumperleDericheFilter(params);
+		filter.setProgressListener(this);
+		filter.applyTo(ip);
 	}
 
 	private boolean getParameters() {
@@ -76,6 +81,11 @@ public class Tschumperle_Deriche_Filter implements PlugInFilter {
 //		}
 		return true;
 	}
+
+//	@Override
+//	public void updateProgress(double progress) {
+//		IJ.showProgress(progress);
+//	}
     
 }
 

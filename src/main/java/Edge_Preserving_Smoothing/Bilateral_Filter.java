@@ -13,6 +13,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.filter.FilterProgressListener;
 import imagingbook.lib.math.VectorNorm.NormType;
 import imagingbook.pub.edgepreservingfilters.BilateralF.Parameters;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterScalar;
@@ -29,7 +30,7 @@ import imagingbook.pub.edgepreservingfilters.BilateralFilterVectorSeparable;
  * @author WB
  * @version 2021/01/02
  */
-public class Bilateral_Filter implements PlugInFilter {
+public class Bilateral_Filter implements PlugInFilter, FilterProgressListener {
 	
 	private static Parameters params = new Parameters();
 	private static boolean UseSeparableFilter = false;

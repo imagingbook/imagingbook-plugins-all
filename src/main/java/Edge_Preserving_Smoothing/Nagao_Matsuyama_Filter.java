@@ -14,6 +14,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaF.Parameters;
+import imagingbook.lib.filter.FilterProgressListener;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterScalar;
 import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterVector;
 
@@ -23,7 +24,7 @@ import imagingbook.pub.edgepreservingfilters.NagaoMatsuyamaFilterVector;
  * @author W. Burger
  * @version 2014/03/16
  */
-public class Nagao_Matsuyama_Filter implements PlugInFilter {
+public class Nagao_Matsuyama_Filter implements PlugInFilter, FilterProgressListener {
 	
 	private static Parameters params = new Parameters();
 	private static boolean UseVectorFilter = false;

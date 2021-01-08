@@ -11,7 +11,7 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filter.examples.ExampleFilterVector;
+import imagingbook.lib.filter.linear.GaussianKernel2D;
 import imagingbook.lib.filter.linear.Kernel2D;
 import imagingbook.lib.filter.linear.LinearFilter;
 
@@ -23,15 +23,17 @@ import imagingbook.lib.filter.linear.LinearFilter;
  * @author WB
  *
  */
-public class Generic_Filter2_Vector_3x3 implements PlugInFilter {
-
+public class Gaussian_Filter implements PlugInFilter {
+	
+	static double SIGMA = 3.0;
 
     public int setup(String arg, ImagePlus imp) {
         return DOES_ALL;
     }
 
-    public void run(ImageProcessor ip) {
-    	new ExampleFilterVector().applyTo(ip);    
+    public void run(ImageProcessor ip) {	
+		Kernel2D kernel = new GaussianKernel2D(SIGMA);
+		new LinearFilter(kernel).applyTo(ip);
     }
 
 }

@@ -8,14 +8,15 @@
  *******************************************************************************/
 package _Demos;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import imagingbook.lib.filter.linear.GaussianKernel1D;
 import imagingbook.lib.filter.linear.Kernel1D;
 import imagingbook.lib.filter.linear.Kernel2D;
 import imagingbook.lib.filter.linear.LinearFilter;
 import imagingbook.lib.filter.linear.LinearFilterSeparable;
+
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
@@ -25,7 +26,7 @@ import imagingbook.lib.filter.linear.LinearFilterSeparable;
  * @author WB
  *
  */
-public class Linear_Filter_Separable2 implements PlugInFilter {
+public class Gaussian_Filter_Separable implements PlugInFilter {
 	
 	static double SIGMA = 3.0;
 
@@ -34,13 +35,8 @@ public class Linear_Filter_Separable2 implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {	
-		Kernel1D kernelX = new Kernel1D(new float[] {0,1,0});
-		Kernel1D kernelY = new Kernel1D(new float[] {0,1,0});
-		
-		IJ.log("kernelX = " + kernelX.getXc());
-		IJ.log("kernelY = " + kernelY.getXc());
-		
-		new LinearFilterSeparable(kernelX, kernelY).applyTo(ip);
+		Kernel1D kernel = new GaussianKernel1D(SIGMA);
+		new LinearFilterSeparable(kernel).applyTo(ip);
     }
 
 }

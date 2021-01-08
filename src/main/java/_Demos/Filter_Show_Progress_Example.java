@@ -11,12 +11,11 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filter.linear.GaussianKernel1D;
-import imagingbook.lib.filter.linear.Kernel1D;
+import imagingbook.lib.filter.FilterProgressListener;
+import imagingbook.lib.filter.GenericFilter;
+import imagingbook.lib.filter.examples.FilterShowProgressExample;
 import imagingbook.lib.filter.linear.Kernel2D;
 import imagingbook.lib.filter.linear.LinearFilter;
-import imagingbook.lib.filter.linear.LinearFilterSeparable;
-
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
@@ -26,17 +25,17 @@ import imagingbook.lib.filter.linear.LinearFilterSeparable;
  * @author WB
  *
  */
-public class Gaussian_Filter_Separable2 implements PlugInFilter {
+public class Filter_Show_Progress_Example implements PlugInFilter, FilterProgressListener {
 	
-	static double SIGMA = 3.0;
-
+	
     public int setup(String arg, ImagePlus imp) {
         return DOES_ALL;
     }
 
-    public void run(ImageProcessor ip) {	
-		Kernel1D kernel = new GaussianKernel1D(SIGMA);
-		new LinearFilterSeparable(kernel).applyTo(ip);
+    public void run(ImageProcessor ip) {
+    	GenericFilter filter = new FilterShowProgressExample();
+    	filter.setProgressListener(this);
+		filter.applyTo(ip);
     }
 
 }
