@@ -14,7 +14,6 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.edgepreservingfilters.KuwaharaF.Parameters;
-import imagingbook.lib.filter.FilterProgressListener;
 import imagingbook.pub.edgepreservingfilters.KuwaharaFilterScalar;
 import imagingbook.pub.edgepreservingfilters.KuwaharaFilterVector;
 
@@ -28,7 +27,7 @@ import imagingbook.pub.edgepreservingfilters.KuwaharaFilterVector;
  * @author WB
  * @version 2021/01/02
  */
-public class Kuwahara_Filter implements PlugInFilter, FilterProgressListener {
+public class Kuwahara_Filter implements PlugInFilter {
 
 	private static Parameters params = new Parameters();
 	private static boolean UseVectorFilter = false;

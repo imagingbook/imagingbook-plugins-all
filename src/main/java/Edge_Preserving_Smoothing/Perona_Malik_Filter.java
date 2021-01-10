@@ -16,7 +16,6 @@ import ij.process.ImageProcessor;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.ColorMode;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.ConductanceFunction;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.Parameters;
-import imagingbook.lib.filter.FilterProgressListener;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterScalar;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterVector;
 
@@ -27,7 +26,7 @@ import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterVector;
  * @author W. Burger
  * @version 2021/01/05
  */
-public class Perona_Malik_Filter implements PlugInFilter, FilterProgressListener {
+public class Perona_Malik_Filter implements PlugInFilter {
 
 	private static Parameters params = new Parameters();
 	

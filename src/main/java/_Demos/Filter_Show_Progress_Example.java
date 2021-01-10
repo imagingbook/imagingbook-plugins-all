@@ -25,7 +25,7 @@ import imagingbook.lib.filter.linear.LinearFilter;
  * @author WB
  *
  */
-public class Filter_Show_Progress_Example implements PlugInFilter, FilterProgressListener {
+public class Filter_Show_Progress_Example implements PlugInFilter {
 	
 	
     public int setup(String arg, ImagePlus imp) {
@@ -34,7 +34,7 @@ public class Filter_Show_Progress_Example implements PlugInFilter, FilterProgres
 
     public void run(ImageProcessor ip) {
     	GenericFilter filter = new FilterShowProgressExample();
-    	filter.setProgressListener(this);
+//    	filter.setProgressListener(this);
 		filter.applyTo(ip);
     }
 
