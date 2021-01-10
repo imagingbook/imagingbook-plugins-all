@@ -11,7 +11,6 @@ package _Demos;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.filter.FilterProgressListener;
 import imagingbook.lib.filter.GenericFilter;
 import imagingbook.lib.filter.examples.FilterShowProgressExample;
 import imagingbook.lib.filter.linear.Kernel2D;
@@ -34,7 +33,6 @@ public class Filter_Show_Progress_Example implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
     	GenericFilter filter = new FilterShowProgressExample();
-//    	filter.setProgressListener(this);
 		filter.applyTo(ip);
     }
 
