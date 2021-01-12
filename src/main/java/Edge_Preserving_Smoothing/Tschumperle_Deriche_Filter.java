@@ -12,7 +12,6 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.filter.GenericFilter;
 import imagingbook.lib.settings.PrintPrecision;
@@ -39,14 +38,14 @@ public class Tschumperle_Deriche_Filter implements PlugInFilter {
 	
 	private static Parameters params = new Parameters();
 	
-	private boolean isColor;
+//	private boolean isColor;
 
 	public int setup(String arg0, ImagePlus imp) {
 		return DOES_ALL + DOES_STACKS;
 	}
 	
 	public void run(ImageProcessor ip) {
-		isColor = (ip instanceof ColorProcessor);
+//		isColor = (ip instanceof ColorProcessor);
 		if (!getParameters())
 			return;
 		
