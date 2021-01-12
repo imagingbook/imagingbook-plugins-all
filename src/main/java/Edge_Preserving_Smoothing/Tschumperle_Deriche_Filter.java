@@ -16,6 +16,8 @@ import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.filter.GenericFilter;
 import imagingbook.lib.settings.PrintPrecision;
+import imagingbook.lib.util.progress.ProgressMonitor;
+import imagingbook.lib.util.progress.ij.ProgressBarMonitor;
 import imagingbook.pub.edgepreservingfilters.TschumperleDericheF.Parameters;
 import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter;
 
@@ -49,7 +51,10 @@ public class Tschumperle_Deriche_Filter implements PlugInFilter {
 			return;
 		
 		GenericFilter filter = new TschumperleDericheFilter(params);
-		filter.applyTo(ip);
+		
+		try (ProgressMonitor m = new ProgressBarMonitor(filter)) {
+			filter.applyTo(ip);
+		}
 	}
 
 	private boolean getParameters() {

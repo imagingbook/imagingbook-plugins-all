@@ -13,6 +13,9 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.filter.GenericFilter;
+import imagingbook.lib.util.progress.ProgressMonitor;
+import imagingbook.lib.util.progress.ij.ProgressBarMonitor;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.ColorMode;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.ConductanceFunction;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.Parameters;
@@ -41,17 +44,17 @@ public class Perona_Malik_Filter implements PlugInFilter {
 		if (!getParameters())
 			return;
 		
+		GenericFilter filter = null;
 		if (isColor) {
-			ColorProcessor cp = (ColorProcessor) ip;
-			if (params.colorMode == ColorMode.SeparateChannels) {
-				new PeronaMalikFilterScalar(params).applyTo(cp);
-			}
-			else {
-				new PeronaMalikFilterVector(params).applyTo(cp);
-			}
+			filter = (params.colorMode == ColorMode.SeparateChannels) ?
+					new PeronaMalikFilterScalar(params) : new PeronaMalikFilterVector(params);
 		}
 		else {
-			new PeronaMalikFilterScalar(params).applyTo(ip);
+			filter = new PeronaMalikFilterScalar(params);
+		}
+		
+		try (ProgressMonitor m = new ProgressBarMonitor(filter)) {
+			filter.applyTo(ip);
 		}
 	}
 	

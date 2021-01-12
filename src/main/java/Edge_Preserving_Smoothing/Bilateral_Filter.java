@@ -13,7 +13,10 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.filter.GenericFilter;
 import imagingbook.lib.math.VectorNorm.NormType;
+import imagingbook.lib.util.progress.ProgressMonitor;
+import imagingbook.lib.util.progress.ij.ProgressBarMonitor;
 import imagingbook.pub.edgepreservingfilters.BilateralF.Parameters;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterScalar;
 import imagingbook.pub.edgepreservingfilters.BilateralFilterScalarSeparable;
@@ -46,22 +49,16 @@ public class Bilateral_Filter implements PlugInFilter {
 		if (!getParameters())
 			return;
 		
-		if (isColor && !UseScalarFilter) {  // vector filter
-			ColorProcessor cp = (ColorProcessor)ip;
-			if (UseSeparableFilter) {
-				new BilateralFilterVectorSeparable(params).applyTo(cp);
-			}
-			else {
-				new BilateralFilterVector(params).applyTo(cp);
-			}
+		GenericFilter filter = null;	
+		if (isColor && !UseScalarFilter) {  	// use a vector filter
+			filter = (UseSeparableFilter) ? new BilateralFilterVectorSeparable(params) : new BilateralFilterVector(params);
 		}
-		else {	// scalar filter
-			if (UseSeparableFilter) {
-				new BilateralFilterScalarSeparable(params).applyTo(ip);
-			}
-			else {
-				new BilateralFilterScalar(params).applyTo(ip);
-			}
+		else {									// use a scalar filter
+			filter = (UseSeparableFilter) ? new BilateralFilterScalarSeparable(params) : new BilateralFilterScalar(params);
+		}
+		
+		try (ProgressMonitor m = new ProgressBarMonitor(filter)) {
+			filter.applyTo(ip);
 		}
 	}
 		

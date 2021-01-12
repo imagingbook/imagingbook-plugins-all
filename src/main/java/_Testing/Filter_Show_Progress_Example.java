@@ -17,12 +17,12 @@ import imagingbook.lib.filter.GenericFilterScalar;
 import imagingbook.lib.filter.GenericFilterScalarSeparable;
 import imagingbook.lib.filter.GenericFilterVector;
 import imagingbook.lib.filter.GenericFilterVectorSeparable;
-import imagingbook.lib.filter.examples.FilterShowProgressExample;
 import imagingbook.lib.filter.linear.Kernel2D;
 import imagingbook.lib.filter.linear.LinearFilter;
-import imagingbook.lib.image.access.PixelPack;
-import imagingbook.lib.image.access.PixelPack.PixelSlice;
+import imagingbook.lib.image.data.PixelPack;
+import imagingbook.lib.image.data.PixelPack.PixelSlice;
 import imagingbook.lib.util.progress.ProgressMonitor;
+import imagingbook.lib.util.progress.ij.ProgressBarMonitor;
 
 /**
  * This ImageJ plugin shows how to construct a generic linear filter
@@ -34,8 +34,6 @@ import imagingbook.lib.util.progress.ProgressMonitor;
  */
 public class Filter_Show_Progress_Example implements PlugInFilter {
 	
-
-	
     public int setup(String arg, ImagePlus imp) {
         return DOES_ALL;
     }
@@ -45,13 +43,13 @@ public class Filter_Show_Progress_Example implements PlugInFilter {
     	//GenericFilter filter = new MyFilterVector(); 
     	//GenericFilter filter = new MyFilterVectorSeparable();
     	GenericFilter filter = new MyFilterScalarSeparable();
-    	filter.setProgressMonitoring(true);
+    	
     	IJ.log("RUNNING " + filter.getClass().getSimpleName());
-		filter.applyTo(ip);
+    	try (ProgressMonitor m = new ProgressBarMonitor(filter)) {
+			filter.applyTo(ip);
+			IJ.log(String.format("elapsed time: %.3fs", m.getElapsedTime()));
+		}
 		
-		ProgressMonitor monitor = filter.getProgressMonitor();
-		if (monitor != null)
-			IJ.log(String.format("elapsed time: %.3fs", monitor.getElapsedTime()));
     }
     
     // ----------------------------------------------------------------
