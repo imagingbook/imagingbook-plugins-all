@@ -45,7 +45,7 @@ public class Jitter_Filter_GenericFilter implements PlugInFilter {
 		protected float[] doPixel(PixelPack source, int u, int v) {
 			int rx = rnd.nextInt(d) - rad;
 			int ry = rnd.nextInt(d) - rad;
-			return source.getPixel(rx, ry);
+			return source.getVec(rx, ry);
 		}
 	}
 	

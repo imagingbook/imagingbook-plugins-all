@@ -80,7 +80,7 @@ public class Filter_Show_Progress_Example implements PlugInFilter {
 		@Override
 		protected float[] doPixel(PixelPack source, int u, int v) {
 			dummyWork();
-			return source.getPixel(u, v);
+			return source.getVec(u, v);
 		}
     	
     	@Override
@@ -98,13 +98,13 @@ public class Filter_Show_Progress_Example implements PlugInFilter {
 		@Override
 		protected float[] doPixelX(PixelPack source, int u, int v) {
 			dummyWork();
-			return source.getPixel(u, v);
+			return source.getVec(u, v);
 		}
 
 		@Override
 		protected float[] doPixelY(PixelPack pack, int u, int v) {
 			dummyWork();
-			return pack.getPixel(u, v);
+			return pack.getVec(u, v);
 		}
 		
 		@Override
