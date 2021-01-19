@@ -45,7 +45,7 @@
 <span class="sourceLineNo">035</span><a id="line.35">        if (!setParameters(params)) </a>
 <span class="sourceLineNo">036</span><a id="line.36">                return;</a>
 <span class="sourceLineNo">037</span><a id="line.37">        ScalarMedianFilter filter = new ScalarMedianFilter(params);</a>
-<span class="sourceLineNo">038</span><a id="line.38">        filter.applyTo(ip);</a>
+<span class="sourceLineNo">038</span><a id="line.38">        filter.applyTo(ip);     // apply destructively</a>
 <span class="sourceLineNo">039</span><a id="line.39">    }</a>
 <span class="sourceLineNo">040</span><a id="line.40">    </a>
 <span class="sourceLineNo">041</span><a id="line.41">    boolean setParameters(Parameters params) {</a>

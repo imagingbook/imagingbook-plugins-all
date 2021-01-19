@@ -22,53 +22,58 @@
 <span class="sourceLineNo">012</span><a id="line.12">import ij.plugin.filter.PlugInFilter;</a>
 <span class="sourceLineNo">013</span><a id="line.13">import ij.process.*;</a>
 <span class="sourceLineNo">014</span><a id="line.14"></a>
-<span class="sourceLineNo">015</span><a id="line.15">public class Filter_Arbitrary implements PlugInFilter {</a>
-<span class="sourceLineNo">016</span><a id="line.16"></a>
-<span class="sourceLineNo">017</span><a id="line.17">    public int setup(String arg, ImagePlus imp) {</a>
-<span class="sourceLineNo">018</span><a id="line.18">        return DOES_8G;</a>
-<span class="sourceLineNo">019</span><a id="line.19">    }</a>
-<span class="sourceLineNo">020</span><a id="line.20"></a>
-<span class="sourceLineNo">021</span><a id="line.21">    public void run(ImageProcessor ip) {</a>
-<span class="sourceLineNo">022</span><a id="line.22">        int M = ip.getWidth();</a>
-<span class="sourceLineNo">023</span><a id="line.23">        int N = ip.getHeight();</a>
-<span class="sourceLineNo">024</span><a id="line.24">        </a>
-<span class="sourceLineNo">025</span><a id="line.25">        // arbitrary filter matrix of size (2K + 1) x (2L + 1):</a>
-<span class="sourceLineNo">026</span><a id="line.26">        int[][] H = {</a>
-<span class="sourceLineNo">027</span><a id="line.27">            {0,0,1,1,1,0,0},</a>
-<span class="sourceLineNo">028</span><a id="line.28">            {0,1,1,1,1,1,0},</a>
-<span class="sourceLineNo">029</span><a id="line.29">            {1,1,1,1,1,1,1},</a>
-<span class="sourceLineNo">030</span><a id="line.30">            {0,1,1,1,1,1,0},</a>
-<span class="sourceLineNo">031</span><a id="line.31">            {0,0,1,1,1,0,0}};</a>
-<span class="sourceLineNo">032</span><a id="line.32">        </a>
-<span class="sourceLineNo">033</span><a id="line.33">        double s = 1.0 / 23;    // scale factor (sum of filter coefficients is 23)</a>
-<span class="sourceLineNo">034</span><a id="line.34">        </a>
-<span class="sourceLineNo">035</span><a id="line.35">        // H[L][K] is the center element of H:</a>
-<span class="sourceLineNo">036</span><a id="line.36">        int K = H[0].length / 2;        // H[0].length = width of H</a>
-<span class="sourceLineNo">037</span><a id="line.37">        int L = H.length / 2;           // H.length = height of H</a>
-<span class="sourceLineNo">038</span><a id="line.38">        </a>
-<span class="sourceLineNo">039</span><a id="line.39">        ImageProcessor copy = ip.duplicate();</a>
-<span class="sourceLineNo">040</span><a id="line.40"></a>
-<span class="sourceLineNo">041</span><a id="line.41">        for (int u = K; u &lt;= M - K - 1; u++) {</a>
-<span class="sourceLineNo">042</span><a id="line.42">                for (int v = L; v &lt;= N - L - 1; v++) {</a>
-<span class="sourceLineNo">043</span><a id="line.43">                // compute filter result for position (u, v):</a>
-<span class="sourceLineNo">044</span><a id="line.44">                int sum = 0;</a>
-<span class="sourceLineNo">045</span><a id="line.45">                for (int i = -K; i &lt;= K; i++) {</a>
-<span class="sourceLineNo">046</span><a id="line.46">                        for (int j = -L; j &lt;= L; j++) {</a>
-<span class="sourceLineNo">047</span><a id="line.47">                                                int p = copy.getPixel(u + i, v + j);</a>
-<span class="sourceLineNo">048</span><a id="line.48">                                                int c = H[j + L][i + K];</a>
-<span class="sourceLineNo">049</span><a id="line.49">                        sum = sum + c * p;</a>
-<span class="sourceLineNo">050</span><a id="line.50">                    }</a>
-<span class="sourceLineNo">051</span><a id="line.51">                }</a>
-<span class="sourceLineNo">052</span><a id="line.52">                int q = (int) Math.round(s * sum);</a>
-<span class="sourceLineNo">053</span><a id="line.53">                // clamp result:</a>
-<span class="sourceLineNo">054</span><a id="line.54">                if (q &lt; 0)   q = 0;</a>
-<span class="sourceLineNo">055</span><a id="line.55">                if (q &gt; 255) q = 255;</a>
-<span class="sourceLineNo">056</span><a id="line.56">                ip.putPixel(u, v, q);</a>
-<span class="sourceLineNo">057</span><a id="line.57">            }</a>
-<span class="sourceLineNo">058</span><a id="line.58">        }</a>
-<span class="sourceLineNo">059</span><a id="line.59">    }</a>
-<span class="sourceLineNo">060</span><a id="line.60"></a>
-<span class="sourceLineNo">061</span><a id="line.61">}</a>
+<span class="sourceLineNo">015</span><a id="line.15">/**</a>
+<span class="sourceLineNo">016</span><a id="line.16"> * A hand-crafted linear filter for demo purposes only.</a>
+<span class="sourceLineNo">017</span><a id="line.17"> * @author WB</a>
+<span class="sourceLineNo">018</span><a id="line.18"> *</a>
+<span class="sourceLineNo">019</span><a id="line.19"> */</a>
+<span class="sourceLineNo">020</span><a id="line.20">public class Filter_Arbitrary implements PlugInFilter {</a>
+<span class="sourceLineNo">021</span><a id="line.21"></a>
+<span class="sourceLineNo">022</span><a id="line.22">    public int setup(String arg, ImagePlus imp) {</a>
+<span class="sourceLineNo">023</span><a id="line.23">        return DOES_8G;</a>
+<span class="sourceLineNo">024</span><a id="line.24">    }</a>
+<span class="sourceLineNo">025</span><a id="line.25"></a>
+<span class="sourceLineNo">026</span><a id="line.26">    public void run(ImageProcessor ip) {</a>
+<span class="sourceLineNo">027</span><a id="line.27">        int M = ip.getWidth();</a>
+<span class="sourceLineNo">028</span><a id="line.28">        int N = ip.getHeight();</a>
+<span class="sourceLineNo">029</span><a id="line.29">        </a>
+<span class="sourceLineNo">030</span><a id="line.30">        // arbitrary filter matrix of size (2K + 1) x (2L + 1):</a>
+<span class="sourceLineNo">031</span><a id="line.31">        int[][] H = {</a>
+<span class="sourceLineNo">032</span><a id="line.32">            {0,0,1,1,1,0,0},</a>
+<span class="sourceLineNo">033</span><a id="line.33">            {0,1,1,1,1,1,0},</a>
+<span class="sourceLineNo">034</span><a id="line.34">            {1,1,1,1,1,1,1},</a>
+<span class="sourceLineNo">035</span><a id="line.35">            {0,1,1,1,1,1,0},</a>
+<span class="sourceLineNo">036</span><a id="line.36">            {0,0,1,1,1,0,0}};</a>
+<span class="sourceLineNo">037</span><a id="line.37">        </a>
+<span class="sourceLineNo">038</span><a id="line.38">        double s = 1.0 / 23;    // scale factor (sum of filter coefficients is 23)</a>
+<span class="sourceLineNo">039</span><a id="line.39">        </a>
+<span class="sourceLineNo">040</span><a id="line.40">        // H[L][K] is the center element of H:</a>
+<span class="sourceLineNo">041</span><a id="line.41">        int K = (H[0].length - 1) / 2;  // x-center of kernel H</a>
+<span class="sourceLineNo">042</span><a id="line.42">        int L = (H.length - 1) / 2;             // Y-center of kernel H</a>
+<span class="sourceLineNo">043</span><a id="line.43">        </a>
+<span class="sourceLineNo">044</span><a id="line.44">        ImageProcessor copy = ip.duplicate();</a>
+<span class="sourceLineNo">045</span><a id="line.45"></a>
+<span class="sourceLineNo">046</span><a id="line.46">        for (int u = K; u &lt;= M - K - 1; u++) {</a>
+<span class="sourceLineNo">047</span><a id="line.47">                for (int v = L; v &lt;= N - L - 1; v++) {</a>
+<span class="sourceLineNo">048</span><a id="line.48">                // compute filter result for position (u, v):</a>
+<span class="sourceLineNo">049</span><a id="line.49">                int sum = 0;</a>
+<span class="sourceLineNo">050</span><a id="line.50">                for (int i = -K; i &lt;= K; i++) {</a>
+<span class="sourceLineNo">051</span><a id="line.51">                        for (int j = -L; j &lt;= L; j++) {</a>
+<span class="sourceLineNo">052</span><a id="line.52">                                                int p = copy.getPixel(u + i, v + j);</a>
+<span class="sourceLineNo">053</span><a id="line.53">                                                int c = H[j + L][i + K];</a>
+<span class="sourceLineNo">054</span><a id="line.54">                        sum = sum + c * p;</a>
+<span class="sourceLineNo">055</span><a id="line.55">                    }</a>
+<span class="sourceLineNo">056</span><a id="line.56">                }</a>
+<span class="sourceLineNo">057</span><a id="line.57">                int q = (int) Math.round(s * sum);</a>
+<span class="sourceLineNo">058</span><a id="line.58">                // clamp result:</a>
+<span class="sourceLineNo">059</span><a id="line.59">                if (q &lt; 0)   q = 0;</a>
+<span class="sourceLineNo">060</span><a id="line.60">                if (q &gt; 255) q = 255;</a>
+<span class="sourceLineNo">061</span><a id="line.61">                ip.putPixel(u, v, q);</a>
+<span class="sourceLineNo">062</span><a id="line.62">            }</a>
+<span class="sourceLineNo">063</span><a id="line.63">        }</a>
+<span class="sourceLineNo">064</span><a id="line.64">    }</a>
+<span class="sourceLineNo">065</span><a id="line.65"></a>
+<span class="sourceLineNo">066</span><a id="line.66">}</a>
 
 
 
