@@ -20,6 +20,7 @@
 			<version>${imagingbook.version}</version>
 		</dependency>
 		<dependency>
+			<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itextpdf</artifactId>
 			<version>${itext.version}</version>
