@@ -2,19 +2,22 @@ package Tools;
 
 import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
-import java.io.File;
+import java.awt.color.ICC_Profile;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import com.itextpdf.awt.PdfGraphics2D;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfGraphics2D;
+import com.lowagie.text.pdf.PdfWriter;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.gui.Overlay;
 import ij.gui.Roi;
 import ij.io.SaveDialog;
@@ -25,32 +28,34 @@ import ij.process.ImageProcessor;
 /**
  * This ImageJ plugin exports the current image and its attached
  * vector graphic overlay (if existent) as a PDF file.
- * This plugin requires iText to be in the Java library path:
- * place itextpdf-5.5.8.jar (or newer) in {@code ImageJ/jars/}.
- * iText releases can be downloaded from here:
- * <a href="https://github.com/itext/itextpdf/releases">
- * https://github.com/itext/itextpdf/releases</a>.
+ * It uses the free OpenPDF library, which is based on iText4 but LGPL-licensed
+ * (see <a href="https://github.com/LibrePDF/OpenPDF">
+ * https://github.com/LibrePDF/OpenPDF</a>).
  * 
  * @author W. Burger
- * @version 2016/01/09
+ * @version 2021/04/05 (migrated to OpenPDF, added image properties)
  */
 public class Export_PDF_With_Overlay implements PlugInFilter {
-
-	/**
-	 * Used to draw graphic strokes with zero stroke width.
-	 */
-	public static double DefaultStrokeWidth = 0.01;		// substitute for zero-width strokes
+	
+	private static boolean IncludeImage = true;
+	private static boolean IncludeOverlay = true;
+	private static boolean IncludeImageProps = true;
+	private static int ImageUpscaleFactor = 1;
 	
 	/**
 	 * Set true to have a default ICC profile (sRGB) added
 	 * to the PDF file. Solves problems with viewing
 	 * files in Acrobat X+.
 	 */
-	public static boolean AddIccProfile = true;
+	private static boolean AddIccProfile = true;
+
+	/**
+	 * Used to draw graphic strokes with zero stroke width.
+	 */
+	private static double DefaultStrokeWidth = 0.01;		// substitute for zero-width strokes
+	private static String DefaultFileExtension = ".pdf";
+	private static String CurrentOutputDirectory = IJ.getDirectory("temp");
 	
-	public static String DefaultFileExtension = ".pdf";
-	
-	private static String CurrentOutputDirectory = IJ.getDirectory("home");
 	private ImagePlus img;
 
 	public int setup(String arg0, ImagePlus img) {
@@ -59,11 +64,7 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
-		if (!verifyIText()) {
-			IJ.error("This plugin requires iText to be installed!\n" +
-					"Download itextpdf-5.5.8.jar (or newer) from\n" +
-					"https://github.com/itext/itextpdf/releases\n" +
-					"and place in ImageJ/jars/");
+		if (!verifyPdfLib()) {
 			return;
 		}
 		
@@ -72,18 +73,24 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 			return;
 		}
 		
-		String dir = IJ.getDirectory("image");
-		if (dir == null) 
-			dir = CurrentOutputDirectory;
+		if (!getUserInput()) {
+			return;
+		}
 		
-		String name = stripFileExtension(img.getTitle());
-			
-		String path = askForFilePath(dir, name, "Save as PDF");
+		String dir = CurrentOutputDirectory;
+		String name = stripFileExtension(img.getShortTitle());
+		if (ImageUpscaleFactor > 1) {
+			name = name + "x" + ImageUpscaleFactor;
+		}
+		
+		Path path = askForFilePath(dir, name, "Save as PDF");
 		if (path == null) {
 			return;
 		}
 		
-		String finalPath = createPdf(img, path);
+		IJ.log("path = " + path);
+
+		String finalPath = createPdf(img, ImageUpscaleFactor, path);
 		if (finalPath == null) 
 			IJ.log("PDF export failed");
 		else
@@ -92,43 +99,56 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 	
 	// ----------------------------------------------------------------------
 	
-	/** Saves a PDF of the supplied image.
-	 * 
-	 * @param im the image (of type {@link ij.ImagePlus}), possibly with attached vector overlay
-	 * @param path the path to save to
-	 * @return the complete path to the created PDF file or {@code null} 
-	 * if the file could not be saved
+	/**
+	 * Saves a PDF of the input image.
+	 * @param im input image of type {@link ij.ImagePlus}, possibly with attached vector overlay
+	 * @param upscale scale factor (must be greater than 0)
+	 * @param path complete path to the created PDF file
+	 * @return
 	 */
-	public String createPdf(ImagePlus im, String path) {
-		final int width  = im.getWidth();
+	private String createPdf(ImagePlus im, int upscale, Path path) {
+		final int width  = im.getWidth();	// original image size
 		final int height = im.getHeight();
+		Overlay overlay = im.getOverlay();	// original overlay (if any)
 		
 		// step 1: create the PDF document
-		Document document = new Document(new Rectangle(width, height));
+		Rectangle pageSize = new Rectangle(width, height);
+		Document document = new Document(pageSize);
+		
 		try {
 			// step 2: create a PDF writer
-			PdfWriter writer = PdfWriter.getInstance(document,	new FileOutputStream(path));
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path.toFile()));
+			
 			// step 3: open the document
 			document.open();
+			
 			// step 4: create a template and the associated Graphics2D context
 			PdfContentByte cb = writer.getDirectContent();
 			
 			// optional: set sRGB default viewing profile
 			if (AddIccProfile) {
-				byte[] iccdata = java.awt.color.ICC_Profile.getInstance(ColorSpace.CS_sRGB).getData();	
-				com.itextpdf.text.pdf.ICC_Profile icc = com.itextpdf.text.pdf.ICC_Profile.getInstance(iccdata);
-				writer.setOutputIntents("Custom", null, "http://www.color.org", "sRGB IEC61966-2.1", icc);
+				ICC_Profile colorProfile = ICC_Profile.getInstance(ColorSpace.CS_sRGB);
+				writer.setOutputIntents("Custom", null, "http://www.color.org", "sRGB IEC61966-2.1", colorProfile);
+				//byte[] iccdata = java.awt.color.ICC_Profile.getInstance(ColorSpace.CS_sRGB).getData();
+				//com.itextpdf.text.pdf.ICC_Profile icc = com.itextpdf.text.pdf.ICC_Profile.getInstance(iccdata);
+				//writer.setOutputIntents("Custom", null, "http://www.color.org", "sRGB IEC61966-2.1", icc);
 			}
 						
 			// insert the image
-			com.itextpdf.text.Image pdfImg = com.itextpdf.text.Image.getInstance(im.getImage(), null);
-			pdfImg.setAbsolutePosition(0, 0);
-			pdfImg.scaleToFit(width, height); 		
-			cb.addImage(pdfImg);
+			if (IncludeImage) {
+				if (upscale > 1) {	// upscale the image if needed (without interpolation)
+					im = im.resize(width * upscale, height * upscale, "none");
+				}
+				IJ.log("exporting image of size " + im.getWidth() + "/" + im.getHeight());
+				com.lowagie.text.Image pdfImg = com.lowagie.text.Image.getInstance(im.getImage(), null);
+				pdfImg.setAbsolutePosition(0, 0);
+				pdfImg.scaleToFit(width, height);	// fit to the original size 		
+				cb.addImage(pdfImg);
+			}
 			
 			// optional: draw the vector overlay
-			Overlay overlay = im.getOverlay();
-			if (overlay != null) {
+			if (overlay != null && IncludeOverlay) {
+				IJ.log("exporting overlay");
 				Graphics2D g2 = new PdfGraphics2D(cb, width, height);
 				Roi[] roiArr = overlay.toArray();
 				for (Roi roi : roiArr) {
@@ -145,27 +165,62 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 				g2.dispose();
 			}
 			
+			// optional: copy ImagePlus custom properties to PDF
+			if (IncludeImageProps) {
+				String[] props = im.getPropertiesAsArray();
+				if (props != null) {
+					for (int i = 0; i < props.length; i+=2) {
+						String key = props[i];
+						String val = props[i + 1];
+						document.addHeader(key, val);
+					}
+				}
+			}
+			
 		} catch (DocumentException de) {
 			IJ.log(de.getMessage());
 		} catch (IOException ioe) {
 			IJ.log(ioe.getMessage());
 		}
- 
+		
 		// step 5: close the document
 		document.close();
-		return path;
+		return path.toString();
 	}
 	
 	// ----------------------------------------------------------------------
 	
-    private String askForFilePath(String dir, String name, String title) {
-    	String extension = DefaultFileExtension;
-    	SaveDialog od = new SaveDialog(title, dir, name, extension);
+	private boolean getUserInput() {
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
+		
+		gd.addCheckbox("Include overlay", IncludeOverlay);
+		gd.addCheckbox("Include image", IncludeImage);
+		gd.addCheckbox("Include image meta-data", IncludeImageProps);
+		gd.addCheckbox("Add sRGB ICC profile", AddIccProfile);
+		gd.addNumericField("Image upscale factor", ImageUpscaleFactor, 0);
+		
+		gd.showDialog();
+		if (gd.wasCanceled())
+			return false;
+		
+		IncludeOverlay = gd.getNextBoolean();
+		IncludeImage = gd.getNextBoolean();
+		IncludeImageProps = gd.getNextBoolean();
+		AddIccProfile = gd.getNextBoolean();
+		ImageUpscaleFactor = Math.max((int) gd.getNextNumber(), 1);
+		return true;
+	}
+	
+	// ----------------------------------------------------------------------
+	
+    private Path askForFilePath(String dir, String name, String title) {
+    	SaveDialog od = new SaveDialog(title, dir, name, DefaultFileExtension);
     	dir  = od.getDirectory();
     	name = od.getFileName();
+    	
     	if(name != null) {
     		CurrentOutputDirectory = dir;
-    		return new File(dir, name).getAbsolutePath();
+    		return Paths.get(dir, name);
     	}
     	else
     		return null;
@@ -174,17 +229,19 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 	private String stripFileExtension(String fileName) {
 		int dotInd = fileName.lastIndexOf('.');
 		// if dot is in the first position,
-		// we are dealing with a hidden file rather than an DefaultFileExtension
+		// we are dealing with a hidden file rather than a DefaultFileExtension
 		return (dotInd > 0) ? fileName.substring(0, dotInd) : fileName;
 	}
 	
 	
-	private boolean verifyIText() {
+	private boolean verifyPdfLib() {
 		try {
-			if (Class.forName("com.itextpdf.text.Document") != null) {
+			if (Class.forName("com.lowagie.text.Document") != null) {
 				return true;
 			}
 		} catch (ClassNotFoundException e) { }
+		IJ.error("This plugin requires LibrePDF/OpenPDF to be installed!\n" +
+				"see https://github.com/LibrePDF/OpenPDF\n");
 		return false;
 	}
 }
