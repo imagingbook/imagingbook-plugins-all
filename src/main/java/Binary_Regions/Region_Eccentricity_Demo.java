@@ -68,7 +68,8 @@ public class Region_Eccentricity_Demo implements PlugInFilter {
 			double mu02 = mu[1];
 			double mu11 = mu[2];
 			
-			double theta = 0.5 * Math.atan2(2 * mu11, mu20 - mu02);	// orientation angle			
+			double theta = 0.5 * Math.atan2(2 * mu11, mu20 - mu02);	// orientation angle	
+			
 			double A = mu20 + mu02;
 			double B = sqr(mu20 - mu02) + 4 * sqr(mu11);
 			if (B <= 0) {
@@ -76,6 +77,7 @@ public class Region_Eccentricity_Demo implements PlugInFilter {
 			}
 			double ecc = (A + sqrt(B)) / (A - sqrt(B));
 			ecc = sqrt(ecc);
+			
 			IJ.log("A = " + A);
 			IJ.log("B = " + B);
 			IJ.log("A - sqrt(B) = " + (A - sqrt(B)));
