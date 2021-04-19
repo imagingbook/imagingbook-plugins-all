@@ -19,6 +19,7 @@ import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
  * to assign numeric properties to regions and retrieve them afterwards.
  * @author W. Burger
  * @version 2015-12-03
+ * @deprecated
  */
 public class Major_Axis_Eccentricity_Demo implements PlugInFilter {
 	
