@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * This software is provided as a supplement to the authors' textbooks on digital
+ * image processing published by Springer-Verlag in various languages and editions.
+ * Permission to use and distribute this software is granted under the BSD 2-Clause 
+ * "Simplified" License (see http://opensource.org/licenses/BSD-2-Clause). 
+ * Copyright (c) 2006-2021 Wilhelm Burger, Mark J. Burge. 
+ * All rights reserved. Visit http://www.imagingbook.com for additional details.
+ *  
+ *******************************************************************************/
 package Binary_Regions;
 
 import static imagingbook.lib.math.Arithmetic.sqr;
@@ -44,7 +53,7 @@ import imagingbook.pub.regions.SegmentationRegionContour;
  * @author W. Burger
  * @version 2021/04/18
  */
-public class Region_Ellipse_Demo implements PlugInFilter {
+public class Region_Eccentricity_Ellipse_Demo implements PlugInFilter {
 	
 	static {
 		Locale.setDefault(Locale.US);
@@ -156,8 +165,8 @@ public class Region_Ellipse_Demo implements PlugInFilter {
 			
 			// same result via Eigenvalues:
 			Eigensolver2x2 es = new Eigensolver2x2(mu20, mu11, mu11, mu02);
-			double lambda1 = es.getEigenvalue1();
-			double lambda2 = es.getEigenvalue2();
+			double lambda1 = es.getEigenvalue(0);
+			double lambda2 = es.getEigenvalue(1);
 			double ra2 = 2 * sqrt(lambda1 / n);
 			double rb2 = 2 * sqrt(lambda2 / n);
 			IJ.log(String.format("V2: ra=%.2f rb=%.2f", ra2, rb2));
