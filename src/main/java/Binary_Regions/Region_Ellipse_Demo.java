@@ -4,7 +4,6 @@ import static imagingbook.lib.math.Arithmetic.sqr;
 import static java.lang.Math.sqrt;
 
 import java.awt.Color;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -29,10 +28,15 @@ import imagingbook.pub.regions.NeighborhoodType;
 import imagingbook.pub.regions.SegmentationRegionContour;
 
 /**
- * Displays each region's equivalent ellipse as a vector overlay.
- * Infinite eccentricity values (e.g., from straight lines) is limited to
- * {@link #MaxEccentricity} and marked red.
- * {@code NaN} eccentricity values (caused by single-pixel regions) are not displayed.
+ * Performs binary region segmentation, then
+ * displays each region's major axis (scaled by eccentricity)
+ * and equivalent ellipse as a vector overlay.
+ * Eccentricity values are limited to {@link #MaxEccentricity},
+ * axes are marked red if exceeded.
+ * Axes for regions with {@code NaN} eccentricity value (single-pixel regions) 
+ * are not displayed.
+ * Axis and ellipse parameters are calculated from the region's central
+ * moments.
  * <br>
  * This plugin expects a binary (black and white) image with background = 0 and 
  * foreground &gt; 0.
@@ -47,15 +51,23 @@ public class Region_Ellipse_Demo implements PlugInFilter {
 	}
 	
 	private static NeighborhoodType NhT = NeighborhoodType.N4;
-	private static Color 	AxisColor = Color.green;
-	private static Color 	AxisColorMax = Color.red;
-	private static Color	MarkerColor = Color.yellow;
-	private static double 	MarkerLineWidth = 0.5;
-	private static double 	MarkerRadius = 1.5;
-	private static double 	AxisLineWidth = 0.5;
+	
 	private static double 	AxisScale = 1.0;
 	private static int 		MinRegionSize = 10;
 	private static double 	MaxEccentricity = 100;
+	
+	private static Color 	AxisColor = Color.magenta;
+	private static Color 	AxisColorVoid = Color.red;
+	private static Color	MarkerColor = Color.orange;
+	private static Color	EllipseColor = Color.green;
+	
+	private static double 	AxisLineWidth = 1.5;
+	private static double 	MarkerRadius = 3;
+	private static double 	MarkerLineWidth = 0.75;
+	
+	private static boolean 	ShowCenterMark = true;
+	private static boolean 	ShowMajorAxis = true;
+	private static boolean 	ShowEllipse = true;
 	
 	private ImagePlus im = null;
 
@@ -85,65 +97,62 @@ public class Region_Ellipse_Demo implements PlugInFilter {
 		List<BinaryRegion> regions = segmenter.getRegions();
 
 		for (BinaryRegion r : regions) {
-			if (r.getSize() < MinRegionSize) {
+			int n = r.getSize();
+			if (n < MinRegionSize) {
 				continue;
 			}
 			
-			Pnt2d ctr = r.getCentroid();
+			Pnt2d ctr = r.getCenter();
 			double xc = ctr.getX() + 0.5;
 			double yc = ctr.getY() + 0.5;
-			//oly.add(new PointRoi(xc, yc));		// mark the region's center
 			
-			Roi marker = makeMarker(xc, yc, MarkerRadius);
-			marker.setStrokeColor(MarkerColor);
-			marker.setStrokeWidth(MarkerLineWidth);
-			oly.add(marker);
+			if (ShowCenterMark) {
+				Roi marker = makeCenterMark(xc, yc, MarkerRadius);
+				marker.setStrokeColor(MarkerColor);
+				marker.setStrokeWidth(MarkerLineWidth);
+				oly.add(marker);
+			}
 			
-			double[] mu = getCentralMoments(r);
-			double mu20 = mu[0];
-			double mu02 = mu[1];
-			double mu11 = mu[2];
+			double[] mu = r.getCentralMoments();	// = (mu10, mu01, mu20, mu02, mu11)
+			double mu20 = mu[2];
+			double mu02 = mu[3];
+			double mu11 = mu[4];
 			
-			double theta = 0.5 * Math.atan2(2 * mu11, mu20 - mu02);	// orientation angle	
-			
+			double theta = 0.5 * Math.atan2(2 * mu11, mu20 - mu02);	// axis angle	
+				
 			double A = mu20 + mu02;
 			double B = sqr(mu20 - mu02) + 4 * sqr(mu11);
 			if (B < 0) {
-				throw new RuntimeException("negative B: " + B);
-			}
-			
+				throw new RuntimeException("negative B: " + B); // this should never happen
+			}		
 			double a1 = A + sqrt(B);		// see book eq. 10.34
 			double a2 = A - sqrt(B);
-			//double ecc = (A + sqrt(B)) / (A - sqrt(B));
-			double ecc = a1 / a2;
-					
-			if (Double.isNaN(ecc)) {	// single pixel region: A + sqrt(B) == A - sqrt(B) == 0
-				continue;
+			double ecc = a1 / a2;			// = (A + sqrt(B)) / (A - sqrt(B))				
+			
+			if (ShowMajorAxis && !Double.isNaN(ecc)) {
+				// ignore single pixel regions: A + sqrt(B) == A - sqrt(B) == 0
+				Color axisCol = AxisColor;			// default color
+				if (ecc > MaxEccentricity) {		// limit eccentricity (may be infinite)
+					ecc = MaxEccentricity;
+					axisCol = AxisColorVoid;		// mark as beyond maximum
+				}
+				double len = ecc * unitLength;
+				double dx = Math.cos(theta) * len;
+				double dy = Math.sin(theta) * len;
+				Roi roi = new ShapeRoi(new Line2D.Double(xc, yc, xc + dx, yc + dy));
+				roi.setStrokeWidth(AxisLineWidth);
+				roi.setStrokeColor(axisCol);
+				oly.add(roi);
 			}
-				
-			Color axisCol = AxisColor;			// default color
-			if (ecc > MaxEccentricity) {		// limit eccentricity (may be infinite)
-				ecc = MaxEccentricity;
-				axisCol = AxisColorMax;			// mark as beyond maximum
+			
+			if (ShowEllipse) {
+				double ra = sqrt(2 * a1 / n);
+				double rb = sqrt(2 * a2 / n);
+				Roi roi = makeEllipse(xc, yc, ra, rb, theta);
+				roi.setStrokeWidth(AxisLineWidth);
+				roi.setStrokeColor(EllipseColor);
+				oly.add(roi);
 			}
-			
-			double len = ecc * unitLength;
-			double dx = Math.cos(theta) * len;
-			double dy = Math.sin(theta) * len;
-			
-						
-			Roi roi = new ShapeRoi(new Line2D.Double(xc, yc, xc + dx, yc + dy));
-			roi.setStrokeWidth(AxisLineWidth);
-			roi.setStrokeColor(axisCol);
-			oly.add(roi);
-			
-			int n = r.getSize();
-			double ra1 = sqrt(2 * a1 / n);
-			double rb1 = sqrt(2 * a2 / n);
-			IJ.log(String.format("V1: ra=%.2f rb=%.2f", ra1, rb1));
-			
-			Roi re = makeEllipse(xc, yc, ra1, rb1, theta);
-			oly.add(re);
 			
 			// same result via Eigenvalues:
 			Eigensolver2x2 es = new Eigensolver2x2(mu20, mu11, mu11, mu02);
@@ -161,28 +170,6 @@ public class Region_Ellipse_Demo implements PlugInFilter {
 		im.setOverlay(oly);
 	}
 	
-	/**
-	 * Calculate the region's central moments mu20, mu02, mu11.
-	 * @param r the binary region
-	 * @return a double array with mu20, mu02, mu11
-	 */
-	private double[] getCentralMoments(BinaryRegion r) {	
-		final Pnt2d xctr = r.getCentroid();
-		final double xc = xctr.getX();
-		final double yc = xctr.getY();
-		double mu11 = 0;
-		double mu20 = 0;
-		double mu02 = 0;
-		for (Pnt2d p : r) {
-			double dx = (p.getX() - xc);
-			double dy = (p.getY() - yc);
-			mu20 = mu20 + dx * dx;
-			mu02 = mu02 + dy * dy;
-			mu11 = mu11 + dx * dy;
-		}
-		return new double[] {mu20, mu02, mu11};
-	}
-	
 	public Roi makeEllipse(double xc, double yc, double ra, double rb, double theta) {
 		Ellipse2D e = new Ellipse2D.Double(-ra, -rb, 2 * ra, 2 * rb);
 		AffineTransform t = new AffineTransform();
@@ -191,7 +178,7 @@ public class Region_Ellipse_Demo implements PlugInFilter {
 		return new ShapeRoi(t.createTransformedShape(e));
 	}
 	
-	private Roi makeMarker(double x, double y, double r) {
+	private Roi makeCenterMark(double x, double y, double r) {
 		Path2D.Double m = new Path2D.Double();
 		m.moveTo(x - r, y - r);
 		m.lineTo(x + r, y + r);
@@ -208,7 +195,10 @@ public class Region_Ellipse_Demo implements PlugInFilter {
 		gd.addNumericField("Min. region size", MinRegionSize, 0);
 		gd.addNumericField("Max. eccentricity", MaxEccentricity, 0);
 		gd.addNumericField("Axis scale", AxisScale, 1);
-		
+		gd.addCheckbox("Show center marks", ShowCenterMark);
+		gd.addCheckbox("Show major axes", ShowMajorAxis);
+		gd.addCheckbox("Show ellipses", ShowEllipse);
+				
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return false;
@@ -217,6 +207,10 @@ public class Region_Ellipse_Demo implements PlugInFilter {
 		MinRegionSize = (int) gd.getNextNumber();
 		MaxEccentricity = gd.getNextNumber();
 		AxisScale = gd.getNextNumber();
+		
+		ShowCenterMark = gd.getNextBoolean();
+		ShowMajorAxis = gd.getNextBoolean();
+		ShowEllipse = gd.getNextBoolean();
 		return true;
 	}
 

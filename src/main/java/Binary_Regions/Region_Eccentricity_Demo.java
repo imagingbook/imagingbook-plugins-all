@@ -81,7 +81,7 @@ public class Region_Eccentricity_Demo implements PlugInFilter {
 				continue;
 			}
 			
-			Pnt2d ctr = r.getCentroid();
+			Pnt2d ctr = r.getCenter();
 			double xc = ctr.getX() + 0.5;
 			double yc = ctr.getY() + 0.5;
 			//oly.add(new PointRoi(xc, yc));		// mark the region's center
@@ -137,7 +137,7 @@ public class Region_Eccentricity_Demo implements PlugInFilter {
 	 * @return a double array with mu20, mu02, mu11
 	 */
 	private double[] getCentralMoments(BinaryRegion r) {	
-		final Pnt2d xctr = r.getCentroid();
+		final Pnt2d xctr = r.getCenter();
 		final double xc = xctr.getX();
 		final double yc = xctr.getY();
 		double mu11 = 0;

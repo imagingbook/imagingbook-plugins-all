@@ -58,7 +58,7 @@ public class Major_Axis_Eccentricity_Demo implements PlugInFilter {
 				double theta = r.getProperty("theta");
 				double ecc = r.getProperty("ecc1");
 	//			double ecc = r.getProperty("ecc2");
-				Pnt2d ctr = r.getCentroid();
+				Pnt2d ctr = r.getCenter();
 				double xc = ctr.getX();
 				double yc = ctr.getY();
 				int u0 = (int) Math.round(xc);
@@ -77,7 +77,7 @@ public class Major_Axis_Eccentricity_Demo implements PlugInFilter {
 	
 	private void calculateRegionProperties(BinaryRegion r) {
 		// calculate central moment mu11, mu20, mu02:
-		Pnt2d ctr = r.getCentroid();
+		Pnt2d ctr = r.getCenter();
 		double xc = ctr.getX();
 		double yc = ctr.getY();
 		double mu11 = 0;
