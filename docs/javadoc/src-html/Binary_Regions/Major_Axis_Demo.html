@@ -74,7 +74,7 @@
 <span class="sourceLineNo">064</span><a id="line.64">                </a>
 <span class="sourceLineNo">065</span><a id="line.65">                for (BinaryRegion r : regions) {</a>
 <span class="sourceLineNo">066</span><a id="line.66">                        if (r.getSize() &gt; 10) {</a>
-<span class="sourceLineNo">067</span><a id="line.67">                                Pnt2d xc = r.getCentroid();</a>
+<span class="sourceLineNo">067</span><a id="line.67">                                Pnt2d xc = r.getCenter();</a>
 <span class="sourceLineNo">068</span><a id="line.68">                                int u0 = (int) Math.round(xc.getX());</a>
 <span class="sourceLineNo">069</span><a id="line.69">                                int v0 = (int) Math.round(xc.getY());</a>
 <span class="sourceLineNo">070</span><a id="line.70">                                </a>
@@ -94,7 +94,7 @@
 <span class="sourceLineNo">084</span><a id="line.84">        </a>
 <span class="sourceLineNo">085</span><a id="line.85">        private void calculateRegionProperties(BinaryRegion r) {</a>
 <span class="sourceLineNo">086</span><a id="line.86">                // calculate central moment mu11, mu20, mu02:</a>
-<span class="sourceLineNo">087</span><a id="line.87">                Pnt2d xctr = r.getCentroid();</a>
+<span class="sourceLineNo">087</span><a id="line.87">                Pnt2d xctr = r.getCenter();</a>
 <span class="sourceLineNo">088</span><a id="line.88">                double xc = xctr.getX();</a>
 <span class="sourceLineNo">089</span><a id="line.89">                double yc = xctr.getY();</a>
 <span class="sourceLineNo">090</span><a id="line.90">                double mu11 = 0;</a>

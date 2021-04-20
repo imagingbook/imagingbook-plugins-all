@@ -12,193 +12,250 @@
 <span class="sourceLineNo">002</span><a id="line.2"></a>
 <span class="sourceLineNo">003</span><a id="line.3">import java.awt.Graphics2D;</a>
 <span class="sourceLineNo">004</span><a id="line.4">import java.awt.color.ColorSpace;</a>
-<span class="sourceLineNo">005</span><a id="line.5">import java.io.File;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import java.awt.color.ICC_Profile;</a>
 <span class="sourceLineNo">006</span><a id="line.6">import java.io.FileOutputStream;</a>
 <span class="sourceLineNo">007</span><a id="line.7">import java.io.IOException;</a>
-<span class="sourceLineNo">008</span><a id="line.8"></a>
-<span class="sourceLineNo">009</span><a id="line.9">import com.itextpdf.awt.PdfGraphics2D;</a>
-<span class="sourceLineNo">010</span><a id="line.10">import com.itextpdf.text.Document;</a>
-<span class="sourceLineNo">011</span><a id="line.11">import com.itextpdf.text.DocumentException;</a>
-<span class="sourceLineNo">012</span><a id="line.12">import com.itextpdf.text.Rectangle;</a>
-<span class="sourceLineNo">013</span><a id="line.13">import com.itextpdf.text.pdf.PdfContentByte;</a>
-<span class="sourceLineNo">014</span><a id="line.14">import com.itextpdf.text.pdf.PdfWriter;</a>
-<span class="sourceLineNo">015</span><a id="line.15"></a>
-<span class="sourceLineNo">016</span><a id="line.16">import ij.IJ;</a>
-<span class="sourceLineNo">017</span><a id="line.17">import ij.ImagePlus;</a>
-<span class="sourceLineNo">018</span><a id="line.18">import ij.gui.Overlay;</a>
-<span class="sourceLineNo">019</span><a id="line.19">import ij.gui.Roi;</a>
-<span class="sourceLineNo">020</span><a id="line.20">import ij.io.SaveDialog;</a>
-<span class="sourceLineNo">021</span><a id="line.21">import ij.plugin.filter.PlugInFilter;</a>
-<span class="sourceLineNo">022</span><a id="line.22">import ij.process.ImageProcessor;</a>
-<span class="sourceLineNo">023</span><a id="line.23"></a>
-<span class="sourceLineNo">024</span><a id="line.24"></a>
-<span class="sourceLineNo">025</span><a id="line.25">/**</a>
-<span class="sourceLineNo">026</span><a id="line.26"> * This ImageJ plugin exports the current image and its attached</a>
-<span class="sourceLineNo">027</span><a id="line.27"> * vector graphic overlay (if existent) as a PDF file.</a>
-<span class="sourceLineNo">028</span><a id="line.28"> * This plugin requires iText to be in the Java library path:</a>
-<span class="sourceLineNo">029</span><a id="line.29"> * place itextpdf-5.5.8.jar (or newer) in {@code ImageJ/jars/}.</a>
-<span class="sourceLineNo">030</span><a id="line.30"> * iText releases can be downloaded from here:</a>
-<span class="sourceLineNo">031</span><a id="line.31"> * &lt;a href="https://github.com/itext/itextpdf/releases"&gt;</a>
-<span class="sourceLineNo">032</span><a id="line.32"> * https://github.com/itext/itextpdf/releases&lt;/a&gt;.</a>
-<span class="sourceLineNo">033</span><a id="line.33"> * </a>
-<span class="sourceLineNo">034</span><a id="line.34"> * @author W. Burger</a>
-<span class="sourceLineNo">035</span><a id="line.35"> * @version 2016/01/09</a>
-<span class="sourceLineNo">036</span><a id="line.36"> */</a>
-<span class="sourceLineNo">037</span><a id="line.37">public class Export_PDF_With_Overlay implements PlugInFilter {</a>
-<span class="sourceLineNo">038</span><a id="line.38"></a>
-<span class="sourceLineNo">039</span><a id="line.39">        /**</a>
-<span class="sourceLineNo">040</span><a id="line.40">         * Used to draw graphic strokes with zero stroke width.</a>
-<span class="sourceLineNo">041</span><a id="line.41">         */</a>
-<span class="sourceLineNo">042</span><a id="line.42">        public static double DefaultStrokeWidth = 0.01;         // substitute for zero-width strokes</a>
-<span class="sourceLineNo">043</span><a id="line.43">        </a>
-<span class="sourceLineNo">044</span><a id="line.44">        /**</a>
-<span class="sourceLineNo">045</span><a id="line.45">         * Set true to have a default ICC profile (sRGB) added</a>
-<span class="sourceLineNo">046</span><a id="line.46">         * to the PDF file. Solves problems with viewing</a>
-<span class="sourceLineNo">047</span><a id="line.47">         * files in Acrobat X+.</a>
-<span class="sourceLineNo">048</span><a id="line.48">         */</a>
-<span class="sourceLineNo">049</span><a id="line.49">        public static boolean AddIccProfile = true;</a>
-<span class="sourceLineNo">050</span><a id="line.50">        </a>
-<span class="sourceLineNo">051</span><a id="line.51">        public static String DefaultFileExtension = ".pdf";</a>
-<span class="sourceLineNo">052</span><a id="line.52">        </a>
-<span class="sourceLineNo">053</span><a id="line.53">        private static String CurrentOutputDirectory = IJ.getDirectory("home");</a>
-<span class="sourceLineNo">054</span><a id="line.54">        private ImagePlus img;</a>
-<span class="sourceLineNo">055</span><a id="line.55"></a>
-<span class="sourceLineNo">056</span><a id="line.56">        public int setup(String arg0, ImagePlus img) {</a>
-<span class="sourceLineNo">057</span><a id="line.57">                this.img = img;</a>
-<span class="sourceLineNo">058</span><a id="line.58">                return DOES_ALL + NO_CHANGES;</a>
-<span class="sourceLineNo">059</span><a id="line.59">        }</a>
+<span class="sourceLineNo">008</span><a id="line.8">import java.nio.file.Path;</a>
+<span class="sourceLineNo">009</span><a id="line.9">import java.nio.file.Paths;</a>
+<span class="sourceLineNo">010</span><a id="line.10"></a>
+<span class="sourceLineNo">011</span><a id="line.11">import com.lowagie.text.Document;</a>
+<span class="sourceLineNo">012</span><a id="line.12">import com.lowagie.text.DocumentException;</a>
+<span class="sourceLineNo">013</span><a id="line.13">import com.lowagie.text.Rectangle;</a>
+<span class="sourceLineNo">014</span><a id="line.14">import com.lowagie.text.pdf.PdfContentByte;</a>
+<span class="sourceLineNo">015</span><a id="line.15">import com.lowagie.text.pdf.PdfGraphics2D;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import com.lowagie.text.pdf.PdfWriter;</a>
+<span class="sourceLineNo">017</span><a id="line.17"></a>
+<span class="sourceLineNo">018</span><a id="line.18">import ij.IJ;</a>
+<span class="sourceLineNo">019</span><a id="line.19">import ij.ImagePlus;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import ij.gui.GenericDialog;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import ij.gui.Overlay;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import ij.gui.Roi;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import ij.io.SaveDialog;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import ij.plugin.filter.PlugInFilter;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import ij.process.ImageProcessor;</a>
+<span class="sourceLineNo">026</span><a id="line.26"></a>
+<span class="sourceLineNo">027</span><a id="line.27"></a>
+<span class="sourceLineNo">028</span><a id="line.28">/**</a>
+<span class="sourceLineNo">029</span><a id="line.29"> * This ImageJ plugin exports the current image and its attached</a>
+<span class="sourceLineNo">030</span><a id="line.30"> * vector graphic overlay (if existent) as a PDF file.</a>
+<span class="sourceLineNo">031</span><a id="line.31"> * It uses the free OpenPDF library, which is based on iText4 but LGPL-licensed</a>
+<span class="sourceLineNo">032</span><a id="line.32"> * (see &lt;a href="https://github.com/LibrePDF/OpenPDF"&gt;</a>
+<span class="sourceLineNo">033</span><a id="line.33"> * https://github.com/LibrePDF/OpenPDF&lt;/a&gt;).</a>
+<span class="sourceLineNo">034</span><a id="line.34"> * </a>
+<span class="sourceLineNo">035</span><a id="line.35"> * @author W. Burger</a>
+<span class="sourceLineNo">036</span><a id="line.36"> * @version 2021/04/05 (migrated to OpenPDF, added image properties)</a>
+<span class="sourceLineNo">037</span><a id="line.37"> */</a>
+<span class="sourceLineNo">038</span><a id="line.38">public class Export_PDF_With_Overlay implements PlugInFilter {</a>
+<span class="sourceLineNo">039</span><a id="line.39">        </a>
+<span class="sourceLineNo">040</span><a id="line.40">        private static boolean IncludeImage = true;</a>
+<span class="sourceLineNo">041</span><a id="line.41">        private static boolean IncludeOverlay = true;</a>
+<span class="sourceLineNo">042</span><a id="line.42">        private static boolean IncludeImageProps = true;</a>
+<span class="sourceLineNo">043</span><a id="line.43">        private static int ImageUpscaleFactor = 1;</a>
+<span class="sourceLineNo">044</span><a id="line.44">        </a>
+<span class="sourceLineNo">045</span><a id="line.45">        /**</a>
+<span class="sourceLineNo">046</span><a id="line.46">         * Set true to have a default ICC profile (sRGB) added</a>
+<span class="sourceLineNo">047</span><a id="line.47">         * to the PDF file. Solves problems with viewing</a>
+<span class="sourceLineNo">048</span><a id="line.48">         * files in Acrobat X+.</a>
+<span class="sourceLineNo">049</span><a id="line.49">         */</a>
+<span class="sourceLineNo">050</span><a id="line.50">        private static boolean AddIccProfile = true;</a>
+<span class="sourceLineNo">051</span><a id="line.51"></a>
+<span class="sourceLineNo">052</span><a id="line.52">        /**</a>
+<span class="sourceLineNo">053</span><a id="line.53">         * Used to draw graphic strokes with zero stroke width.</a>
+<span class="sourceLineNo">054</span><a id="line.54">         */</a>
+<span class="sourceLineNo">055</span><a id="line.55">        private static double DefaultStrokeWidth = 0.01;                // substitute for zero-width strokes</a>
+<span class="sourceLineNo">056</span><a id="line.56">        private static String DefaultFileExtension = ".pdf";</a>
+<span class="sourceLineNo">057</span><a id="line.57">        private static String CurrentOutputDirectory = IJ.getDirectory("temp");</a>
+<span class="sourceLineNo">058</span><a id="line.58">        </a>
+<span class="sourceLineNo">059</span><a id="line.59">        private ImagePlus img;</a>
 <span class="sourceLineNo">060</span><a id="line.60"></a>
-<span class="sourceLineNo">061</span><a id="line.61">        public void run(ImageProcessor ip) {</a>
-<span class="sourceLineNo">062</span><a id="line.62">                if (!verifyIText()) {</a>
-<span class="sourceLineNo">063</span><a id="line.63">                        IJ.error("This plugin requires iText to be installed!\n" +</a>
-<span class="sourceLineNo">064</span><a id="line.64">                                        "Download itextpdf-5.5.8.jar (or newer) from\n" +</a>
-<span class="sourceLineNo">065</span><a id="line.65">                                        "https://github.com/itext/itextpdf/releases\n" +</a>
-<span class="sourceLineNo">066</span><a id="line.66">                                        "and place in ImageJ/jars/");</a>
-<span class="sourceLineNo">067</span><a id="line.67">                        return;</a>
-<span class="sourceLineNo">068</span><a id="line.68">                }</a>
-<span class="sourceLineNo">069</span><a id="line.69">                </a>
-<span class="sourceLineNo">070</span><a id="line.70">                if (img.getStackSize() != 1) {</a>
-<span class="sourceLineNo">071</span><a id="line.71">                        IJ.error("Can only export single images (no stacks)!");</a>
-<span class="sourceLineNo">072</span><a id="line.72">                        return;</a>
-<span class="sourceLineNo">073</span><a id="line.73">                }</a>
-<span class="sourceLineNo">074</span><a id="line.74">                </a>
-<span class="sourceLineNo">075</span><a id="line.75">                String dir = IJ.getDirectory("image");</a>
-<span class="sourceLineNo">076</span><a id="line.76">                if (dir == null) </a>
-<span class="sourceLineNo">077</span><a id="line.77">                        dir = CurrentOutputDirectory;</a>
-<span class="sourceLineNo">078</span><a id="line.78">                </a>
-<span class="sourceLineNo">079</span><a id="line.79">                String name = stripFileExtension(img.getTitle());</a>
-<span class="sourceLineNo">080</span><a id="line.80">                        </a>
-<span class="sourceLineNo">081</span><a id="line.81">                String path = askForFilePath(dir, name, "Save as PDF");</a>
-<span class="sourceLineNo">082</span><a id="line.82">                if (path == null) {</a>
-<span class="sourceLineNo">083</span><a id="line.83">                        return;</a>
+<span class="sourceLineNo">061</span><a id="line.61">        public int setup(String arg0, ImagePlus img) {</a>
+<span class="sourceLineNo">062</span><a id="line.62">                this.img = img;</a>
+<span class="sourceLineNo">063</span><a id="line.63">                return DOES_ALL + NO_CHANGES;</a>
+<span class="sourceLineNo">064</span><a id="line.64">        }</a>
+<span class="sourceLineNo">065</span><a id="line.65"></a>
+<span class="sourceLineNo">066</span><a id="line.66">        public void run(ImageProcessor ip) {</a>
+<span class="sourceLineNo">067</span><a id="line.67">                if (!verifyPdfLib()) {</a>
+<span class="sourceLineNo">068</span><a id="line.68">                        return;</a>
+<span class="sourceLineNo">069</span><a id="line.69">                }</a>
+<span class="sourceLineNo">070</span><a id="line.70">                </a>
+<span class="sourceLineNo">071</span><a id="line.71">                if (img.getStackSize() != 1) {</a>
+<span class="sourceLineNo">072</span><a id="line.72">                        IJ.error("Can only export single images (no stacks)!");</a>
+<span class="sourceLineNo">073</span><a id="line.73">                        return;</a>
+<span class="sourceLineNo">074</span><a id="line.74">                }</a>
+<span class="sourceLineNo">075</span><a id="line.75">                </a>
+<span class="sourceLineNo">076</span><a id="line.76">                if (!getUserInput()) {</a>
+<span class="sourceLineNo">077</span><a id="line.77">                        return;</a>
+<span class="sourceLineNo">078</span><a id="line.78">                }</a>
+<span class="sourceLineNo">079</span><a id="line.79">                </a>
+<span class="sourceLineNo">080</span><a id="line.80">                String dir = CurrentOutputDirectory;</a>
+<span class="sourceLineNo">081</span><a id="line.81">                String name = stripFileExtension(img.getShortTitle());</a>
+<span class="sourceLineNo">082</span><a id="line.82">                if (ImageUpscaleFactor &gt; 1) {</a>
+<span class="sourceLineNo">083</span><a id="line.83">                        name = name + "x" + ImageUpscaleFactor;</a>
 <span class="sourceLineNo">084</span><a id="line.84">                }</a>
 <span class="sourceLineNo">085</span><a id="line.85">                </a>
-<span class="sourceLineNo">086</span><a id="line.86">                String finalPath = createPdf(img, path);</a>
-<span class="sourceLineNo">087</span><a id="line.87">                if (finalPath == null) </a>
-<span class="sourceLineNo">088</span><a id="line.88">                        IJ.log("PDF export failed");</a>
-<span class="sourceLineNo">089</span><a id="line.89">                else</a>
-<span class="sourceLineNo">090</span><a id="line.90">                        IJ.log("PDF exported to " + finalPath);</a>
-<span class="sourceLineNo">091</span><a id="line.91">        }</a>
-<span class="sourceLineNo">092</span><a id="line.92">        </a>
-<span class="sourceLineNo">093</span><a id="line.93">        // ----------------------------------------------------------------------</a>
-<span class="sourceLineNo">094</span><a id="line.94">        </a>
-<span class="sourceLineNo">095</span><a id="line.95">        /** Saves a PDF of the supplied image.</a>
-<span class="sourceLineNo">096</span><a id="line.96">         * </a>
-<span class="sourceLineNo">097</span><a id="line.97">         * @param im the image (of type {@link ij.ImagePlus}), possibly with attached vector overlay</a>
-<span class="sourceLineNo">098</span><a id="line.98">         * @param path the path to save to</a>
-<span class="sourceLineNo">099</span><a id="line.99">         * @return the complete path to the created PDF file or {@code null} </a>
-<span class="sourceLineNo">100</span><a id="line.100">         * if the file could not be saved</a>
-<span class="sourceLineNo">101</span><a id="line.101">         */</a>
-<span class="sourceLineNo">102</span><a id="line.102">        public String createPdf(ImagePlus im, String path) {</a>
-<span class="sourceLineNo">103</span><a id="line.103">                final int width  = im.getWidth();</a>
-<span class="sourceLineNo">104</span><a id="line.104">                final int height = im.getHeight();</a>
-<span class="sourceLineNo">105</span><a id="line.105">                </a>
-<span class="sourceLineNo">106</span><a id="line.106">                // step 1: create the PDF document</a>
-<span class="sourceLineNo">107</span><a id="line.107">                Document document = new Document(new Rectangle(width, height));</a>
-<span class="sourceLineNo">108</span><a id="line.108">                try {</a>
-<span class="sourceLineNo">109</span><a id="line.109">                        // step 2: create a PDF writer</a>
-<span class="sourceLineNo">110</span><a id="line.110">                        PdfWriter writer = PdfWriter.getInstance(document,      new FileOutputStream(path));</a>
-<span class="sourceLineNo">111</span><a id="line.111">                        // step 3: open the document</a>
-<span class="sourceLineNo">112</span><a id="line.112">                        document.open();</a>
-<span class="sourceLineNo">113</span><a id="line.113">                        // step 4: create a template and the associated Graphics2D context</a>
-<span class="sourceLineNo">114</span><a id="line.114">                        PdfContentByte cb = writer.getDirectContent();</a>
-<span class="sourceLineNo">115</span><a id="line.115">                        </a>
-<span class="sourceLineNo">116</span><a id="line.116">                        // optional: set sRGB default viewing profile</a>
-<span class="sourceLineNo">117</span><a id="line.117">                        if (AddIccProfile) {</a>
-<span class="sourceLineNo">118</span><a id="line.118">                                byte[] iccdata = java.awt.color.ICC_Profile.getInstance(ColorSpace.CS_sRGB).getData();  </a>
-<span class="sourceLineNo">119</span><a id="line.119">                                com.itextpdf.text.pdf.ICC_Profile icc = com.itextpdf.text.pdf.ICC_Profile.getInstance(iccdata);</a>
-<span class="sourceLineNo">120</span><a id="line.120">                                writer.setOutputIntents("Custom", null, "http://www.color.org", "sRGB IEC61966-2.1", icc);</a>
-<span class="sourceLineNo">121</span><a id="line.121">                        }</a>
-<span class="sourceLineNo">122</span><a id="line.122">                                                </a>
-<span class="sourceLineNo">123</span><a id="line.123">                        // insert the image</a>
-<span class="sourceLineNo">124</span><a id="line.124">                        com.itextpdf.text.Image pdfImg = com.itextpdf.text.Image.getInstance(im.getImage(), null);</a>
-<span class="sourceLineNo">125</span><a id="line.125">                        pdfImg.setAbsolutePosition(0, 0);</a>
-<span class="sourceLineNo">126</span><a id="line.126">                        pdfImg.scaleToFit(width, height);               </a>
-<span class="sourceLineNo">127</span><a id="line.127">                        cb.addImage(pdfImg);</a>
-<span class="sourceLineNo">128</span><a id="line.128">                        </a>
-<span class="sourceLineNo">129</span><a id="line.129">                        // optional: draw the vector overlay</a>
-<span class="sourceLineNo">130</span><a id="line.130">                        Overlay overlay = im.getOverlay();</a>
-<span class="sourceLineNo">131</span><a id="line.131">                        if (overlay != null) {</a>
-<span class="sourceLineNo">132</span><a id="line.132">                                Graphics2D g2 = new PdfGraphics2D(cb, width, height);</a>
-<span class="sourceLineNo">133</span><a id="line.133">                                Roi[] roiArr = overlay.toArray();</a>
-<span class="sourceLineNo">134</span><a id="line.134">                                for (Roi roi : roiArr) {</a>
-<span class="sourceLineNo">135</span><a id="line.135">                                        float sw = roi.getStrokeWidth();</a>
-<span class="sourceLineNo">136</span><a id="line.136">                                        if (sw &lt; 0.001f) {      // sometimes stroke width is simply not set (= 0)</a>
-<span class="sourceLineNo">137</span><a id="line.137">                                                roi.setStrokeWidth(DefaultStrokeWidth); // temporarily change stroke width</a>
-<span class="sourceLineNo">138</span><a id="line.138">                                        }</a>
-<span class="sourceLineNo">139</span><a id="line.139">                                        ImagePlus tmpIm = roi.getImage();</a>
-<span class="sourceLineNo">140</span><a id="line.140">                                        roi.setImage(null);     // trick learned from Wayne to ensure magnification is 1</a>
-<span class="sourceLineNo">141</span><a id="line.141">                                        roi.drawOverlay(g2);    // replacement (recomm. by Wayne)</a>
-<span class="sourceLineNo">142</span><a id="line.142">                                        roi.setImage(tmpIm);</a>
-<span class="sourceLineNo">143</span><a id="line.143">                                        roi.setStrokeWidth(sw); // restore original stroke width</a>
-<span class="sourceLineNo">144</span><a id="line.144">                                }</a>
-<span class="sourceLineNo">145</span><a id="line.145">                                g2.dispose();</a>
-<span class="sourceLineNo">146</span><a id="line.146">                        }</a>
-<span class="sourceLineNo">147</span><a id="line.147">                        </a>
-<span class="sourceLineNo">148</span><a id="line.148">                } catch (DocumentException de) {</a>
-<span class="sourceLineNo">149</span><a id="line.149">                        IJ.log(de.getMessage());</a>
-<span class="sourceLineNo">150</span><a id="line.150">                } catch (IOException ioe) {</a>
-<span class="sourceLineNo">151</span><a id="line.151">                        IJ.log(ioe.getMessage());</a>
-<span class="sourceLineNo">152</span><a id="line.152">                }</a>
-<span class="sourceLineNo">153</span><a id="line.153"> </a>
-<span class="sourceLineNo">154</span><a id="line.154">                // step 5: close the document</a>
-<span class="sourceLineNo">155</span><a id="line.155">                document.close();</a>
-<span class="sourceLineNo">156</span><a id="line.156">                return path;</a>
-<span class="sourceLineNo">157</span><a id="line.157">        }</a>
-<span class="sourceLineNo">158</span><a id="line.158">        </a>
-<span class="sourceLineNo">159</span><a id="line.159">        // ----------------------------------------------------------------------</a>
-<span class="sourceLineNo">160</span><a id="line.160">        </a>
-<span class="sourceLineNo">161</span><a id="line.161">    private String askForFilePath(String dir, String name, String title) {</a>
-<span class="sourceLineNo">162</span><a id="line.162">        String extension = DefaultFileExtension;</a>
-<span class="sourceLineNo">163</span><a id="line.163">        SaveDialog od = new SaveDialog(title, dir, name, extension);</a>
-<span class="sourceLineNo">164</span><a id="line.164">        dir  = od.getDirectory();</a>
-<span class="sourceLineNo">165</span><a id="line.165">        name = od.getFileName();</a>
-<span class="sourceLineNo">166</span><a id="line.166">        if(name != null) {</a>
-<span class="sourceLineNo">167</span><a id="line.167">                CurrentOutputDirectory = dir;</a>
-<span class="sourceLineNo">168</span><a id="line.168">                return new File(dir, name).getAbsolutePath();</a>
-<span class="sourceLineNo">169</span><a id="line.169">        }</a>
-<span class="sourceLineNo">170</span><a id="line.170">        else</a>
-<span class="sourceLineNo">171</span><a id="line.171">                return null;</a>
-<span class="sourceLineNo">172</span><a id="line.172">    }</a>
-<span class="sourceLineNo">173</span><a id="line.173">        </a>
-<span class="sourceLineNo">174</span><a id="line.174">        private String stripFileExtension(String fileName) {</a>
-<span class="sourceLineNo">175</span><a id="line.175">                int dotInd = fileName.lastIndexOf('.');</a>
-<span class="sourceLineNo">176</span><a id="line.176">                // if dot is in the first position,</a>
-<span class="sourceLineNo">177</span><a id="line.177">                // we are dealing with a hidden file rather than an DefaultFileExtension</a>
-<span class="sourceLineNo">178</span><a id="line.178">                return (dotInd &gt; 0) ? fileName.substring(0, dotInd) : fileName;</a>
-<span class="sourceLineNo">179</span><a id="line.179">        }</a>
-<span class="sourceLineNo">180</span><a id="line.180">        </a>
-<span class="sourceLineNo">181</span><a id="line.181">        </a>
-<span class="sourceLineNo">182</span><a id="line.182">        private boolean verifyIText() {</a>
-<span class="sourceLineNo">183</span><a id="line.183">                try {</a>
-<span class="sourceLineNo">184</span><a id="line.184">                        if (Class.forName("com.itextpdf.text.Document") != null) {</a>
-<span class="sourceLineNo">185</span><a id="line.185">                                return true;</a>
-<span class="sourceLineNo">186</span><a id="line.186">                        }</a>
-<span class="sourceLineNo">187</span><a id="line.187">                } catch (ClassNotFoundException e) { }</a>
-<span class="sourceLineNo">188</span><a id="line.188">                return false;</a>
+<span class="sourceLineNo">086</span><a id="line.86">                Path path = askForFilePath(dir, name, "Save as PDF");</a>
+<span class="sourceLineNo">087</span><a id="line.87">                if (path == null) {</a>
+<span class="sourceLineNo">088</span><a id="line.88">                        return;</a>
+<span class="sourceLineNo">089</span><a id="line.89">                }</a>
+<span class="sourceLineNo">090</span><a id="line.90">                </a>
+<span class="sourceLineNo">091</span><a id="line.91">                IJ.log("path = " + path);</a>
+<span class="sourceLineNo">092</span><a id="line.92"></a>
+<span class="sourceLineNo">093</span><a id="line.93">                String finalPath = createPdf(img, ImageUpscaleFactor, path);</a>
+<span class="sourceLineNo">094</span><a id="line.94">                if (finalPath == null) </a>
+<span class="sourceLineNo">095</span><a id="line.95">                        IJ.log("PDF export failed");</a>
+<span class="sourceLineNo">096</span><a id="line.96">                else</a>
+<span class="sourceLineNo">097</span><a id="line.97">                        IJ.log("PDF exported to " + finalPath);</a>
+<span class="sourceLineNo">098</span><a id="line.98">        }</a>
+<span class="sourceLineNo">099</span><a id="line.99">        </a>
+<span class="sourceLineNo">100</span><a id="line.100">        // ----------------------------------------------------------------------</a>
+<span class="sourceLineNo">101</span><a id="line.101">        </a>
+<span class="sourceLineNo">102</span><a id="line.102">        /**</a>
+<span class="sourceLineNo">103</span><a id="line.103">         * Saves a PDF of the input image.</a>
+<span class="sourceLineNo">104</span><a id="line.104">         * @param im input image of type {@link ij.ImagePlus}, possibly with attached vector overlay</a>
+<span class="sourceLineNo">105</span><a id="line.105">         * @param upscale scale factor (must be greater than 0)</a>
+<span class="sourceLineNo">106</span><a id="line.106">         * @param path complete path to the created PDF file</a>
+<span class="sourceLineNo">107</span><a id="line.107">         * @return</a>
+<span class="sourceLineNo">108</span><a id="line.108">         */</a>
+<span class="sourceLineNo">109</span><a id="line.109">        private String createPdf(ImagePlus im, int upscale, Path path) {</a>
+<span class="sourceLineNo">110</span><a id="line.110">                final int width  = im.getWidth();       // original image size</a>
+<span class="sourceLineNo">111</span><a id="line.111">                final int height = im.getHeight();</a>
+<span class="sourceLineNo">112</span><a id="line.112">                Overlay overlay = im.getOverlay();      // original overlay (if any)</a>
+<span class="sourceLineNo">113</span><a id="line.113">                </a>
+<span class="sourceLineNo">114</span><a id="line.114">                // step 1: create the PDF document</a>
+<span class="sourceLineNo">115</span><a id="line.115">                Rectangle pageSize = new Rectangle(width, height);</a>
+<span class="sourceLineNo">116</span><a id="line.116">                Document document = new Document(pageSize);</a>
+<span class="sourceLineNo">117</span><a id="line.117">                </a>
+<span class="sourceLineNo">118</span><a id="line.118">                try {</a>
+<span class="sourceLineNo">119</span><a id="line.119">                        // step 2: create a PDF writer</a>
+<span class="sourceLineNo">120</span><a id="line.120">                        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path.toFile()));</a>
+<span class="sourceLineNo">121</span><a id="line.121">                        </a>
+<span class="sourceLineNo">122</span><a id="line.122">                        // step 3: open the document</a>
+<span class="sourceLineNo">123</span><a id="line.123">                        document.open();</a>
+<span class="sourceLineNo">124</span><a id="line.124">                        </a>
+<span class="sourceLineNo">125</span><a id="line.125">                        // step 4: create a template and the associated Graphics2D context</a>
+<span class="sourceLineNo">126</span><a id="line.126">                        PdfContentByte cb = writer.getDirectContent();</a>
+<span class="sourceLineNo">127</span><a id="line.127">                        </a>
+<span class="sourceLineNo">128</span><a id="line.128">                        // optional: set sRGB default viewing profile</a>
+<span class="sourceLineNo">129</span><a id="line.129">                        if (AddIccProfile) {</a>
+<span class="sourceLineNo">130</span><a id="line.130">                                ICC_Profile colorProfile = ICC_Profile.getInstance(ColorSpace.CS_sRGB);</a>
+<span class="sourceLineNo">131</span><a id="line.131">                                writer.setOutputIntents("Custom", null, "http://www.color.org", "sRGB IEC61966-2.1", colorProfile);</a>
+<span class="sourceLineNo">132</span><a id="line.132">                                //byte[] iccdata = java.awt.color.ICC_Profile.getInstance(ColorSpace.CS_sRGB).getData();</a>
+<span class="sourceLineNo">133</span><a id="line.133">                                //com.itextpdf.text.pdf.ICC_Profile icc = com.itextpdf.text.pdf.ICC_Profile.getInstance(iccdata);</a>
+<span class="sourceLineNo">134</span><a id="line.134">                                //writer.setOutputIntents("Custom", null, "http://www.color.org", "sRGB IEC61966-2.1", icc);</a>
+<span class="sourceLineNo">135</span><a id="line.135">                        }</a>
+<span class="sourceLineNo">136</span><a id="line.136">                                                </a>
+<span class="sourceLineNo">137</span><a id="line.137">                        // insert the image</a>
+<span class="sourceLineNo">138</span><a id="line.138">                        if (IncludeImage) {</a>
+<span class="sourceLineNo">139</span><a id="line.139">                                if (upscale &gt; 1) {      // upscale the image if needed (without interpolation)</a>
+<span class="sourceLineNo">140</span><a id="line.140">                                        im = im.resize(width * upscale, height * upscale, "none");</a>
+<span class="sourceLineNo">141</span><a id="line.141">                                }</a>
+<span class="sourceLineNo">142</span><a id="line.142">                                IJ.log("exporting image of size " + im.getWidth() + "/" + im.getHeight());</a>
+<span class="sourceLineNo">143</span><a id="line.143">                                com.lowagie.text.Image pdfImg = com.lowagie.text.Image.getInstance(im.getImage(), null);</a>
+<span class="sourceLineNo">144</span><a id="line.144">                                pdfImg.setAbsolutePosition(0, 0);</a>
+<span class="sourceLineNo">145</span><a id="line.145">                                pdfImg.scaleToFit(width, height);       // fit to the original size             </a>
+<span class="sourceLineNo">146</span><a id="line.146">                                cb.addImage(pdfImg);</a>
+<span class="sourceLineNo">147</span><a id="line.147">                        }</a>
+<span class="sourceLineNo">148</span><a id="line.148">                        </a>
+<span class="sourceLineNo">149</span><a id="line.149">                        // optional: draw the vector overlay</a>
+<span class="sourceLineNo">150</span><a id="line.150">                        if (overlay != null &amp;&amp; IncludeOverlay) {</a>
+<span class="sourceLineNo">151</span><a id="line.151">                                IJ.log("exporting overlay");</a>
+<span class="sourceLineNo">152</span><a id="line.152">                                Graphics2D g2 = new PdfGraphics2D(cb, width, height);</a>
+<span class="sourceLineNo">153</span><a id="line.153">                                Roi[] roiArr = overlay.toArray();</a>
+<span class="sourceLineNo">154</span><a id="line.154">                                for (Roi roi : roiArr) {</a>
+<span class="sourceLineNo">155</span><a id="line.155">                                        float sw = roi.getStrokeWidth();</a>
+<span class="sourceLineNo">156</span><a id="line.156">                                        if (sw &lt; 0.001f) {      // sometimes stroke width is simply not set (= 0)</a>
+<span class="sourceLineNo">157</span><a id="line.157">                                                roi.setStrokeWidth(DefaultStrokeWidth); // temporarily change stroke width</a>
+<span class="sourceLineNo">158</span><a id="line.158">                                        }</a>
+<span class="sourceLineNo">159</span><a id="line.159">                                        ImagePlus tmpIm = roi.getImage();</a>
+<span class="sourceLineNo">160</span><a id="line.160">                                        roi.setImage(null);     // trick learned from Wayne to ensure magnification is 1</a>
+<span class="sourceLineNo">161</span><a id="line.161">                                        roi.drawOverlay(g2);    // replacement (recomm. by Wayne)</a>
+<span class="sourceLineNo">162</span><a id="line.162">                                        roi.setImage(tmpIm);</a>
+<span class="sourceLineNo">163</span><a id="line.163">                                        roi.setStrokeWidth(sw); // restore original stroke width</a>
+<span class="sourceLineNo">164</span><a id="line.164">                                }</a>
+<span class="sourceLineNo">165</span><a id="line.165">                                g2.dispose();</a>
+<span class="sourceLineNo">166</span><a id="line.166">                        }</a>
+<span class="sourceLineNo">167</span><a id="line.167">                        </a>
+<span class="sourceLineNo">168</span><a id="line.168">                        // optional: copy ImagePlus custom properties to PDF</a>
+<span class="sourceLineNo">169</span><a id="line.169">                        if (IncludeImageProps) {</a>
+<span class="sourceLineNo">170</span><a id="line.170">                                String[] props = im.getPropertiesAsArray();</a>
+<span class="sourceLineNo">171</span><a id="line.171">                                if (props != null) {</a>
+<span class="sourceLineNo">172</span><a id="line.172">                                        for (int i = 0; i &lt; props.length; i+=2) {</a>
+<span class="sourceLineNo">173</span><a id="line.173">                                                String key = props[i];</a>
+<span class="sourceLineNo">174</span><a id="line.174">                                                String val = props[i + 1];</a>
+<span class="sourceLineNo">175</span><a id="line.175">                                                document.addHeader(key, val);</a>
+<span class="sourceLineNo">176</span><a id="line.176">                                        }</a>
+<span class="sourceLineNo">177</span><a id="line.177">                                }</a>
+<span class="sourceLineNo">178</span><a id="line.178">                        }</a>
+<span class="sourceLineNo">179</span><a id="line.179">                        </a>
+<span class="sourceLineNo">180</span><a id="line.180">                } catch (DocumentException de) {</a>
+<span class="sourceLineNo">181</span><a id="line.181">                        IJ.log(de.getMessage());</a>
+<span class="sourceLineNo">182</span><a id="line.182">                } catch (IOException ioe) {</a>
+<span class="sourceLineNo">183</span><a id="line.183">                        IJ.log(ioe.getMessage());</a>
+<span class="sourceLineNo">184</span><a id="line.184">                }</a>
+<span class="sourceLineNo">185</span><a id="line.185">                </a>
+<span class="sourceLineNo">186</span><a id="line.186">                // step 5: close the document</a>
+<span class="sourceLineNo">187</span><a id="line.187">                document.close();</a>
+<span class="sourceLineNo">188</span><a id="line.188">                return path.toString();</a>
 <span class="sourceLineNo">189</span><a id="line.189">        }</a>
-<span class="sourceLineNo">190</span><a id="line.190">}</a>
-<span class="sourceLineNo">191</span><a id="line.191"></a>
+<span class="sourceLineNo">190</span><a id="line.190">        </a>
+<span class="sourceLineNo">191</span><a id="line.191">        // ----------------------------------------------------------------------</a>
+<span class="sourceLineNo">192</span><a id="line.192">        </a>
+<span class="sourceLineNo">193</span><a id="line.193">        private boolean getUserInput() {</a>
+<span class="sourceLineNo">194</span><a id="line.194">                GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());</a>
+<span class="sourceLineNo">195</span><a id="line.195">                </a>
+<span class="sourceLineNo">196</span><a id="line.196">                gd.addCheckbox("Include overlay", IncludeOverlay);</a>
+<span class="sourceLineNo">197</span><a id="line.197">                gd.addCheckbox("Include image", IncludeImage);</a>
+<span class="sourceLineNo">198</span><a id="line.198">                gd.addCheckbox("Include image meta-data", IncludeImageProps);</a>
+<span class="sourceLineNo">199</span><a id="line.199">                gd.addCheckbox("Add sRGB ICC profile", AddIccProfile);</a>
+<span class="sourceLineNo">200</span><a id="line.200">                gd.addNumericField("Image upscale factor", ImageUpscaleFactor, 0);</a>
+<span class="sourceLineNo">201</span><a id="line.201">                </a>
+<span class="sourceLineNo">202</span><a id="line.202">                gd.showDialog();</a>
+<span class="sourceLineNo">203</span><a id="line.203">                if (gd.wasCanceled())</a>
+<span class="sourceLineNo">204</span><a id="line.204">                        return false;</a>
+<span class="sourceLineNo">205</span><a id="line.205">                </a>
+<span class="sourceLineNo">206</span><a id="line.206">                IncludeOverlay = gd.getNextBoolean();</a>
+<span class="sourceLineNo">207</span><a id="line.207">                IncludeImage = gd.getNextBoolean();</a>
+<span class="sourceLineNo">208</span><a id="line.208">                IncludeImageProps = gd.getNextBoolean();</a>
+<span class="sourceLineNo">209</span><a id="line.209">                AddIccProfile = gd.getNextBoolean();</a>
+<span class="sourceLineNo">210</span><a id="line.210">                ImageUpscaleFactor = Math.max((int) gd.getNextNumber(), 1);</a>
+<span class="sourceLineNo">211</span><a id="line.211">                return true;</a>
+<span class="sourceLineNo">212</span><a id="line.212">        }</a>
+<span class="sourceLineNo">213</span><a id="line.213">        </a>
+<span class="sourceLineNo">214</span><a id="line.214">        // ----------------------------------------------------------------------</a>
+<span class="sourceLineNo">215</span><a id="line.215">        </a>
+<span class="sourceLineNo">216</span><a id="line.216">    private Path askForFilePath(String dir, String name, String title) {</a>
+<span class="sourceLineNo">217</span><a id="line.217">        SaveDialog od = new SaveDialog(title, dir, name, DefaultFileExtension);</a>
+<span class="sourceLineNo">218</span><a id="line.218">        dir  = od.getDirectory();</a>
+<span class="sourceLineNo">219</span><a id="line.219">        name = od.getFileName();</a>
+<span class="sourceLineNo">220</span><a id="line.220">        </a>
+<span class="sourceLineNo">221</span><a id="line.221">        if(name != null) {</a>
+<span class="sourceLineNo">222</span><a id="line.222">                CurrentOutputDirectory = dir;</a>
+<span class="sourceLineNo">223</span><a id="line.223">                return Paths.get(dir, name);</a>
+<span class="sourceLineNo">224</span><a id="line.224">        }</a>
+<span class="sourceLineNo">225</span><a id="line.225">        else</a>
+<span class="sourceLineNo">226</span><a id="line.226">                return null;</a>
+<span class="sourceLineNo">227</span><a id="line.227">    }</a>
+<span class="sourceLineNo">228</span><a id="line.228">        </a>
+<span class="sourceLineNo">229</span><a id="line.229">        private String stripFileExtension(String fileName) {</a>
+<span class="sourceLineNo">230</span><a id="line.230">                int dotInd = fileName.lastIndexOf('.');</a>
+<span class="sourceLineNo">231</span><a id="line.231">                // if dot is in the first position,</a>
+<span class="sourceLineNo">232</span><a id="line.232">                // we are dealing with a hidden file rather than a DefaultFileExtension</a>
+<span class="sourceLineNo">233</span><a id="line.233">                return (dotInd &gt; 0) ? fileName.substring(0, dotInd) : fileName;</a>
+<span class="sourceLineNo">234</span><a id="line.234">        }</a>
+<span class="sourceLineNo">235</span><a id="line.235">        </a>
+<span class="sourceLineNo">236</span><a id="line.236">        </a>
+<span class="sourceLineNo">237</span><a id="line.237">        private boolean verifyPdfLib() {</a>
+<span class="sourceLineNo">238</span><a id="line.238">                try {</a>
+<span class="sourceLineNo">239</span><a id="line.239">                        if (Class.forName("com.lowagie.text.Document") != null) {</a>
+<span class="sourceLineNo">240</span><a id="line.240">                                return true;</a>
+<span class="sourceLineNo">241</span><a id="line.241">                        }</a>
+<span class="sourceLineNo">242</span><a id="line.242">                } catch (ClassNotFoundException e) { }</a>
+<span class="sourceLineNo">243</span><a id="line.243">                IJ.error("This plugin requires LibrePDF/OpenPDF to be installed!\n" +</a>
+<span class="sourceLineNo">244</span><a id="line.244">                                "see https://github.com/LibrePDF/OpenPDF\n");</a>
+<span class="sourceLineNo">245</span><a id="line.245">                return false;</a>
+<span class="sourceLineNo">246</span><a id="line.246">        }</a>
+<span class="sourceLineNo">247</span><a id="line.247">}</a>
+<span class="sourceLineNo">248</span><a id="line.248"></a>
 
 
 
