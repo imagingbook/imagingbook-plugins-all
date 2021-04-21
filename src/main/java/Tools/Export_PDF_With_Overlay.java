@@ -1,5 +1,6 @@
 package Tools;
 
+import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
@@ -21,7 +22,7 @@ import ij.gui.GenericDialog;
 import ij.gui.Overlay;
 import ij.gui.Roi;
 import ij.io.SaveDialog;
-import ij.plugin.filter.PlugInFilter;
+import ij.plugin.PlugIn;
 import ij.process.ImageProcessor;
 
 
@@ -34,13 +35,18 @@ import ij.process.ImageProcessor;
  * 
  * @author W. Burger
  * @version 2021/04/05 (migrated to OpenPDF, added image properties)
+ * @version 2021/04/06 (added automatic image upscaling, open PFD after export)
+ * @version 2021/04/21 (converted from PlugInFilter to PlugIn)
  */
-public class Export_PDF_With_Overlay implements PlugInFilter {
+public class Export_PDF_With_Overlay implements PlugIn {
 	
 	private static boolean IncludeImage = true;
 	private static boolean IncludeOverlay = true;
 	private static boolean IncludeImageProps = true;
+	private static boolean UpscaleImage = true;
 	private static int ImageUpscaleFactor = 1;
+	private static int MinImageWidth = 300; // used to suggest ImageUpscaleFactor
+	private static boolean OpenPdfAfterExport = false;
 	
 	/**
 	 * Set true to have a default ICC profile (sRGB) added
@@ -54,16 +60,16 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 	 */
 	private static double DefaultStrokeWidth = 0.01;		// substitute for zero-width strokes
 	private static String DefaultFileExtension = ".pdf";
-	private static String CurrentOutputDirectory = IJ.getDirectory("temp");
+	private static String CurrentOutputDirectory = "D:\\tmp"; //IJ.getDirectory("temp");
 	
 	private ImagePlus img;
-
-	public int setup(String arg0, ImagePlus img) {
-		this.img = img;
-		return DOES_ALL + NO_CHANGES;
-	}
-
-	public void run(ImageProcessor ip) {
+	
+	@Override
+	public void run(String arg) {
+		this.img = IJ.getImage();
+		if (img == null) 
+			return;
+	
 		if (!verifyPdfLib()) {
 			return;
 		}
@@ -73,28 +79,43 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 			return;
 		}
 		
+		ImageProcessor ip = img.getProcessor();
+		int width = ip.getWidth();
+		ImageUpscaleFactor = (width >= MinImageWidth) ?
+				1 : (int) Math.ceil((double)MinImageWidth / width) ;
+		
 		if (!getUserInput()) {
 			return;
 		}
 		
 		String dir = CurrentOutputDirectory;
-		String name = stripFileExtension(img.getShortTitle());
+		String name = img.getShortTitle();
+		if (!UpscaleImage) {
+			ImageUpscaleFactor = 1;
+		}
 		if (ImageUpscaleFactor > 1) {
-			name = name + "x" + ImageUpscaleFactor;
+			name = name + "X" + ImageUpscaleFactor;
 		}
 		
 		Path path = askForFilePath(dir, name, "Save as PDF");
 		if (path == null) {
 			return;
 		}
-		
-		IJ.log("path = " + path);
 
 		String finalPath = createPdf(img, ImageUpscaleFactor, path);
 		if (finalPath == null) 
-			IJ.log("PDF export failed");
+			IJ.error("PDF export failed to " + path.toString());
 		else
-			IJ.log("PDF exported to " + finalPath);
+			IJ.log(String.format("PDF exported to %s (%d x upscaled)", finalPath, ImageUpscaleFactor));
+		
+		if (OpenPdfAfterExport && Desktop.isDesktopSupported()) {
+			Desktop dt = Desktop.getDesktop();
+			try {
+				dt.open(path.toFile());
+			} catch (Exception ex) {
+				IJ.error("Could not open PDF file " + finalPath);
+			}
+		}
 	}
 	
 	// ----------------------------------------------------------------------
@@ -139,7 +160,7 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 				if (upscale > 1) {	// upscale the image if needed (without interpolation)
 					im = im.resize(width * upscale, height * upscale, "none");
 				}
-				IJ.log("exporting image of size " + im.getWidth() + "/" + im.getHeight());
+				//IJ.log("exporting image of size " + im.getWidth() + "/" + im.getHeight());
 				com.lowagie.text.Image pdfImg = com.lowagie.text.Image.getInstance(im.getImage(), null);
 				pdfImg.setAbsolutePosition(0, 0);
 				pdfImg.scaleToFit(width, height);	// fit to the original size 		
@@ -148,7 +169,7 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 			
 			// optional: draw the vector overlay
 			if (overlay != null && IncludeOverlay) {
-				IJ.log("exporting overlay");
+				//IJ.log("exporting overlay");
 				Graphics2D g2 = new PdfGraphics2D(cb, width, height);
 				Roi[] roiArr = overlay.toArray();
 				for (Roi roi : roiArr) {
@@ -191,13 +212,15 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 	// ----------------------------------------------------------------------
 	
 	private boolean getUserInput() {
-		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
+		GenericDialog gd = new GenericDialog("Export PDF");
 		
 		gd.addCheckbox("Include overlay", IncludeOverlay);
 		gd.addCheckbox("Include image", IncludeImage);
 		gd.addCheckbox("Include image meta-data", IncludeImageProps);
 		gd.addCheckbox("Add sRGB ICC profile", AddIccProfile);
+		gd.addCheckbox("Upscale image", UpscaleImage);
 		gd.addNumericField("Image upscale factor", ImageUpscaleFactor, 0);
+		gd.addCheckbox("Open PDF after export", OpenPdfAfterExport);
 		
 		gd.showDialog();
 		if (gd.wasCanceled())
@@ -207,7 +230,9 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 		IncludeImage = gd.getNextBoolean();
 		IncludeImageProps = gd.getNextBoolean();
 		AddIccProfile = gd.getNextBoolean();
+		UpscaleImage = gd.getNextBoolean();
 		ImageUpscaleFactor = Math.max((int) gd.getNextNumber(), 1);
+		OpenPdfAfterExport = gd.getNextBoolean();
 		return true;
 	}
 	
@@ -226,6 +251,7 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
     		return null;
     }
 	
+	@SuppressWarnings("unused")
 	private String stripFileExtension(String fileName) {
 		int dotInd = fileName.lastIndexOf('.');
 		// if dot is in the first position,
@@ -244,5 +270,7 @@ public class Export_PDF_With_Overlay implements PlugInFilter {
 				"see https://github.com/LibrePDF/OpenPDF\n");
 		return false;
 	}
+
+
 }
 
