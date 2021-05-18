@@ -30,7 +30,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
-import imagingbook.lib.math.Eigensolver2x2;
+import imagingbook.lib.math.eigen.Eigensolver2x2;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.regions.NeighborhoodType;
