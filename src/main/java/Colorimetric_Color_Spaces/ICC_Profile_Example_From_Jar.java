@@ -17,7 +17,7 @@ import ij.IJ;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
 import imagingbook.lib.math.Matrix;
-import imagingbook.lib.util.ResourceLocation;
+import imagingbook.lib.util.resource.ResourceLocation;
 
 /**
  * This plugin lists the contents of a user-selected ICC profile that is retrieved
@@ -36,7 +36,7 @@ public class ICC_Profile_Example_From_Jar implements PlugIn {
 		
 		ResourceLocation loc = new imagingbook.lib.color.DATA.iccProfiles.Resources();
 		
-		IJ.log("Reading from JAR: " + (loc.isInsideJAR()));
+		IJ.log("Reading from JAR: " + (loc.insideJAR()));
 		choices = loc.getResourceNames();
 		
 		if (!showDialog())
