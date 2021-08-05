@@ -1,17 +1,20 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<artifactId>imagingbook_plugins_all</artifactId>
 	<packaging>jar</packaging>
-	
+
 	<parent>
 		<groupId>com.imagingbook</groupId>
 		<artifactId>imagingbook-parent-pom</artifactId>
 		<version>2.0-SNAPSHOT</version>
 		<!-- <relativePath>../_pom-public</relativePath> -->
-		<relativePath />		
+		<relativePath />
 	</parent>
-	
+
 	<repositories>
 		<repository>
 			<id>imagingbook-maven-repository</id>
@@ -19,29 +22,26 @@
 		</repository>
 	</repositories>
 
-	<properties>
-	</properties>
-
-	<dependencies>
+	<dependencies>	
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+		</dependency>	
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook-common</artifactId>
 			<version>${imagingbook.version}</version>
 		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/com.github.librepdf/openpdf -->
-		<dependency>
-		  <groupId>com.github.librepdf</groupId>
-		  <artifactId>openpdf</artifactId>
-		  <version>${openpdf.version}</version>
-		</dependency>
-		
 	</dependencies>
 
 	<build>
 		<outputDirectory>${project.basedir}/ImageJ/plugins</outputDirectory>
 		<plugins>
-		
+
 			<!-- empty the ImageJ/jars/ directory at clean -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -59,7 +59,7 @@
 					</filesets>
 				</configuration>
 			</plugin>
-			
+
 			<!-- we rename the target jar and place it in another subdir -->
 			<!-- http://stackoverflow.com/questions/6689511/maven-how-to-place-the-output-jar-into-another-folder -->
 			<plugin>
@@ -73,11 +73,11 @@
 			</plugin>
 
 			<!-- Copy required jar files into IJ environment to be available at runtime. 
-				 See https://maven.apache.org/plugins/maven-dependency-plugin/examples/copying-artifacts.html -->
+				See https://maven.apache.org/plugins/maven-dependency-plugin/examples/copying-artifacts.html -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.1.2</version>
+				<!-- <version>3.1.2</version> -->
 				<executions>
 					<execution>
 						<id>copy</id>
@@ -100,22 +100,22 @@
 							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>
 					</execution>
-					
+
 					<execution>
 						<!-- copy all other dependencies into ImageJ/jars/ -->
-		                <id>copy-dependencies</id>
-		                <phase>package</phase>
-		                <goals>
-		                    <goal>copy-dependencies</goal>
-		                </goals>
-		                <configuration>
-		                	<excludeArtifactIds>ij</excludeArtifactIds>
-		                    <outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
-		                    <overWriteIfNewer>true</overWriteIfNewer>
-		                    <overWriteReleases>false</overWriteReleases>
-		                    <overWriteSnapshots>true</overWriteSnapshots>
-		                </configuration>
-		            </execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<excludeArtifactIds>ij</excludeArtifactIds>
+							<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
+							<overWriteIfNewer>true</overWriteIfNewer>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<!-- end of copy -->
