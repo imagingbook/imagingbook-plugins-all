@@ -3,6 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
+	<!-- Note: The artifact ID has hyphens replaced by underscores to be compatible
+	with the standard naming scheme for ImageJ plugins 
+	(see https://imagej.nih.gov/ij/plugins/jar-demo.html). -->
 
 	<artifactId>imagingbook_plugins_all</artifactId>
 	<packaging>jar</packaging>
