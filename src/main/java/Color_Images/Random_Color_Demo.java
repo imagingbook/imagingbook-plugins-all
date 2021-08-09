@@ -21,9 +21,9 @@ public class Random_Color_Demo implements PlugIn {
 	static int Tiles_Ver = 32;
 	Random rnd = new Random();
 	
-	private float h = 0.0f;
-	private float s = 0.9f;
-	private float b = 0.9f;
+//	private float h = 0.0f;
+//	private float s = 0.9f;
+//	private float b = 0.9f;
 
 
 	@Override

@@ -8,6 +8,8 @@
  *******************************************************************************/
 package Binary_Regions;
 
+import java.util.List;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -15,14 +17,12 @@ import ij.gui.Overlay;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.regions.Contour;
 import imagingbook.pub.regions.NeighborhoodType;
 import imagingbook.pub.regions.SegmentationRegionContour;
-import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.regions.utils.ContourOverlay;
 import imagingbook.pub.regions.utils.Display;
-import imagingbook.pub.geometry.basic.Pnt2d;
-import java.util.List;
 
 /**
  * This ImageJ plugin demonstrates the use of the class {@link SegmentationRegionContour}

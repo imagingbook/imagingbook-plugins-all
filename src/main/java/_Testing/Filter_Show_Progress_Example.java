@@ -142,7 +142,8 @@ public class Filter_Show_Progress_Example implements PlugInFilter {
     
 	private static float dummyWork() {
 		int maxCnt = 5000;
-    	int cnt = 0;
+    	@SuppressWarnings("unused")
+		int cnt = 0;
 		float sum = 0;
 		for (int i = 0; i < maxCnt; i++) {
 			cnt = i;
