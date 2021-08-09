@@ -18,12 +18,12 @@
 		<relativePath />
 	</parent>
 
-	<repositories>
+	<!-- <repositories>
 		<repository>
 			<id>imagingbook-maven-repository</id>
 			<url>https://raw.github.com/imagingbook/imagingbook-maven-repository/master</url>
 		</repository>
-	</repositories>
+	</repositories> -->
 
 	<dependencies>	
 		<dependency>
@@ -41,87 +41,4 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<outputDirectory>${project.basedir}/ImageJ/plugins</outputDirectory>
-		<plugins>
-
-			<!-- empty the ImageJ/jars/ directory at clean -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>${project.basedir}/ImageJ/jars</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-							<followSymlinks>false</followSymlinks>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-
-			<!-- we rename the target jar and place it in another subdir -->
-			<!-- http://stackoverflow.com/questions/6689511/maven-how-to-place-the-output-jar-into-another-folder -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<!-- <version>3.2.0</version> -->
-				<configuration>
-					<!-- <outputDirectory>${project.build.directory}/ImageJ/jars</outputDirectory> -->
-					<!-- <finalName>${project.name}_XXX_${project.version}</finalName> -->
-				</configuration>
-			</plugin>
-
-			<!-- Copy required jar files into IJ environment to be available at runtime. 
-				See https://maven.apache.org/plugins/maven-dependency-plugin/examples/copying-artifacts.html -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<!-- <version>3.1.2</version> -->
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<!-- copy ij.jar into ImageJ/ -->
-								<artifactItem>
-									<groupId>net.imagej</groupId>
-									<artifactId>ij</artifactId>
-									<outputDirectory>${project.basedir}/ImageJ</outputDirectory>
-									<destFileName>ij.jar</destFileName>
-								</artifactItem>
-							</artifactItems>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-
-					<execution>
-						<!-- copy all other dependencies into ImageJ/jars/ -->
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<excludeArtifactIds>ij</excludeArtifactIds>
-							<outputDirectory>${project.basedir}/ImageJ/jars</outputDirectory>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- end of copy -->
-		</plugins>
-	</build>
 </project>
