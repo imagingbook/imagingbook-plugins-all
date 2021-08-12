@@ -152,18 +152,19 @@
 <span class="sourceLineNo">142</span><a id="line.142">    </a>
 <span class="sourceLineNo">143</span><a id="line.143">        private static float dummyWork() {</a>
 <span class="sourceLineNo">144</span><a id="line.144">                int maxCnt = 5000;</a>
-<span class="sourceLineNo">145</span><a id="line.145">        int cnt = 0;</a>
-<span class="sourceLineNo">146</span><a id="line.146">                float sum = 0;</a>
-<span class="sourceLineNo">147</span><a id="line.147">                for (int i = 0; i &lt; maxCnt; i++) {</a>
-<span class="sourceLineNo">148</span><a id="line.148">                        cnt = i;</a>
-<span class="sourceLineNo">149</span><a id="line.149">                        sum += (float) Math.sqrt(i); // some dummy work</a>
-<span class="sourceLineNo">150</span><a id="line.150">                }</a>
-<span class="sourceLineNo">151</span><a id="line.151">                cnt = 0;</a>
-<span class="sourceLineNo">152</span><a id="line.152">                return sum;</a>
-<span class="sourceLineNo">153</span><a id="line.153">        }</a>
-<span class="sourceLineNo">154</span><a id="line.154"> </a>
-<span class="sourceLineNo">155</span><a id="line.155"></a>
-<span class="sourceLineNo">156</span><a id="line.156">}</a>
+<span class="sourceLineNo">145</span><a id="line.145">        @SuppressWarnings("unused")</a>
+<span class="sourceLineNo">146</span><a id="line.146">                int cnt = 0;</a>
+<span class="sourceLineNo">147</span><a id="line.147">                float sum = 0;</a>
+<span class="sourceLineNo">148</span><a id="line.148">                for (int i = 0; i &lt; maxCnt; i++) {</a>
+<span class="sourceLineNo">149</span><a id="line.149">                        cnt = i;</a>
+<span class="sourceLineNo">150</span><a id="line.150">                        sum += (float) Math.sqrt(i); // some dummy work</a>
+<span class="sourceLineNo">151</span><a id="line.151">                }</a>
+<span class="sourceLineNo">152</span><a id="line.152">                cnt = 0;</a>
+<span class="sourceLineNo">153</span><a id="line.153">                return sum;</a>
+<span class="sourceLineNo">154</span><a id="line.154">        }</a>
+<span class="sourceLineNo">155</span><a id="line.155"> </a>
+<span class="sourceLineNo">156</span><a id="line.156"></a>
+<span class="sourceLineNo">157</span><a id="line.157">}</a>
 
 
 
