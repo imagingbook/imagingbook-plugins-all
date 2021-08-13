@@ -39,5 +39,10 @@
 			<artifactId>imagingbook-common</artifactId>
 		</dependency>
 	</dependencies>
+	
+	<build>
+   		<!-- needed for updating Eclipse settings (see also ij-plugins-build profile) -->
+    	<outputDirectory>ImageJ/plugins</outputDirectory>
+	</build>
 
 </project>
