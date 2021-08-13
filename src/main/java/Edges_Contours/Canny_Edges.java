@@ -15,8 +15,8 @@ import ij.process.ImageProcessor;
 import imagingbook.pub.color.edge.CannyEdgeDetector;
 
 /**
- * This ImageJ shows the use of the Canny edge detector in
- * its simplest form. Works on all image types.
+ * This ImageJ plugin shows the use of the Canny edge detector in
+ * its simplest form. It works on all image types.
  * 
  * See also {@link CannyEdgeDetector} and {@link Color_Edges.Color_Edges_Canny}.
  * 
