@@ -123,9 +123,9 @@ public class Region_Eccentricity_Ellipse_Demo implements PlugInFilter {
 			}
 			
 			double[] mu = r.getCentralMoments();	// = (mu10, mu01, mu20, mu02, mu11)
-			double mu20 = mu[2];
-			double mu02 = mu[3];
-			double mu11 = mu[4];
+			double mu20 = mu[0];
+			double mu02 = mu[1];
+			double mu11 = mu[2];
 			
 			double theta = 0.5 * Math.atan2(2 * mu11, mu20 - mu02);	// axis angle	
 				
