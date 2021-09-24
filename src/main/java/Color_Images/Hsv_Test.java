@@ -33,9 +33,9 @@ public class Hsv_Test implements PlugInFilter {
 			for (int u = 0; u < cp.getWidth(); u++) {
 				cp.getPixel(u, v, RGB);
 
-				float[] HSV = cc.RGBtoHSV (RGB); 	// all HSV components are in [0,1]
+				float[] HSV = cc.fromRGB (RGB); 	// all HSV components are in [0,1]
 				HSV[0] = (HSV[0] + 1.0f/3) % 1.0f;	// shift hue by 120 degrees
-				int[] RGBnew = cc.HSVtoRGB(HSV);
+				int[] RGBnew = cc.toRGB(HSV);
 
 				cp.putPixel(u, v, RGBnew);
 			}

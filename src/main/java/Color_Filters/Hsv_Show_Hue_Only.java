@@ -46,10 +46,10 @@ public class Hsv_Show_Hue_Only implements PlugInFilter {
 		for (int v = 0; v < h; v++) {
 			for (int u = 0; u < w; u++) {
 				cp.getPixel(u, v, RGB);
-				float[] HSV = cc.RGBtoHSV(RGB); 	// all HSV components are in [0,1]
+				float[] HSV = cc.fromRGB(RGB); 	// all HSV components are in [0,1]
 				HSV[1] = DEFAULT_SATURATION;
 				HSV[2] = DEFAULT_VALUE;
-				result.putPixel(u, v, cc.HSVtoRGB(HSV));
+				result.putPixel(u, v, cc.toRGB(HSV));
 			}
 		}
 

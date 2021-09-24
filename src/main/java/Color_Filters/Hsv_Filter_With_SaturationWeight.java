@@ -58,7 +58,7 @@ public class Hsv_Filter_With_SaturationWeight implements PlugInFilter {
 		for (int v = 0; v < h; v++) {
 			for (int u = 0; u < w; u++) {
 				cp.getPixel(u, v, RGB);
-				float[] HSV = cc.RGBtoHSV (RGB); 	// all HSV components are in [0,1]
+				float[] HSV = cc.fromRGB (RGB); 	// all HSV components are in [0,1]
 				double theta = 2 * Math.PI * HSV[0];
 				float s = HSV[1];
 				fHsin.setf(u, v, (float) Math.sin(theta) * s);
@@ -140,7 +140,7 @@ public class Hsv_Filter_With_SaturationWeight implements PlugInFilter {
 				float H = fH.getf(u, v);
 				float S = fS.getf(u, v);
 				float V = fV.getf(u, v);
-				int[] RGB2 = cc.HSVtoRGB(new float[] {H, S, V});
+				int[] RGB2 = cc.toRGB(new float[] {H, S, V});
 				cp.putPixel(u, v, RGB2);
 			}
 		}
