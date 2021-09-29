@@ -14,7 +14,6 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Pnt2d;
-import imagingbook.pub.geometry.basic.Pnt2d.PntInt;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 
@@ -32,34 +31,29 @@ import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
  *
  */
 public class Transform_Projective implements PlugInFilter {
+	
+	static Pnt2d[] P = {
+			Pnt2d.from(0, 0),
+			Pnt2d.from(400, 0),
+			Pnt2d.from(400, 400),
+			Pnt2d.from(0, 400)};
 
-    public int setup(String arg, ImagePlus imp) {
-        return DOES_ALL;
-    }
+	static Pnt2d[] Q = {
+			Pnt2d.from(0, 60),
+			Pnt2d.from(400, 20),
+			Pnt2d.from(300, 400),
+			Pnt2d.from(30, 200)};
 
-    public void run(ImageProcessor ip) {
+	public int setup(String arg, ImagePlus imp) {
+		return DOES_ALL;
+	}
 
-    	Pnt2d[] P = {
-			PntInt.from(0, 0),
-			PntInt.from(400, 0),
-			PntInt.from(400, 400),
-			PntInt.from(0, 400)
-    	};
-
-    	Pnt2d[] Q = {
-			PntInt.from(0, 60),
-			PntInt.from(400, 20),
-			 PntInt.from(300, 400),
-			 PntInt.from(30, 200)
-    	};
-    	
+	public void run(ImageProcessor ip) {
 		// We need the target-to source mapping, i.e. Q -> P. There are 2 alternatives:
 		Mapping2D imap = ProjectiveMapping2D.fromPoints(P, Q).getInverse();		// P -> Q, then invert
 		//Mapping2D imap = ProjectiveMapping2D.fromPoints(Q, P);		// Q -> P = inverse mapping
 
-		
 		// Now we apply the geometric mapping to the input image:
-		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
-		mapper.map(ip);
+		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
 	}
 }

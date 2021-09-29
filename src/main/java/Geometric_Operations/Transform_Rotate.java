@@ -26,8 +26,8 @@ public class Transform_Rotate implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-    	
-		Mapping2D imap = new Rotation2D((2 * Math.PI * angle) / 360).getInverse();	// inverse (target to source)
+    	double alpha = 2 * Math.PI * angle / 360;
+		Mapping2D imap = new Rotation2D(alpha).getInverse();	// inverse (target to source)
 		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
 		mapper.map(ip);
     }
