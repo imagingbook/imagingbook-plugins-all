@@ -20,14 +20,16 @@ import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 /**
  * This plugin demonstrates the use of geometric mappings, as implemented
  * in the imagingbook library.
- * A {@link ProjectiveMapping2D} (transformation) is specified by 4 corresponding point
- * pairs, given by P and Q.
- * The mapping defines the target-to-source transformation.
+ * A {@link ProjectiveMapping2D} (transformation) is specified by 4
+ * corresponding point pairs, given by point sequences P and Q.
+ * The inverse mapping is required for target-to-source mapping.
  * The actual pixel transformation is performed by an {@link ImageMapper} object.
- * Try on the "bridge" test image and check if the image corners (P) are
+ * Try on a suitable test image and check if the image corners (P) are
  * mapped to the points specified in Q.
+ * This plugin works for all image types.
  * 
  * @author WB
+ * @version 2021/10/03
  *
  */
 public class Transform_Projective implements PlugInFilter {
@@ -45,15 +47,25 @@ public class Transform_Projective implements PlugInFilter {
 			Pnt2d.from(30, 200)};
 
 	public int setup(String arg, ImagePlus imp) {
-		return DOES_ALL;
+		return DOES_ALL + NO_CHANGES;
 	}
 
-	public void run(ImageProcessor ip) {
-		// We need the target-to source mapping, i.e. Q -> P. There are 2 alternatives:
+	public void run(ImageProcessor source) {
+		int W = source.getWidth();
+		int H = source.getHeight();
+		// create the target image:
+		ImageProcessor target = source.createProcessor(W, H); 
+		
+		// create the target-to source mapping, i.e. Q -> P. 
+		// there are 2 alternatives:
 		Mapping2D imap = ProjectiveMapping2D.fromPoints(P, Q).getInverse();		// P -> Q, then invert
 		//Mapping2D imap = ProjectiveMapping2D.fromPoints(Q, P);		// Q -> P = inverse mapping
 
-		// Now we apply the geometric mapping to the input image:
-		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
+		// create a mapper instance:
+		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		// apply the mapper:
+		mapper.map(source, target);
+		// display the target image:
+		new ImagePlus("Target", target).show();
 	}
 }

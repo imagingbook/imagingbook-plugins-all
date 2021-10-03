@@ -1,7 +1,6 @@
 package Geometric_Operations;
 
 import java.awt.Polygon;
-import java.awt.geom.Point2D;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -11,12 +10,12 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.pub.geometry.basic.Pnt2d;
 
-public class Get_Roi_Points implements PlugInFilter {
+public class Get_Roi_Int_Points implements PlugInFilter {
 	
 	ImagePlus im = null;
 	
 	public int setup(String args, ImagePlus im) {
-		this.im = im;		// keep a reference to \Code{im}\label{pr:RoiPolygonPointsDemo010}
+		this.im = im;
 		return DOES_ALL + ROI_REQUIRED;
 	}
 
@@ -29,15 +28,23 @@ public class Get_Roi_Points implements PlugInFilter {
 			return;
 		}
 		
-		Polygon poly = roi.getPolygon();
+		Polygon pgn = roi.getPolygon();
 		
 		// copy polygon vertices to a point array:
-		Pnt2d[] pts = new Pnt2d[poly.npoints];
-		for (int i = 0; i < poly.npoints; i++) {
-			pts[i] = Pnt2d.from(poly.xpoints[i], poly.ypoints[i]);
+		Pnt2d[] pts = new Pnt2d[pgn.npoints];
+		for (int i = 0; i < pgn.npoints; i++) {
+			pts[i] = Pnt2d.from(pgn.xpoints[i], pgn.ypoints[i]);
 		}
 		
-		// ... use the ROI points in \Code{pts}
+		// alternative:
+		// pts = RoiUtils.getPolygonPointsInt(roi);
+		
+		// list all points
+		for (int i = 0; i < pts.length; i++) {
+			IJ.log(i + ": " + pts[i].toString());
+		}
+		
+		// ... use the integer points in pts
 		
 	}
 	
