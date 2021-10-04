@@ -13,23 +13,35 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings.nonlinear.RippleMapping;
+import imagingbook.pub.geometry.basic.Pnt2d;
+import imagingbook.pub.geometry.basic.Pnt2d.PntDouble;
+import imagingbook.pub.geometry.mappings.Mapping2D;
 
-public class Transform_Ripple implements PlugInFilter {
-
+public class Ripple_Transform implements PlugInFilter {
+	
+	static double aX = 10;
+	static double aY = 10;
+	static double tauX = 120 / (2 * Math.PI);
+	static double tauY = 250 / (2 * Math.PI);
+	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_ALL;
 	}
 
 	public void run(ImageProcessor ip) {
-		double xW = 120 / (2 * Math.PI);
-		double xAmpl = 10;
-		double yW = 250 / (2 * Math.PI);
-		double yAmpl = 10;
 
-		RippleMapping imap = new RippleMapping(xW, xAmpl, yW, yAmpl);	// inverse (target to source)
-		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
-		mapper.map(ip);
+		Mapping2D imap = new Mapping2D() {
+			@Override
+			public Pnt2d applyTo(Pnt2d pnt) {
+				final double x = pnt.getX();
+				final double y = pnt.getY();
+				double xx = x + aX * Math.sin(y / tauX);
+				double yy = y + aY * Math.sin(x / tauY);
+				return PntDouble.from(xx, yy);
+			}
+		};
+		
+		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
 	}
 
 }
