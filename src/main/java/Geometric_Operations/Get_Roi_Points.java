@@ -24,7 +24,7 @@ import imagingbook.pub.geometry.basic.Pnt2d;
  */
 public class Get_Roi_Points implements PlugInFilter {
 	
-	ImagePlus im = null;
+	ImagePlus im;
 	
 	public int setup(String args, ImagePlus im) {
 		this.im = im;

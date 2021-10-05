@@ -17,7 +17,7 @@ import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.basic.Pnt2d.PntDouble;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 
-public class Ripple_Transform implements PlugInFilter {
+public class Transform_Ripple implements PlugInFilter {
 	
 	static double aX = 10;
 	static double aY = 10;
