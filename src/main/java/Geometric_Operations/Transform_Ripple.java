@@ -14,7 +14,6 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Pnt2d;
-import imagingbook.pub.geometry.basic.Pnt2d.PntDouble;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 
 public class Transform_Ripple implements PlugInFilter {
@@ -32,12 +31,12 @@ public class Transform_Ripple implements PlugInFilter {
 
 		Mapping2D imap = new Mapping2D() {
 			@Override
-			public Pnt2d applyTo(Pnt2d pnt) {
-				final double x = pnt.getX();
-				final double y = pnt.getY();
-				double xx = x + aX * Math.sin(y / tauX);
-				double yy = y + aY * Math.sin(x / tauY);
-				return PntDouble.from(xx, yy);
+			public Pnt2d applyTo(Pnt2d uv) {
+				final double u = uv.getX();
+				final double v = uv.getY();
+				double x = u + aX * Math.sin(v / tauX);
+				double y = v + aY * Math.sin(u / tauY);
+				return Pnt2d.from(x, y);
 			}
 		};
 		

@@ -58,13 +58,15 @@ public class Transform_Projective implements PlugInFilter {
 		
 		// create the target-to source mapping, i.e. Q -> P. 
 		// there are 2 alternatives:
-		Mapping2D imap = ProjectiveMapping2D.fromPoints(P, Q).getInverse();		// P -> Q, then invert
-		//Mapping2D imap = ProjectiveMapping2D.fromPoints(Q, P);		// Q -> P = inverse mapping
+		Mapping2D mi = ProjectiveMapping2D.fromPoints(P, Q).getInverse();		// P -> Q, then invert
+		//Mapping2D mi = ProjectiveMapping2D.fromPoints(Q, P);		// Q -> P = inverse mapping
 
 		// create a mapper instance:
-		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
+		ImageMapper mapper = new ImageMapper(mi, InterpolationMethod.Bicubic);
+		
 		// apply the mapper:
 		mapper.map(source, target);
+		
 		// display the target image:
 		new ImagePlus("Target", target).show();
 	}

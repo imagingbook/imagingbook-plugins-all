@@ -15,7 +15,7 @@ import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.basic.Pnt2d.PntInt;
-import imagingbook.pub.geometry.mappings.nonlinear.BilinearMapping;
+import imagingbook.pub.geometry.mappings.nonlinear.BilinearMapping2D;
 
 public class Transform_Bilinear implements PlugInFilter {
 
@@ -24,16 +24,7 @@ public class Transform_Bilinear implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-//		Point p1 = Point.create(0, 0);
-//		Point p2 = Point.create(400, 0);
-//		Point p3 = Point.create(400, 400);
-//		Point p4 = Point.create(0, 400);
-//
-//		Point q1 = Point.create(0, 60);
-//		Point q2 = Point.create(400, 20);
-//		Point q3 = Point.create(300, 400);
-//		Point q4 = Point.create(30, 200);
-		
+	
 	   	Pnt2d[] P = {
 				PntInt.from(0, 0),
 				PntInt.from(400, 0),
@@ -49,8 +40,7 @@ public class Transform_Bilinear implements PlugInFilter {
 	    	};
 		
 		// we want the inverse mapping (Q -> P, so we swap P/Q):
-		BilinearMapping imap = BilinearMapping.fromPoints(Q, P);
-		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
-		mapper.map(ip);
+		BilinearMapping2D mi = BilinearMapping2D.fromPoints(Q, P);
+		new ImageMapper(mi, InterpolationMethod.Bicubic).map(ip);
     }
 }

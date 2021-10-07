@@ -37,9 +37,7 @@ public class Transform_Affine implements PlugInFilter {
     	};
 
 		// inverse mapping (target to source):
-		//AffineMapping2D imap = AffineMapping2D.from3Points(p1, p2, p3, q1, q2, q3).getInverse(); 
-		AffineMapping2D imap = AffineMapping2D.fromPoints(P, Q).getInverse(); 
-		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
-		mapper.map(ip);
+		AffineMapping2D mi = AffineMapping2D.fromPoints(P, Q).getInverse(); 
+		new ImageMapper(mi, InterpolationMethod.Bicubic).map(ip);
     }
 }

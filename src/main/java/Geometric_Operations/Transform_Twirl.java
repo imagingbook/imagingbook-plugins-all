@@ -13,7 +13,6 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.pub.geometry.basic.Pnt2d;
-import imagingbook.pub.geometry.basic.Pnt2d.PntDouble;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 
 public class Transform_Twirl implements PlugInFilter {
@@ -33,18 +32,18 @@ public class Transform_Twirl implements PlugInFilter {
 		
 		Mapping2D imap = new Mapping2D() {	// inverse mapping (target to source)
 			@Override
-			public Pnt2d applyTo(Pnt2d pnt) {
-				double dx = pnt.getX() - xc;
-				double dy = pnt.getY() - yc;
+			public Pnt2d applyTo(Pnt2d uv) {
+				double dx = uv.getX() - xc;
+				double dy = uv.getY() - yc;
 				double r = Math.sqrt(dx * dx + dy * dy);
 				if (r < rmax) {
 					double beta = Math.atan2(dy, dx) + alpha * (rmax - r) / rmax;
 					double x = xc + r * Math.cos(beta);
 					double y = yc + r * Math.sin(beta);
-					return PntDouble.from(x, y);
+					return Pnt2d.from(x, y);
 				}
 				else {
-					return pnt;	// return the original point
+					return uv;	// return the original point
 				}
 			}
 		};

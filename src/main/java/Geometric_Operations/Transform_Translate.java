@@ -16,6 +16,7 @@ import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.linear.Translation2D;
 
 public class Transform_Translate implements PlugInFilter {
+	
 	static double dx = 5.25;
 	static double dy = 7.3;
 	
@@ -26,8 +27,7 @@ public class Transform_Translate implements PlugInFilter {
     public void run(ImageProcessor ip) {
 
 		Translation2D imap = new Translation2D(dx, dy).getInverse();
-		ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
-		mapper.map(ip);
+		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
     }
 
 }

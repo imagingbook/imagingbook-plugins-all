@@ -8,6 +8,9 @@
  *******************************************************************************/
 package Geometric_Operations;
 
+import java.awt.Font;
+import java.awt.Graphics2D;
+
 import ij.ImagePlus;
 import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
@@ -19,12 +22,12 @@ import imagingbook.lib.image.ImageGraphics;
  * imagingbook's {@link ImageGraphics} class.
  * 
  * @author W. Burger
- * @version 2020-01-08
+ * @version 2021/10/07
  */
 public class Draw_Test_Grid implements PlugIn {
 	
-	static int w = 400;
-	static int h = 400;
+	static int W = 400;
+	static int H = 400;
 	static int xStep = 20;
 	static int yStep = 20;
 	static int xStart = 100;
@@ -36,19 +39,19 @@ public class Draw_Test_Grid implements PlugIn {
 	static int background = 255;
 	
     public void run(String arg) {
-    	ByteProcessor ip = new ByteProcessor(w, h);
+    	ByteProcessor ip = new ByteProcessor(W, H);
     	ip.setValue(background);
     	ip.fill();
     	
-    	try (ImageGraphics g = new ImageGraphics(ip)) {
-			g.setColor(foreground);
-			g.setLineWidth(1.0);
+    	try (ImageGraphics ig = new ImageGraphics(ip)) {
+			ig.setColor(foreground);
+			ig.setLineWidth(1.0);
 			
 			int y = yStart;
 	    	int x1 = xStart;
 	    	int x2 = xStart + xN * xStep;
 			for (int j = 0; j <= yN; j++) {
-				g.drawLine(x1, y, x2, y);
+				ig.drawLine(x1, y, x2, y);
 				y = y + yStep;
 			}
 			
@@ -56,12 +59,23 @@ public class Draw_Test_Grid implements PlugIn {
 			int y1 = yStart;
 			int y2 = yStart + yN * yStep;
 			for (int i = 0; i <= xN; i++) {
-				g.drawLine(x, y1, x, y2);
+				ig.drawLine(x, y1, x, y2);
 				x = x + xStep;
 			}
 			
-			g.drawLine(0, 0, w - 1, h - 1);
-			g.drawOval(xStart, yStart, w/2, h/2);
+			ig.drawLine(0, 0, W - 1, H - 1);
+			ig.drawOval(xStart, yStart, W/2, H/2);
+			
+			Graphics2D g = ig.getGraphics();
+			g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 18));
+			float xLeft = 8;
+			float yTop  = 19;
+			float xRight = W - 17;
+			float yBot  = H - 10;
+			g.drawString("1", xLeft, yTop);
+			g.drawString("2", xRight, yTop);
+			g.drawString("3", xRight, yBot);
+			g.drawString("4", xLeft, yBot);
     	}
     	
         new ImagePlus("Grid",ip).show();

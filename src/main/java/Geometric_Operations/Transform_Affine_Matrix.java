@@ -8,113 +8,90 @@
  *******************************************************************************/
 package Geometric_Operations;
 
-import ij.ImagePlus;
-import ij.gui.GenericDialog;
-import ij.plugin.filter.PlugInFilter;
-import ij.process.ImageProcessor;
-import imagingbook.lib.image.ImageMapper;
-import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings.linear.AffineMapping2D;
-
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.Panel;
 import java.awt.TextField;
 
+import ij.ImagePlus;
+import ij.gui.GenericDialog;
+import ij.plugin.filter.PlugInFilter;
+import ij.process.ImageProcessor;
+import imagingbook.lib.image.ImageMapper;
+import imagingbook.pub.geometry.mappings.linear.AffineMapping2D;
+
 /**
  * ImageJ plugin for configurable affine image transformation.
- * TODO: Polish the matrix dialogue input.
  * 
  * @author WB
- * @version 2015/08/05
+ * @version 2021/10/07
  *
  */
 public class Transform_Affine_Matrix implements PlugInFilter {
+
+	private static String[][] elementNames = {
+			{ "a00", "a01", "a02" },
+			{ "a10", "a11", "a12" }};
+
+	private static double[][] A = {
+			{ 1, 0, 0 },
+			{ 0, 1, 0 }};
 	
- 
-    public int setup(String arg, ImagePlus imp) {
-        return DOES_ALL;
-    }
-
-    public void run(ImageProcessor ip) {
-    	if (!showDialog())
-    		return;
-
-        double a11 = matrixValues[0][0];
-        double a12 = matrixValues[0][1];
-        double a13 = matrixValues[0][2];
-        double a21 = matrixValues[1][0];
-        double a22 = matrixValues[1][1];
-        double a23 = matrixValues[1][2];
-        
-        AffineMapping2D imap = new AffineMapping2D(a11, a12, a13, a21, a22, a23).getInverse();
-        ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bicubic);
-		mapper.map(ip);
-    }
-    
-    // Dialog example taken from http://rsbweb.nih.gov/ij/plugins/download/Dialog_Grid_Demo.java
-    
-    String[][] matrixNames = {
-    		{ "a11", "a12", "a13" },
-    		{ "a21", "a22", "a23" }};
-    
-    double[][] matrixValues = {
-    		{ 1, 0, 0 },
-    		{ 0, 1, 0 }};
-
+	private TextField[] tf = new TextField[A[0].length * A.length];
 	
-	TextField[] tf = new TextField[matrixValues[0].length * matrixValues.length];
-//	double[] value = new double[gridSize];
+	@Override
+	public int setup(String arg, ImagePlus imp) {
+		return DOES_ALL;
+	}
+
+	@Override
+	public void run(ImageProcessor ip) {
+		if (!showDialog()) {
+			return;
+		}
+		AffineMapping2D imap = new AffineMapping2D(A).getInverse();
+		new ImageMapper(imap).map(ip);
+	}
+
+
+	// Dialog example taken from http://rsbweb.nih.gov/ij/plugins/download/Dialog_Grid_Demo.java
 
 	private boolean showDialog() {
 		GenericDialog gd = new GenericDialog("Enter affine transformation matrix");
 		gd.addPanel(makePanel(gd));
 		gd.showDialog();
-		if (gd.wasCanceled())
+		if (gd.wasCanceled()) {
 			return false;
+		}
 		getValues();
 		return true;
 	}
 
 	private Panel makePanel(GenericDialog gd) {
-		int gridWidth = matrixValues[0].length;
-		int gridHeight = matrixValues.length;
 		Panel panel = new Panel();
-		panel.setLayout(new GridLayout(gridHeight, gridWidth * 2));
+		panel.setLayout(new GridLayout(A.length, A[0].length * 2));
 		int i = 0;
-		for (int row = 0; row < gridHeight; row++) {
-			for (int col = 0; col < gridWidth; col++) {
-				tf[i] = new TextField("" + matrixValues[row][col]);
+		for (int row = 0; row < A.length; row++) {
+			for (int col = 0; col < A[0].length; col++) {
+				tf[i] = new TextField("" + A[row][col]);
 				panel.add(tf[i]);
-				panel.add(new Label(matrixNames[row][col]));
+				panel.add(new Label(elementNames[row][col]));
 				i++;
 			}
 		}
 		return panel;
 	}
-	
+
 	private void getValues() {
-		int gridWidth = matrixValues[0].length;
-		int gridHeight = matrixValues.length;
 		int i = 0; 
-		for (int r = 0; r < gridHeight; r++) {
-			for (int c = 0; c < gridWidth; c++) {
-			String s = tf[i].getText();
-			matrixValues[r][c] = getValue(s);
-			i++;
+		for (int r = 0; r < A.length; r++) {
+			for (int c = 0; c < A[0].length; c++) {
+				String s = tf[i].getText();
+				A[r][c] = getValue(s);
+				i++;
 			}
 		}
 	}
-	
-//	void displayValues() {
-//		int i = 0; 
-//		for (int r = 0; r < gridHeight; r++) {
-//			for (int c = 0; c < gridWidth; c++) {
-//				IJ.log(i + "  " + fieldValues[r][c]);
-//				i++;
-//			}
-//		}
-//	}
 
 	private double getValue(String valueAsText) {
 		Double d;

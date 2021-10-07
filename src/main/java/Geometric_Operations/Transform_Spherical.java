@@ -17,7 +17,6 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Pnt2d;
-import imagingbook.pub.geometry.basic.Pnt2d.PntDouble;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 
 public class Transform_Spherical implements PlugInFilter {
@@ -32,19 +31,20 @@ public class Transform_Spherical implements PlugInFilter {
 		final double xc = 0.5 * ip.getWidth();
 		final double yc = 0.5 * ip.getHeight();
 		final double rmax = Math.min(xc, yc); //Math.sqrt(xc * xc + yc * yc);
+		final double rmax2 = sqr(rmax);
 		final double rhoFac = (1.0 - 1.0 / rho);
 
 		Mapping2D imap = new Mapping2D() {
+			
 			@Override
-			public Pnt2d applyTo(Pnt2d pnt) {
-				double u = pnt.getX();
-				double v = pnt.getY();
+			public Pnt2d applyTo(Pnt2d uv) {
+				double u = uv.getX();
+				double v = uv.getY();
 				double dx = u - xc;
 				double dy = v - yc;
 				double dx2 = sqr(dx);
 				double dy2 = sqr(dy);
 				double r2 = dx2 + dy2;
-				double rmax2 = sqr(rmax);
 
 				if (r2 < rmax2) {
 					double z2 = rmax2 - r2;
@@ -55,10 +55,10 @@ public class Transform_Spherical implements PlugInFilter {
 
 					double betaY = rhoFac * Math.asin(dy / sqrt(dy2 + z2));
 					double y = v - z * Math.tan(betaY);
-					return PntDouble.from(x, y);
+					return Pnt2d.from(x, y);
 				}
 				else { // otherwise leave point unchanged
-					return pnt;
+					return uv;
 				}
 			}
 		};
