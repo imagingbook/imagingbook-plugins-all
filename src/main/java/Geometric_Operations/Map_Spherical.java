@@ -8,47 +8,61 @@
  *******************************************************************************/
 package Geometric_Operations;
 
+import static imagingbook.lib.math.Arithmetic.sqr;
+import static java.lang.Math.sqrt;
+
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
+import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 
-public class Transform_Twirl implements PlugInFilter {
+public class Map_Spherical implements PlugInFilter {
 	
-	static double alpha = Math.toRadians(43.0); 	// angle (43 degrees)
-
-	@Override
+	static double rho = 1.8;
+	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_ALL;
 	}
 
-	@Override
 	public void run(ImageProcessor ip) {
 		final double xc = 0.5 * ip.getWidth();
 		final double yc = 0.5 * ip.getHeight();
-		final double rmax = Math.sqrt(xc * xc + yc * yc);
-		
-		Mapping2D imap = new Mapping2D() {	// inverse mapping (target to source)
+		final double rmax = Math.min(xc, yc); //Math.sqrt(xc * xc + yc * yc);
+		final double rmax2 = sqr(rmax);
+		final double rhoFac = (1.0 - 1.0 / rho);
+
+		Mapping2D imap = new Mapping2D() {
+			
 			@Override
 			public Pnt2d applyTo(Pnt2d uv) {
-				double dx = uv.getX() - xc;
-				double dy = uv.getY() - yc;
-				double r = Math.sqrt(dx * dx + dy * dy);
-				if (r < rmax) {
-					double beta = Math.atan2(dy, dx) + alpha * (rmax - r) / rmax;
-					double x = xc + r * Math.cos(beta);
-					double y = yc + r * Math.sin(beta);
+				double u = uv.getX();
+				double v = uv.getY();
+				double dx = u - xc;
+				double dy = v - yc;
+				double dx2 = sqr(dx);
+				double dy2 = sqr(dy);
+				double r2 = dx2 + dy2;
+
+				if (r2 < rmax2) {
+					double z2 = rmax2 - r2;
+					double z = sqrt(z2);
+
+					double betaX = rhoFac * Math.asin(dx / sqrt(dx2 + z2));
+					double x = u - z * Math.tan(betaX);
+
+					double betaY = rhoFac * Math.asin(dy / sqrt(dy2 + z2));
+					double y = v - z * Math.tan(betaY);
 					return Pnt2d.from(x, y);
 				}
-				else {
-					return uv;	// return the original point
+				else { // otherwise leave point unchanged
+					return uv;
 				}
 			}
 		};
 		
-		new ImageMapper(imap).map(ip);
+		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
 	}
-	
 }

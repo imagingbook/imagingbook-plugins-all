@@ -32,7 +32,7 @@ import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
  * @version 2021/10/03
  *
  */
-public class Transform_Projective implements PlugInFilter {
+public class Map_Projective implements PlugInFilter {
 	
 	static Pnt2d[] P = {
 			Pnt2d.from(0, 0),

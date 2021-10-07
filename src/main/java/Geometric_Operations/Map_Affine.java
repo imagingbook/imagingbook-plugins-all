@@ -13,21 +13,31 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
 import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings.linear.Translation2D;
+import imagingbook.pub.geometry.basic.Pnt2d;
+import imagingbook.pub.geometry.basic.Pnt2d.PntInt;
+import imagingbook.pub.geometry.mappings.linear.AffineMapping2D;
 
-public class Transform_Translate implements PlugInFilter {
-	
-	static double dx = 5.25;
-	static double dy = 7.3;
-	
+public class Map_Affine implements PlugInFilter {
+
     public int setup(String arg, ImagePlus imp) {
         return DOES_ALL;
     }
 
     public void run(ImageProcessor ip) {
+    	Pnt2d[] P = {
+			PntInt.from(0, 0),
+			PntInt.from(400, 0),
+			PntInt.from(400, 400)
+    	};
 
-		Translation2D imap = new Translation2D(dx, dy).getInverse();
-		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
+    	Pnt2d[] Q = {
+			PntInt.from(0, 60),
+			PntInt.from(400, 20),
+			 PntInt.from(300, 400)
+    	};
+
+		// inverse mapping (target to source):
+		AffineMapping2D mi = AffineMapping2D.fromPoints(P, Q).getInverse(); 
+		new ImageMapper(mi, InterpolationMethod.Bicubic).map(ip);
     }
-
 }

@@ -12,32 +12,22 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
-import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.basic.Pnt2d;
-import imagingbook.pub.geometry.basic.Pnt2d.PntInt;
-import imagingbook.pub.geometry.mappings.linear.AffineMapping2D;
+import imagingbook.pub.geometry.mappings.Mapping2D;
+import imagingbook.pub.geometry.mappings.linear.Rotation2D;
 
-public class Transform_Affine implements PlugInFilter {
 
-    public int setup(String arg, ImagePlus imp) {
-        return DOES_ALL;
+public class Map_Rotate implements PlugInFilter {
+	
+	static double alpha = Math.toRadians(15.0); 	// angle (15 degrees)
+
+	@Override
+    public int setup(String arg, ImagePlus im) {
+        return DOES_ALL;	// works for all image types
     }
 
+	@Override
     public void run(ImageProcessor ip) {
-    	Pnt2d[] P = {
-			PntInt.from(0, 0),
-			PntInt.from(400, 0),
-			PntInt.from(400, 400)
-    	};
-
-    	Pnt2d[] Q = {
-			PntInt.from(0, 60),
-			PntInt.from(400, 20),
-			 PntInt.from(300, 400)
-    	};
-
-		// inverse mapping (target to source):
-		AffineMapping2D mi = AffineMapping2D.fromPoints(P, Q).getInverse(); 
-		new ImageMapper(mi, InterpolationMethod.Bicubic).map(ip);
+		Mapping2D mi = new Rotation2D(alpha).getInverse(); // inverse mapping (target to source)
+		new ImageMapper(mi).map(ip);
     }
 }

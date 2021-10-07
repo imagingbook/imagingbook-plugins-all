@@ -17,7 +17,7 @@ import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.basic.Pnt2d.PntInt;
 import imagingbook.pub.geometry.mappings.nonlinear.BilinearMapping2D;
 
-public class Transform_Bilinear implements PlugInFilter {
+public class Map_Bilinear implements PlugInFilter {
 
     public int setup(String arg, ImagePlus imp) {
         return DOES_ALL;

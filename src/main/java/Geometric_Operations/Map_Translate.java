@@ -12,22 +12,22 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
-import imagingbook.pub.geometry.mappings.Mapping2D;
-import imagingbook.pub.geometry.mappings.linear.Rotation2D;
+import imagingbook.lib.interpolation.InterpolationMethod;
+import imagingbook.pub.geometry.mappings.linear.Translation2D;
 
-
-public class Transform_Rotate implements PlugInFilter {
+public class Map_Translate implements PlugInFilter {
 	
-	static double alpha = Math.toRadians(15.0); 	// angle (15 degrees)
-
-	@Override
-    public int setup(String arg, ImagePlus im) {
-        return DOES_ALL;	// works for all image types
+	static double dx = 5.25;
+	static double dy = 7.3;
+	
+    public int setup(String arg, ImagePlus imp) {
+        return DOES_ALL;
     }
 
-	@Override
     public void run(ImageProcessor ip) {
-		Mapping2D mi = new Rotation2D(alpha).getInverse(); // inverse mapping (target to source)
-		new ImageMapper(mi).map(ip);
+
+		Translation2D imap = new Translation2D(dx, dy).getInverse();
+		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
     }
+
 }

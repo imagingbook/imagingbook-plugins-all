@@ -16,7 +16,7 @@ import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 
-public class Transform_Ripple implements PlugInFilter {
+public class Map_Ripple implements PlugInFilter {
 	
 	static double aX = 10;
 	static double aY = 10;

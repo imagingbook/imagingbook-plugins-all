@@ -27,7 +27,7 @@ import imagingbook.pub.geometry.mappings.linear.AffineMapping2D;
  * @version 2021/10/07
  *
  */
-public class Transform_Affine_Matrix implements PlugInFilter {
+public class Map_Affine_Matrix implements PlugInFilter {
 
 	private static String[][] elementNames = {
 			{ "a00", "a01", "a02" },
