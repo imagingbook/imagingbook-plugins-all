@@ -43,9 +43,9 @@
 <span class="sourceLineNo">033</span><a id="line.33">                        for (int u = 0; u &lt; cp.getWidth(); u++) {</a>
 <span class="sourceLineNo">034</span><a id="line.34">                                cp.getPixel(u, v, RGB);</a>
 <span class="sourceLineNo">035</span><a id="line.35"></a>
-<span class="sourceLineNo">036</span><a id="line.36">                                float[] HSV = cc.RGBtoHSV (RGB);        // all HSV components are in [0,1]</a>
+<span class="sourceLineNo">036</span><a id="line.36">                                float[] HSV = cc.fromRGB (RGB);         // all HSV components are in [0,1]</a>
 <span class="sourceLineNo">037</span><a id="line.37">                                HSV[0] = (HSV[0] + 1.0f/3) % 1.0f;      // shift hue by 120 degrees</a>
-<span class="sourceLineNo">038</span><a id="line.38">                                int[] RGBnew = cc.HSVtoRGB(HSV);</a>
+<span class="sourceLineNo">038</span><a id="line.38">                                int[] RGBnew = cc.toRGB(HSV);</a>
 <span class="sourceLineNo">039</span><a id="line.39"></a>
 <span class="sourceLineNo">040</span><a id="line.40">                                cp.putPixel(u, v, RGBnew);</a>
 <span class="sourceLineNo">041</span><a id="line.41">                        }</a>
