@@ -32,9 +32,9 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.lib.math.eigen.Eigensolver2x2;
 import imagingbook.pub.geometry.basic.Pnt2d;
-import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
+import imagingbook.pub.regions.segment.RegionContourSegmentation;
+import imagingbook.pub.regions.segment.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.regions.NeighborhoodType;
-import imagingbook.pub.regions.SegmentationRegionContour;
 
 /**
  * Performs binary region segmentation, then
@@ -102,7 +102,7 @@ public class Region_Eccentricity_Ellipse_Demo implements PlugInFilter {
 		Overlay oly = new Overlay();
 		
 		// perform region segmentation:
-		SegmentationRegionContour segmenter = new SegmentationRegionContour((ByteProcessor) ip, NhT);
+		RegionContourSegmentation segmenter = new RegionContourSegmentation((ByteProcessor) ip, NhT);
 		List<BinaryRegion> regions = segmenter.getRegions();
 
 		for (BinaryRegion r : regions) {

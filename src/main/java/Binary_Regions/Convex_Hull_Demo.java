@@ -23,8 +23,8 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.basic.Pnt2d.PntDouble;
-import imagingbook.pub.regions.SegmentationRegionContour;
-import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
+import imagingbook.pub.regions.segment.RegionContourSegmentation;
+import imagingbook.pub.regions.segment.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.geometry.hulls.ConvexHull;
 
 /**
@@ -56,7 +56,7 @@ public class Convex_Hull_Demo implements PlugInFilter {
 			return;
 		}
 		
-		SegmentationRegionContour segmenter = new SegmentationRegionContour((ByteProcessor) ip);
+		RegionContourSegmentation segmenter = new RegionContourSegmentation((ByteProcessor) ip);
 //		RegionLabeling segmenter = new DepthFirstLabeling((ByteProcessor) ip);
 		
 		List<BinaryRegion> regions = segmenter.getRegions();

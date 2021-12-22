@@ -36,8 +36,8 @@ import imagingbook.pub.fd.FourierDescriptorUniform;
 import imagingbook.pub.fd.PolygonSampler;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.regions.Contour;
-import imagingbook.pub.regions.SegmentationRegionContour;
-import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
+import imagingbook.pub.regions.segment.RegionContourSegmentation;
+import imagingbook.pub.regions.segment.BinaryRegionSegmentation.BinaryRegion;
 
 /**
  * @version 2020/04/01
@@ -124,7 +124,7 @@ public class Private_Ellipse_Superposition_AnimationStack implements PlugInFilte
 		ByteProcessor ip = (ByteProcessor) ip1.duplicate();
 
 		//  label regions and trace contours
-		SegmentationRegionContour tracer = new SegmentationRegionContour((ByteProcessor)ip);
+		RegionContourSegmentation tracer = new RegionContourSegmentation((ByteProcessor)ip);
 		//IJ.log("tracing done");
 
 		// extract contours and regions

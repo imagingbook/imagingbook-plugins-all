@@ -17,15 +17,15 @@ import ij.gui.Overlay;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
+import imagingbook.pub.regions.segment.RegionContourSegmentation;
+import imagingbook.pub.regions.segment.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.regions.Contour;
 import imagingbook.pub.regions.NeighborhoodType;
-import imagingbook.pub.regions.SegmentationRegionContour;
 import imagingbook.pub.regions.utils.ContourOverlay;
 import imagingbook.pub.regions.utils.Display;
 
 /**
- * This ImageJ plugin demonstrates the use of the class {@link SegmentationRegionContour}
+ * This ImageJ plugin demonstrates the use of the class {@link RegionContourSegmentation}
  * to perform both region labeling and contour tracing simultaneously.
  * The resulting contours are displayed as a non-destructive vector overlay.
  * 
@@ -34,7 +34,7 @@ import imagingbook.pub.regions.utils.Display;
  */
 public class Region_Contours_Demo implements PlugInFilter {
 	
-	static NeighborhoodType Neighborhood = NeighborhoodType.N8;
+	static NeighborhoodType NT = NeighborhoodType.N8;
 	
 	static boolean ListRegions = true;
 	static boolean ListContours = true;
@@ -52,7 +52,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 	   	ByteProcessor I = ip.convertToByteProcessor();
 	   	
 	   	// Create the region labeler / contour tracer:
-		SegmentationRegionContour seg = new SegmentationRegionContour(I, Neighborhood);
+		RegionContourSegmentation seg = new RegionContourSegmentation(I, NT);
 		
 		// Get the list of detected regions (sort by size):
 		List<BinaryRegion> regions = seg.getRegions(true);
@@ -113,7 +113,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 	
 	private boolean getUserInput() {
 		GenericDialog gd = new GenericDialog(Region_Contours_Demo.class.getSimpleName());
-		gd.addEnumChoice("Neighborhood type", Neighborhood);
+		gd.addEnumChoice("Neighborhood type", NT);
 		gd.addCheckbox("List regions", ListRegions);
 		gd.addCheckbox("List contours", ListContours);
 		gd.addCheckbox("Show contours", ShowContours);
@@ -121,7 +121,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 		if (gd.wasCanceled()) {
 			return false;
 		}
-		Neighborhood = gd.getNextEnumChoice(NeighborhoodType.class);
+		NT = gd.getNextEnumChoice(NeighborhoodType.class);
 		ListRegions  = gd.getNextBoolean();
 		ListContours = gd.getNextBoolean();
 		ShowContours = gd.getNextBoolean();

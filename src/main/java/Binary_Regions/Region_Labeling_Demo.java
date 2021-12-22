@@ -18,26 +18,26 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
-import imagingbook.pub.regions.BinaryRegionSegmentation;
-import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;
+import imagingbook.pub.regions.segment.BinaryRegionSegmentation;
+import imagingbook.pub.regions.segment.BreadthFirstSegmentation;
+import imagingbook.pub.regions.segment.DepthFirstSegmentation;
+import imagingbook.pub.regions.segment.RecursiveSegmentation;
+import imagingbook.pub.regions.segment.RegionContourSegmentation;
+import imagingbook.pub.regions.segment.SequentialSegmentation;
+import imagingbook.pub.regions.segment.BinaryRegionSegmentation.BinaryRegion;
 import imagingbook.pub.regions.NeighborhoodType;
-import imagingbook.pub.regions.SegmentationBreadthFirst;
-import imagingbook.pub.regions.SegmentationDepthFirst;
-import imagingbook.pub.regions.SegmentationRecursive;
-import imagingbook.pub.regions.SegmentationRegionContour;
-import imagingbook.pub.regions.SegmentationSequential;
 import imagingbook.pub.regions.utils.Display;
 
 /**
  * This ImageJ plugin is an example for how to use the region
  * labeling classes in the "regions" package:
- * {@link SegmentationBreadthFirst},
- * {@link SegmentationDepthFirst},
- * {@link SegmentationRecursive},
- * {@link SegmentationRegionContour},
- * {@link SegmentationSequential}.
+ * {@link BreadthFirstSegmentation},
+ * {@link DepthFirstSegmentation},
+ * {@link RecursiveSegmentation},
+ * {@link RegionContourSegmentation},
+ * {@link SequentialSegmentation}.
  * One of four labeling types can be selected (see the {@code run()} method).
- * All should produce the same results (except {@link SegmentationRegionContour},
+ * All should produce the same results (except {@link RegionContourSegmentation},
  * which may run out of memory easily).
  * Requires a binary (segmented) image.
  * 
@@ -86,15 +86,15 @@ public class Region_Labeling_Demo implements PlugInFilter {
 		BinaryRegionSegmentation segmenter = null;
 		switch(Method) {
 		case BreadthFirst : 	
-			segmenter = new SegmentationBreadthFirst(bp, Neighborhood); break;
+			segmenter = new BreadthFirstSegmentation(bp, Neighborhood); break;
 		case DepthFirst : 		
-			segmenter = new SegmentationDepthFirst(bp, Neighborhood); break;
+			segmenter = new DepthFirstSegmentation(bp, Neighborhood); break;
 		case Sequential : 		
-			segmenter = new SegmentationSequential(bp, Neighborhood); break;
+			segmenter = new SequentialSegmentation(bp, Neighborhood); break;
 		case RegionAndContours : 
-			segmenter = new SegmentationRegionContour(bp, Neighborhood); break;
+			segmenter = new RegionContourSegmentation(bp, Neighborhood); break;
 		case Recursive : 
-			segmenter = new SegmentationRecursive(bp, Neighborhood); break;
+			segmenter = new RecursiveSegmentation(bp, Neighborhood); break;
 		}
 
 		// Retrieve the list of detected regions:
