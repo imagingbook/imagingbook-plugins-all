@@ -14,8 +14,8 @@ import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.geometry.basic.Pnt2d;
+import imagingbook.pub.regions.segment.BinaryRegion;
 import imagingbook.pub.regions.segment.RegionContourSegmentation;
-import imagingbook.pub.regions.segment.BinaryRegionSegmentation.BinaryRegion;
 
 /**
  * Shows each region's major axis as a vector scaled by the region's eccentricity.
