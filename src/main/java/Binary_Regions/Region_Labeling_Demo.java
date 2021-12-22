@@ -18,13 +18,13 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
-import imagingbook.pub.regions.segment.BinaryRegion;
 import imagingbook.pub.regions.segment.BinaryRegionSegmentation;
 import imagingbook.pub.regions.segment.BreadthFirstSegmentation;
 import imagingbook.pub.regions.segment.DepthFirstSegmentation;
 import imagingbook.pub.regions.segment.RecursiveSegmentation;
 import imagingbook.pub.regions.segment.RegionContourSegmentation;
 import imagingbook.pub.regions.segment.SequentialSegmentation;
+import imagingbook.pub.regions.BinaryRegion;
 import imagingbook.pub.regions.NeighborhoodType;
 import imagingbook.pub.regions.utils.Display;
 

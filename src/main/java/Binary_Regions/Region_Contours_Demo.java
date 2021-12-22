@@ -17,10 +17,10 @@ import ij.gui.Overlay;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.regions.segment.BinaryRegion;
-import imagingbook.pub.regions.segment.RegionContourSegmentation;
+import imagingbook.pub.regions.BinaryRegion;
 import imagingbook.pub.regions.Contour;
 import imagingbook.pub.regions.NeighborhoodType;
+import imagingbook.pub.regions.segment.RegionContourSegmentation;
 import imagingbook.pub.regions.utils.ContourOverlay;
 import imagingbook.pub.regions.utils.Display;
 
@@ -75,7 +75,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 				Contour oc =  r.getOuterContour();
 				IJ.log("       " + oc.toString());
 				
-				List<? extends Contour> ics = r.getInnerContours();
+				List<Contour> ics = r.getInnerContours();
 				if (ics != null && !ics.isEmpty()) {
 					for(Contour ic : r.getInnerContours()) {
 						IJ.log("       " + ic.toString());

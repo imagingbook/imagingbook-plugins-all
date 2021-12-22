@@ -35,8 +35,8 @@ import imagingbook.pub.fd.FourierDescriptor;
 import imagingbook.pub.fd.FourierDescriptorUniform;
 import imagingbook.pub.fd.PolygonSampler;
 import imagingbook.pub.geometry.basic.Pnt2d;
+import imagingbook.pub.regions.BinaryRegion;
 import imagingbook.pub.regions.Contour;
-import imagingbook.pub.regions.segment.BinaryRegion;
 import imagingbook.pub.regions.segment.RegionContourSegmentation;
 
 /**
