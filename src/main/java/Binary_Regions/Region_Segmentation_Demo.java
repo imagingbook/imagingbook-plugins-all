@@ -45,7 +45,7 @@ import imagingbook.pub.regions.utils.Display;
  * @version 2020/12/20
  * 
  */
-public class Region_Labeling_Demo implements PlugInFilter {
+public class Region_Segmentation_Demo implements PlugInFilter {
 	
 	private enum LabelingMethod {
 		BreadthFirst, 
@@ -144,7 +144,7 @@ public class Region_Labeling_Demo implements PlugInFilter {
 //    }
     
     private boolean getUserInput() {
-		GenericDialog gd = new GenericDialog(Region_Labeling_Demo.class.getSimpleName());
+		GenericDialog gd = new GenericDialog(Region_Segmentation_Demo.class.getSimpleName());
 		gd.addEnumChoice("Segmentation method", Method);
 		gd.addEnumChoice("Neighborhood type", Neighborhood);
 		gd.addCheckbox("Color result", ColorRegions);
