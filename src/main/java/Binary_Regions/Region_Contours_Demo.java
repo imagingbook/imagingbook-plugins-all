@@ -17,6 +17,7 @@ import ij.gui.Overlay;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.regions.BinaryRegion;
 import imagingbook.pub.regions.Contour;
 import imagingbook.pub.regions.NeighborhoodType;
@@ -49,10 +50,10 @@ public class Region_Contours_Demo implements PlugInFilter {
     		return;
 	   	
 	   	// Make sure we have a proper byte image:
-	   	ByteProcessor I = ip.convertToByteProcessor();
+	   	ByteProcessor bp = ip.convertToByteProcessor();
 	   	
-	   	// Create the region labeler / contour tracer:
-		RegionContourSegmentation seg = new RegionContourSegmentation(I, NT);
+	   	// Create the region segmenter / contour tracer:
+		RegionContourSegmentation seg = new RegionContourSegmentation(bp, NT);
 		
 		// Get the list of detected regions (sort by size):
 		List<BinaryRegion> regions = seg.getRegions(true);
@@ -63,22 +64,30 @@ public class Region_Contours_Demo implements PlugInFilter {
 
 		if (ListRegions) {
 			IJ.log("\nDetected regions: " + regions.size());
-			for (BinaryRegion r : regions) {
-				IJ.log(r.toString());
+			for (BinaryRegion R : regions) {
+				IJ.log(R.toString());
 			}
 		}
+		
+		// Get the outer contour of the largest region:
+		BinaryRegion Rmax = regions.get(0);
+		Contour oc =  Rmax.getOuterContour();
+		IJ.log("Points on outer contour of largest region:");
+		for (Pnt2d p : oc) {
+			IJ.log("Point " + p);
+		}
+	
 			
 		if (ListContours) {
 			IJ.log("\nCountours:");
-			for (BinaryRegion r : regions) {
-				IJ.log("   " + r.toString());
-				Contour oc =  r.getOuterContour();
-				IJ.log("       " + oc.toString());
+			for (BinaryRegion R : regions) {
+				IJ.log("   " + R.toString());
+				IJ.log("       " + oc);
 				
-				List<Contour> ics = r.getInnerContours();
+				List<Contour> ics = R.getInnerContours();
 				if (ics != null && !ics.isEmpty()) {
-					for(Contour ic : r.getInnerContours()) {
-						IJ.log("       " + ic.toString());
+					for(Contour ic : R.getInnerContours()) {
+						IJ.log("       " + ic);
 					}
 				}
 			}
