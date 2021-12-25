@@ -161,19 +161,17 @@ public class Region_Eccentricity_Ellipse_Demo implements PlugInFilter {
 				roi.setStrokeWidth(AxisLineWidth);
 				roi.setStrokeColor(EllipseColor);
 				oly.add(roi);
-			}
-			
-			// same result via Eigenvalues:
-			Eigensolver2x2 es = new Eigensolver2x2(mu20, mu11, mu11, mu02);
-			double lambda1 = es.getEigenvalue(0);
-			double lambda2 = es.getEigenvalue(1);
-			double ra2 = 2 * sqrt(lambda1 / n);
-			double rb2 = 2 * sqrt(lambda2 / n);
-			IJ.log(String.format("V2: ra=%.2f rb=%.2f", ra2, rb2));
-			IJ.log(String.format("    a1=%.2f   lam1=%.2f  2*lam1=%.2f", a1, lambda1, 2 * lambda1));
-			IJ.log(String.format("    a2=%.2f   lam2=%.2f  2*lam2=%.2f", a2, lambda2, 2 * lambda2));
-			
-			IJ.log("");
+				
+//				// same result via Eigenvalues:
+//				Eigensolver2x2 es = new Eigensolver2x2(mu20, mu11, mu11, mu02);
+//				double lambda0 = es.getEigenvalue(0);
+//				double lambda1 = es.getEigenvalue(1);
+//				double ra2 = 2 * sqrt(lambda0 / n);
+//				double rb2 = 2 * sqrt(lambda1 / n);
+//				IJ.log(String.format("V1: ra=%.2f rb=%.2f", ra, rb));
+//				IJ.log(String.format("V2: ra=%.2f rb=%.2f", ra2, rb2));
+//				IJ.log("");
+			}	
 		}
 		
 		im.setOverlay(oly);
