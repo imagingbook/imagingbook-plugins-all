@@ -33,7 +33,7 @@ import imagingbook.pub.hough.lines.HoughLineOverlay;
  * @author W. Burger
  * @version 2020/12/13
  */
-public class Find_Straight_Lines implements PlugInFilter {
+public class Hough_Lines_Demo implements PlugInFilter {
 
 	static int MaxLines = 5;			// number of strongest lines to be found
 	static int MinPointsOnLine = 50;	// min. number of points on each line

@@ -13,6 +13,7 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.pub.hough.HoughTransformLines;
+import imagingbook.pub.hough.HoughTransformLines.Parameters;
 import imagingbook.pub.hough.lines.HoughLine;
 
 /** 
@@ -24,15 +25,15 @@ import imagingbook.pub.hough.lines.HoughLine;
  * @author WB
  * @version 2018/12/25
 */
-public class Find_Straight_Lines_Simple implements PlugInFilter {
+public class Hough_Lines_Minimal implements PlugInFilter {
 
-	public int setup(String arg, ImagePlus imp) {
+	public int setup(String arg, ImagePlus im) {
 		return DOES_8G + NO_CHANGES;
 	}
 
 	public void run(ImageProcessor ip) {
 		
-		HoughTransformLines.Parameters params = new HoughTransformLines.Parameters();
+		Parameters params = new Parameters();
 		params.nAng = 256;		// = m
 		params.nRad = 256;		// = n
 

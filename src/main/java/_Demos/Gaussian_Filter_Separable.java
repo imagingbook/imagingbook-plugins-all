@@ -8,6 +8,7 @@
  *******************************************************************************/
 package _Demos;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
@@ -28,13 +29,14 @@ import imagingbook.lib.filter.linear.LinearFilterSeparable;
  */
 public class Gaussian_Filter_Separable implements PlugInFilter {
 	
-	static double SIGMA = 3.0;
+	static double SIGMA = 7.5;
 
     public int setup(String arg, ImagePlus imp) {
         return DOES_ALL;
     }
 
-    public void run(ImageProcessor ip) {	
+    public void run(ImageProcessor ip) {
+    	IJ.log("sigma = " + SIGMA);
 		Kernel1D kernel = new GaussianKernel1D(SIGMA);
 		new LinearFilterSeparable(kernel).applyTo(ip);
     }
