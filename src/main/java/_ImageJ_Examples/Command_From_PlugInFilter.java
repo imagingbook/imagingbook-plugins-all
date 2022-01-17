@@ -21,7 +21,7 @@ import ij.process.ImageProcessor;
  * 
  * @author WB
  */
-public class Run_Command_From_PlugInFilter implements PlugInFilter {
+public class Command_From_PlugInFilter implements PlugInFilter {
 	
 	ImagePlus im;
 

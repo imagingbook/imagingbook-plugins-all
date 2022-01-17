@@ -18,7 +18,7 @@ import ij.plugin.PlugIn;
  * 
  * @author WB
  */
-public class Run_Command_From_PlugIn implements PlugIn {
+public class Command_From_PlugIn implements PlugIn {
 	
     public void run(String args) {
     	ImagePlus im = IJ.getImage();
