@@ -8,10 +8,13 @@
  *******************************************************************************/
 package Point_Operations;
 
+import ij.IJ;
 import ij.ImagePlus;
+import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.Blitter;
+import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 
@@ -25,38 +28,40 @@ import imagingbook.lib.ij.IjUtils;
 public class Linear_Blending implements PlugInFilter {
 	
 	static double alpha = 0.5;	// transparency of foreground image
-	ImagePlus fgIm;				// foreground image (to be selected)
+	ImagePlus imFG = null;		// foreground image (to be selected)
 	
 	public int setup(String arg, ImagePlus im) {
 		return DOES_8G;
 	}	
 	
 	public void run(ImageProcessor ipBG) {	// iBG = background image
-		if(runDialog()) {
-			ImageProcessor ipFG = fgIm.getProcessor().convertToByte(false);
-			ipFG = ipFG.duplicate();
-			ipFG.multiply(1 - alpha);
-			ipBG.multiply(alpha);
-			ipBG.copyBits(ipFG, 0, 0, Blitter.ADD);
+		if(!runDialog()) {
+			return;
 		}
+		ImageProcessor ipFG = imFG.getProcessor().convertToByte(false);
+		ipFG = ipFG.duplicate();
+		ipFG.multiply(1 - alpha);
+		ipBG.multiply(alpha);
+		ipBG.copyBits(ipFG, 0, 0, Blitter.ADD);
 	}	
 
 	boolean runDialog() {
 		// get list of open images and their titles:
-		ImagePlus[] openImages = IjUtils.getOpenImages(true);
-		String[] imageTitles = new String[openImages.length];
-		for (int i = 0; i < openImages.length; i++) {
-			imageTitles[i] = openImages[i].getShortTitle();
+		ImagePlus[] images = IjUtils.getOpenImages(true);
+		String[] titles = new String[images.length];
+		for (int i = 0; i < images.length; i++) {
+			titles[i] = images[i].getShortTitle();
 		}
 		// create the dialog and show:
 		GenericDialog gd = new GenericDialog("Alpha Blending");
-		gd.addChoice("Foreground image:", imageTitles, imageTitles[0]);
+		gd.addChoice("Foreground image:", titles, titles[0]);
 		gd.addNumericField("Alpha value [0..1]:", alpha, 2);
 		gd.showDialog(); 
-		if (gd.wasCanceled()) 
+		if (gd.wasCanceled()) {
 			return false;
+		}
 		else {
-			fgIm = openImages[gd.getNextChoiceIndex()];
+			imFG = images[gd.getNextChoiceIndex()];
 			alpha = gd.getNextNumber();
 			return true;
 		}
