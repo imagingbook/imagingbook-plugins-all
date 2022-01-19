@@ -19,7 +19,7 @@ import ij.process.*;
  */
 public class Filter_Arbitrary implements PlugInFilter {
 
-    public int setup(String arg, ImagePlus imp) {
+    public int setup(String arg, ImagePlus im) {
         return DOES_8G;
     }
 
