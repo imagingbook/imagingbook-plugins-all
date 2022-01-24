@@ -9,32 +9,29 @@
 package Morphological_Filters;
 
 import ij.ImagePlus;
-import ij.Prefs;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.pub.morphology.BinaryDilation;
 import imagingbook.pub.morphology.BinaryMorphologyFilter;
-import imagingbook.pub.morphology.BinaryMorphologyFilter.OpType;
+
 
 /**
- * This plugin performs a binary dilation using a disk-shaped
- * structuring element with a specified radius.
+ * This plugin implements a binary dilation using a disk-shaped
+ * structuring element whose radius can be specified.
  */
-public class Bin_Dilate_Disk_Demo implements PlugInFilter {
+public class Dilate_Disk_Demo implements PlugInFilter {
 
-	static double radius = 5.0;
-	static OpType op = OpType.Dilate;	// Erode, Open, Close, ...
-
+	double radius = 6.5;
+	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
 	}
 
 	public void run(ImageProcessor ip) {
-		BinaryMorphologyFilter bmf = new BinaryMorphologyFilter.Disk(radius);
-		bmf.applyTo((ByteProcessor) ip, op);
-		Prefs.blackBackground = false;
-		if (ip.isInvertedLut())
-			ip.invertLut();
-	}
-
+		byte[][] H = BinaryMorphologyFilter.makeDiskKernel(radius);
+		BinaryMorphologyFilter filter = new BinaryDilation(H);
+		
+		filter.applyTo((ByteProcessor) ip);
+	}	
 }

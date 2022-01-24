@@ -24,8 +24,8 @@ import imagingbook.pub.regions.segment.DepthFirstSegmentation;
 import imagingbook.pub.regions.segment.RecursiveSegmentation;
 import imagingbook.pub.regions.segment.RegionContourSegmentation;
 import imagingbook.pub.regions.segment.SequentialSegmentation;
+import imagingbook.pub.geometry.basic.NeighborhoodType2D;
 import imagingbook.pub.regions.BinaryRegion;
-import imagingbook.pub.regions.NeighborhoodType;
 import imagingbook.pub.regions.utils.Display;
 
 /**
@@ -56,7 +56,7 @@ public class Region_Segmentation_Demo implements PlugInFilter {
 	}
 
 	static LabelingMethod Method = LabelingMethod.BreadthFirst;
-	static NeighborhoodType Neighborhood = NeighborhoodType.N8;
+	static NeighborhoodType2D Neighborhood = NeighborhoodType2D.N8;
 	
 	static boolean ColorRegions = false;
 	static boolean ListRegions = false;
@@ -154,7 +154,7 @@ public class Region_Segmentation_Demo implements PlugInFilter {
 			return false;
 		}
 		Method = gd.getNextEnumChoice(LabelingMethod.class);
-		Neighborhood = gd.getNextEnumChoice(NeighborhoodType.class);
+		Neighborhood = gd.getNextEnumChoice(NeighborhoodType2D.class);
 		ColorRegions = gd.getNextBoolean();
 		ListRegions = gd.getNextBoolean();
 		return true;

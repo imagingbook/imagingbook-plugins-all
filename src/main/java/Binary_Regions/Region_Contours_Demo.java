@@ -17,10 +17,10 @@ import ij.gui.Overlay;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.pub.geometry.basic.NeighborhoodType2D;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.regions.BinaryRegion;
 import imagingbook.pub.regions.Contour;
-import imagingbook.pub.regions.NeighborhoodType;
 import imagingbook.pub.regions.segment.RegionContourSegmentation;
 import imagingbook.pub.regions.utils.ContourOverlay;
 import imagingbook.pub.regions.utils.Display;
@@ -35,7 +35,7 @@ import imagingbook.pub.regions.utils.Display;
  */
 public class Region_Contours_Demo implements PlugInFilter {
 	
-	static NeighborhoodType NT = NeighborhoodType.N8;
+	static NeighborhoodType2D NT = NeighborhoodType2D.N8;
 	
 	static boolean ListRegions = true;
 	static boolean ListContours = true;
@@ -130,7 +130,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 		if (gd.wasCanceled()) {
 			return false;
 		}
-		NT = gd.getNextEnumChoice(NeighborhoodType.class);
+		NT = gd.getNextEnumChoice(NeighborhoodType2D.class);
 		ListRegions  = gd.getNextBoolean();
 		ListContours = gd.getNextBoolean();
 		ShowContours = gd.getNextBoolean();

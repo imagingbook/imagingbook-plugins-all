@@ -9,16 +9,16 @@
 
 package Morphological_Filters;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.morphology.BinaryThinning;
+import imagingbook.pub.geometry.basic.NeighborhoodType2D;
+import imagingbook.pub.morphology.BinaryOutline;
 
 /**
- * This ImageJ plugin demonstrates morphological thinning
+ * This ImageJ plugin demonstrates morphological outline calculation
  * on binary images. Pixels with value 0 are considered
  * background, values &gt; 0 are foreground. The plugin 
  * modifies the supplied image.
@@ -27,35 +27,33 @@ import imagingbook.pub.morphology.BinaryThinning;
  * @version 2022/01/24
  *
  */
-public class Thinning_Demo implements PlugInFilter {
+public class Outline_Demo implements PlugInFilter {
 	
-	private int maxIterations;
+	private static NeighborhoodType2D nh = NeighborhoodType2D.N4;
 	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
 	}
 
 	public void run(ImageProcessor ip) {
-		maxIterations = Math.max(ip.getWidth(), ip.getHeight());
 		
 		if (!showDialog()) {
 			return;
 		}
 		
-		BinaryThinning thin = new BinaryThinning();
-		thin.applyTo((ByteProcessor) ip, maxIterations);
-		IJ.log("Iterations performed: " + thin.getIterations());
+		BinaryOutline outline = new BinaryOutline(nh);
+		outline.applyTo((ByteProcessor) ip);
 	}
 	
 	private boolean showDialog() {
-		GenericDialog gd = new GenericDialog("Structuring Element (Disk)");
-		gd.addNumericField("max. iterations", maxIterations, 0);
+		GenericDialog gd = new GenericDialog(getClass().getSimpleName());
+		gd.addEnumChoice("Neighborhood type", nh);
 
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return false;
 		
-		maxIterations = (int) gd.getNextNumber();
+		nh = gd.getNextEnumChoice(NeighborhoodType2D.class);
 		return true;
 	}
 	

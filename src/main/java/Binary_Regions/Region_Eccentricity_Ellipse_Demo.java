@@ -31,10 +31,10 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 import imagingbook.lib.math.eigen.Eigensolver2x2;
+import imagingbook.pub.geometry.basic.NeighborhoodType2D;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.regions.segment.RegionContourSegmentation;
 import imagingbook.pub.regions.BinaryRegion;
-import imagingbook.pub.regions.NeighborhoodType;
 
 /**
  * Performs binary region segmentation, then
@@ -59,7 +59,7 @@ public class Region_Eccentricity_Ellipse_Demo implements PlugInFilter {
 		Locale.setDefault(Locale.US);
 	}
 	
-	private static NeighborhoodType NhT = NeighborhoodType.N4;
+	private static NeighborhoodType2D NhT = NeighborhoodType2D.N4;
 	
 	private static double 	AxisScale = 1.0;
 	private static int 		MinRegionSize = 10;
@@ -210,7 +210,7 @@ public class Region_Eccentricity_Ellipse_Demo implements PlugInFilter {
 		if (gd.wasCanceled())
 			return false;
 
-		NhT = gd.getNextEnumChoice(NeighborhoodType.class);
+		NhT = gd.getNextEnumChoice(NeighborhoodType2D.class);
 		MinRegionSize = (int) gd.getNextNumber();
 		MaxEccentricity = gd.getNextNumber();
 		AxisScale = gd.getNextNumber();

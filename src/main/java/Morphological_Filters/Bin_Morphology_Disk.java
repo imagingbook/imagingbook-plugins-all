@@ -13,48 +13,82 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.util.Enums;
+import imagingbook.lib.ij.GuiTools;
+import imagingbook.lib.ij.IjUtils;
+import imagingbook.pub.morphology.BinaryClosing;
+import imagingbook.pub.morphology.BinaryDilation;
+import imagingbook.pub.morphology.BinaryErosion;
 import imagingbook.pub.morphology.BinaryMorphologyFilter;
-import imagingbook.pub.morphology.BinaryMorphologyFilter.OpType;
+import imagingbook.pub.morphology.BinaryMorphologyOperator;
+import imagingbook.pub.morphology.BinaryOpening;
+
 
 /**
  * This plugin implements a binary morphology filter using a disk-shaped
  * structuring element whose radius can be specified.
  */
 public class Bin_Morphology_Disk implements PlugInFilter {
+	
+	private enum OpType {
+		Dilate, Erode, Open, Close;
+	}
 
-	static double radius = 1.0;
-	static boolean showElement = false;
-	static OpType op = OpType.Dilate;
+	private static OpType op = OpType.Dilate;
+	private static double radius = 1.0;
+	private static boolean showStructuringElement = false;
 
+	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
 	}
 
-	public void run(ImageProcessor orig) {
-		if (!showDialog())
+	public void run(ImageProcessor ip) {
+		
+		if (!showDialog()) {
 			return;
-		BinaryMorphologyFilter bmf = new BinaryMorphologyFilter.Disk(radius);
-		bmf.applyTo((ByteProcessor) orig, op);
-		if (showElement) {
-			bmf.showStructuringElement();
+		}
+		
+		ByteProcessor bp = (ByteProcessor) ip;
+		byte[][] H = BinaryMorphologyFilter.makeDiskKernel(radius);
+		BinaryMorphologyOperator bmf = null; // new BinaryMorphologyFilter.Disk(radius);
+
+		switch(op) {
+		case Close:
+			bmf = new BinaryClosing(H); break;
+		case Dilate:
+			bmf = new BinaryDilation(H); break;
+		case Erode:
+			bmf = new BinaryErosion(H); break;
+		case Open:
+			bmf = new BinaryOpening(H); break;
+		}
+		
+		bmf.applyTo(bp);
+		
+		if (showStructuringElement) {
+			ByteProcessor pH = IjUtils.toByteProcessor(H);
+			pH.invertLut();
+			pH.setMinAndMax(0, 1);
+			ImagePlus iH = new ImagePlus("H", pH);
+			iH.show();
+			GuiTools.zoomExact(iH, 10);
 		}
 	}
 
 	private boolean showDialog() {
 		GenericDialog gd = new GenericDialog("Structuring Element (Disk)");
-		gd.addNumericField("Radius", 1.0, 1, 5, "pixels");
-		String[] ops = Enums.getEnumNames(OpType.class);
-		gd.addChoice("Operation", ops, op.name());
-		gd.addCheckbox("Show structuring element", showElement);
+		gd.addNumericField("Radius (filters only)", 1.0, 1, 5, "pixels");
+		gd.addEnumChoice("Operation", OpType.Dilate);
+		gd.addCheckbox("Show structuring element", showStructuringElement);
 
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return false;
+		
 		radius = gd.getNextNumber();
-		showElement = gd.getNextBoolean();
-		op = OpType.valueOf(gd.getNextChoice());
+		op = gd.getNextEnumChoice(OpType.class);
+		showStructuringElement = gd.getNextBoolean();
 		return true;
 	}
-
+	
 }

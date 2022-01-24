@@ -13,15 +13,28 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.GuiTools;
+import imagingbook.lib.ij.IjUtils;
 import imagingbook.lib.util.Enums;
+import imagingbook.pub.morphology.BinaryClosing;
+import imagingbook.pub.morphology.BinaryDilation;
+import imagingbook.pub.morphology.BinaryErosion;
 import imagingbook.pub.morphology.BinaryMorphologyFilter;
-import imagingbook.pub.morphology.BinaryMorphologyFilter.OpType;
+import imagingbook.pub.morphology.BinaryOpening;
+
 
 /**
  * This plugin implements a binary morphology filter using an arbitrary
- * structuring element.
+ * structuring element that can be interactively specified by the user.
+ * 
+ * @author WB
+ * @version 2022/01/24
  */
 public class Bin_Morphology_Free implements PlugInFilter {
+	
+	private static enum OpType {
+		Dilate, Erode, Open, Close;
+	}
 
 	static final int W = 9;	// width and height of the structuring element
 	static boolean[] freeStructure = new boolean[W * W];
@@ -32,18 +45,41 @@ public class Bin_Morphology_Free implements PlugInFilter {
 		freeStructure[(W * W) / 2] = true;
 	}
 
+	@Override
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
 	}
 
+	@Override
 	public void run(ImageProcessor orig) {
-		if (!showDialog())
+		if (!showDialog()) {
 			return;
-		int[][] H = makeStructureElement();
-		BinaryMorphologyFilter bmf = new BinaryMorphologyFilter(H);
-		bmf.applyTo((ByteProcessor) orig, op);
+		}
+		
+		byte[][] H = makeStructureElement(freeStructure);
+		ByteProcessor bp = (ByteProcessor) orig;
+		BinaryMorphologyFilter filter = null;
+		
+		switch(op) {
+		case Close:	
+			filter = new BinaryClosing(H); break;
+		case Dilate:
+			filter = new BinaryDilation(H); break;
+		case Erode:
+			filter = new BinaryErosion(H); break;
+		case Open:
+			filter = new BinaryOpening(H); break;
+		}
+		
+		filter.applyTo(bp);
+		
 		if (showElement) {
-			bmf.showStructuringElement();
+			ByteProcessor pH = IjUtils.toByteProcessor(H);
+			pH.invertLut();
+			pH.setMinAndMax(0, 1);
+			ImagePlus iH = new ImagePlus("H", pH);
+			iH.show();
+			GuiTools.zoomExact(iH, 10);
 		}
 	}
 
@@ -68,19 +104,19 @@ public class Bin_Morphology_Free implements PlugInFilter {
 		return true;
 	}
 
-	private int[][] makeStructureElement() {
-		int[][] filter = new int[W][W];
+	private byte[][] makeStructureElement(boolean[] structure) {
+		byte[][] kernel = new byte[W][W];
 		int i = 0;
 		for (int v = 0; v < W; v++) {
 			for (int u = 0; u < W; u++) {
-				if (freeStructure[i])
-					filter[v][u] = 1;
+				if (structure[i])
+					kernel[v][u] = 1;
 				else
-					filter[v][u] = 0;
+					kernel[v][u] = 0;
 				i++;
 			}
 		}
-		return filter;
+		return kernel;
 	}
 
 	private String[] makeFilterLabels() {
