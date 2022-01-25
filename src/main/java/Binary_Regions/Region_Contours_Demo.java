@@ -50,10 +50,10 @@ public class Region_Contours_Demo implements PlugInFilter {
     		return;
 	   	
 	   	// Make sure we have a proper byte image:
-	   	ByteProcessor bp = ip.convertToByteProcessor();
+	   	ByteProcessor I = ip.convertToByteProcessor();
 	   	
 	   	// Create the region segmenter / contour tracer:
-		RegionContourSegmentation seg = new RegionContourSegmentation(bp, NT);
+		RegionContourSegmentation seg = new RegionContourSegmentation(I, NT);
 		
 		// Get the list of detected regions (sort by size):
 		List<BinaryRegion> regions = seg.getRegions(true);
