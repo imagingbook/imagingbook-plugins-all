@@ -55,7 +55,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 	   	// Create the region segmenter / contour tracer:
 		RegionContourSegmentation seg = new RegionContourSegmentation(I, NT);
 		
-		// Get the list of detected regions (sort by size):
+		// Get a list of detected regions (sorted by size):
 		List<BinaryRegion> regions = seg.getRegions(true);
 		if (regions == null || regions.isEmpty()) {
 			IJ.showMessage("No regions detected!");
@@ -69,15 +69,17 @@ public class Region_Contours_Demo implements PlugInFilter {
 			}
 		}
 		
-		// Get the outer contour of the largest region:
+		// Get the largest region:
 		BinaryRegion Rmax = regions.get(0);
+		
+		// Get the outer contour of the largest region:
 		Contour oc =  Rmax.getOuterContour();
 		IJ.log("Points on outer contour of largest region:");
 		for (Pnt2d p : oc) {
 			IJ.log("Point " + p);
 		}
 	
-			
+		// Get all inner contours of the largest region:
 		if (ListContours) {
 			IJ.log("\nCountours:");
 			for (BinaryRegion R : regions) {
@@ -91,21 +93,6 @@ public class Region_Contours_Demo implements PlugInFilter {
 					}
 				}
 			}
-			
-			
-//			// Get the outer contour of the largest region:
-//			BinaryRegion largestRegion = regions.get(0);
-//			Contour oc =  largestRegion.getOuterContour();
-//			IJ.log("Points along outer contour of largest region:");
-//			Point[] points = oc.getPointArray();
-//			for (int i = 0; i < points.length; i++) {
-//				Point p = points[i];
-//				IJ.log("Point " + i + ": " + p.toString());
-//			}
-//			
-//			// Get all inner contours of the largest region:
-//			List<? extends Contour> ics = largestRegion.getInnerContours();
-//			IJ.log("Inner regions (holes): " + ics.size());
 		}
 		
 		// Display the contours if desired:
