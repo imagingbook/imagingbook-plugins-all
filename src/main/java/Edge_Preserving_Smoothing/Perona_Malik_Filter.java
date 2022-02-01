@@ -8,6 +8,7 @@
  *******************************************************************************/
 package Edge_Preserving_Smoothing;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
@@ -47,7 +48,8 @@ public class Perona_Malik_Filter implements PlugInFilter {
 		GenericFilter filter = null;
 		if (isColor) {
 			filter = (params.colorMode == ColorMode.SeparateChannels) ?
-					new PeronaMalikFilterScalar(params) : new PeronaMalikFilterVector(params);
+					new PeronaMalikFilterScalar(params) : 
+					new PeronaMalikFilterVector(params);
 		}
 		else {
 			filter = new PeronaMalikFilterScalar(params);
