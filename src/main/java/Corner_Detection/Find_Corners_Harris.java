@@ -13,9 +13,9 @@ import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.ij.GenericDialogPlus;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.HarrisCornerDetector;
@@ -69,13 +69,13 @@ public class Find_Corners_Harris implements PlugInFilter {
     
 	private boolean showDialog() {
 		// display dialog , return false if cancelled or on error.
-		GenericDialogPlus dlg = new GenericDialogPlus("Harris Corner Detector");
+		GenericDialog dlg = new GenericDialog("Harris Corner Detector");
 		
 		dlg.addCheckbox("Apply pre-filter", params.doPreFilter);
 		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
 		dlg.addNumericField("Sensitivity (\u03B1)", params.alpha, 3);
 		dlg.addNumericField("Corner response threshold (th)", params.scoreThreshold, 0);
-		dlg.addEnumChoice("Subpixel localization", params.maxLocatorMethod, false);
+		dlg.addEnumChoice("Subpixel localization", params.maxLocatorMethod);
 		// -----------
 		dlg.addNumericField("Border distance", params.border, 0);
 		dlg.addCheckbox("Clean up corners", params.doCleanUp);

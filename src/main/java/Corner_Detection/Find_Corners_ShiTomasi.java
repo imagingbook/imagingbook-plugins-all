@@ -13,9 +13,9 @@ import java.util.List;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import imagingbook.lib.ij.GenericDialogPlus;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.GradientCornerDetector;
 import imagingbook.pub.corners.ShiTomasiDetector;
@@ -69,7 +69,7 @@ public class Find_Corners_ShiTomasi implements PlugInFilter {
     
 	private boolean showDialog() {
 		// display dialog , return false if cancelled or on error.
-		GenericDialogPlus dlg = new GenericDialogPlus("Harris Corner Detector");
+		GenericDialog dlg = new GenericDialog("Harris Corner Detector");
 		
 		dlg.addCheckbox("Apply pre-filter", params.doPreFilter);
 		dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);
