@@ -58,37 +58,44 @@ public class Tschumperle_Deriche_Filter implements PlugInFilter {
 
 	private boolean getParameters() {
 		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
-		gd.addNumericField("Number of iterations", params.iterations, 0);
-		gd.addNumericField("dt (Time step)", params.dt, 1);
-		gd.addNumericField("Gradient smoothing (sigma_g)", params.sigmaD, 2);
-		gd.addNumericField("Structure tensor smoothing (sigma_s)", params.sigmaM, 2);
-		gd.addNumericField("a1 (Diffusion limiter along minimal variations)", params.a0, 2);
-		gd.addNumericField("a2 (Diffusion limiter along maximal variations)", params.a1, 2);
-//		if (isColor) {
-//			gd.addCheckbox("Use linear RGB", params.useLinearRgb);
-//		}
+		params.addToDialog(gd);
 		gd.addMessage("Incorrect values are replaced by defaults.");
 		
 		gd.showDialog();
 		if (gd.wasCanceled()) return false;
 
-		params.iterations = Math.max(1, (int)gd.getNextNumber());
-		params.dt = (double) gd.getNextNumber();
-		params.sigmaD = gd.getNextNumber();
-		params.sigmaM = gd.getNextNumber();
-		params.a0 = (float) gd.getNextNumber();
-		params.a1 = (float) gd.getNextNumber();
-//		if (isColor) {
-//			params.useLinearRgb = gd.getNextBoolean();
-//		}
+		params.getFromDialog(gd);
 		return true;
 	}
-
-//	@Override
-//	public void updateProgress(double progress) {
-//		IJ.showProgress(progress);
+	
+//	private boolean getParameters() {
+//		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
+//		gd.addNumericField("Number of iterations", params.iterations, 0);
+//		gd.addNumericField("dt (Time step)", params.dt, 1);
+//		gd.addNumericField("Gradient smoothing (sigma_g)", params.sigmaD, 2);
+//		gd.addNumericField("Structure tensor smoothing (sigma_s)", params.sigmaM, 2);
+//		gd.addNumericField("a1 (Diffusion limiter along minimal variations)", params.a0, 2);
+//		gd.addNumericField("a2 (Diffusion limiter along maximal variations)", params.a1, 2);
+////		if (isColor) {
+////			gd.addCheckbox("Use linear RGB", params.useLinearRgb);
+////		}
+//		gd.addMessage("Incorrect values are replaced by defaults.");
+//		
+//		gd.showDialog();
+//		if (gd.wasCanceled()) return false;
+//
+//		params.iterations = Math.max(1, (int)gd.getNextNumber());
+//		params.dt = (double) gd.getNextNumber();
+//		params.sigmaD = gd.getNextNumber();
+//		params.sigmaM = gd.getNextNumber();
+//		params.a0 = (float) gd.getNextNumber();
+//		params.a1 = (float) gd.getNextNumber();
+////		if (isColor) {
+////			params.useLinearRgb = gd.getNextBoolean();
+////		}
+//		return true;
 //	}
-    
+
 }
 
 
