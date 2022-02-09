@@ -62,7 +62,7 @@ public class Map_Projective implements PlugInFilter {
 		//Mapping2D mi = ProjectiveMapping2D.fromPoints(Q, P);		// Q -> P = inverse mapping
 
 		// create a mapper instance:
-		ImageMapper mapper = new ImageMapper(mi, InterpolationMethod.Bicubic);
+		ImageMapper mapper = new ImageMapper(mi, null, InterpolationMethod.Bicubic);
 		
 		// apply the mapper:
 		mapper.map(source, target);

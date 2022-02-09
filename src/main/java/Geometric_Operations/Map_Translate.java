@@ -27,7 +27,7 @@ public class Map_Translate implements PlugInFilter {
     public void run(ImageProcessor ip) {
 
 		Translation2D imap = new Translation2D(dx, dy).getInverse();
-		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
+		new ImageMapper(imap, null, InterpolationMethod.Bicubic).map(ip);
     }
 
 }

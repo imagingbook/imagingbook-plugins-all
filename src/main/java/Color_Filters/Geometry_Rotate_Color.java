@@ -60,7 +60,7 @@ public class Geometry_Rotate_Color implements PlugInFilter {
     	Rotation2D imap = new Rotation2D(-2 * Math.PI * angle / 360);	// inverse mapping (target to source)
     	FloatProcessor[] processors = ColorStack.getProcessors(colStack);
   
-    	ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bilinear);
+    	ImageMapper mapper = new ImageMapper(imap, null, InterpolationMethod.Bilinear);
    		for (FloatProcessor fp : processors) {
    			//imap.applyTo(fp, InterpolationMethod.Bilinear);
    			mapper.map(fp);

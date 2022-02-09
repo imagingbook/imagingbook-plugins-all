@@ -38,6 +38,6 @@ public class Map_Affine implements PlugInFilter {
 
 		// inverse mapping (target to source):
 		AffineMapping2D mi = AffineMapping2D.fromPoints(P, Q).getInverse(); 
-		new ImageMapper(mi, InterpolationMethod.Bicubic).map(ip);
+		new ImageMapper(mi, null, InterpolationMethod.Bicubic).map(ip);
     }
 }

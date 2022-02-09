@@ -41,6 +41,6 @@ public class Map_Bilinear implements PlugInFilter {
 		
 		// we want the inverse mapping (Q -> P, so we swap P/Q):
 		BilinearMapping2D mi = BilinearMapping2D.fromPoints(Q, P);
-		new ImageMapper(mi, InterpolationMethod.Bicubic).map(ip);
+		new ImageMapper(mi, null, InterpolationMethod.Bicubic).map(ip);
     }
 }

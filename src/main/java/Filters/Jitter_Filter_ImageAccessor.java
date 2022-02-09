@@ -31,7 +31,7 @@ public class Jitter_Filter_ImageAccessor implements PlugInFilter {
 		
 		ImageProcessor ip2 = ip1.duplicate();
 		ImageAccessor ia1 = ImageAccessor.create(ip1);
-		ImageAccessor ia2 = ImageAccessor.create(ip2, OutOfBoundsStrategy.NEAREST_BORDER, null);
+		ImageAccessor ia2 = ImageAccessor.create(ip2, OutOfBoundsStrategy.NearestBorder, null);
 
 		Random rnd = new Random();
 		

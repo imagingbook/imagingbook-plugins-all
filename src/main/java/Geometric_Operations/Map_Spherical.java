@@ -63,6 +63,6 @@ public class Map_Spherical implements PlugInFilter {
 			}
 		};
 		
-		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
+		new ImageMapper(imap, null, InterpolationMethod.Bicubic).map(ip);
 	}
 }

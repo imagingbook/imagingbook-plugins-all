@@ -40,7 +40,7 @@ public class Map_Ripple implements PlugInFilter {
 			}
 		};
 		
-		new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);
+		new ImageMapper(imap, null, InterpolationMethod.Bicubic).map(ip);
 	}
 
 }
