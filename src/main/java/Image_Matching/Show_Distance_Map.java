@@ -9,6 +9,7 @@
 package Image_Matching;
 
 import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
@@ -22,6 +23,8 @@ import imagingbook.pub.matching.DistanceTransform.Norm;
  */
 public class Show_Distance_Map implements PlugInFilter {
 	
+	static Norm distanceNorm = Norm.L1;
+	
 	ImagePlus img;
 	
     public int setup(String arg, ImagePlus imp) {
@@ -30,9 +33,24 @@ public class Show_Distance_Map implements PlugInFilter {
     }
 
     public void run(ImageProcessor ip) {
-    	DistanceTransform dt = new DistanceTransform(ip, Norm.L2);
+    	if (!showDialog())
+			return;
+    	
+    	DistanceTransform dt = new DistanceTransform(ip, distanceNorm);
 		FloatProcessor dtIp = new FloatProcessor(dt.getDistanceMap());
 		(new ImagePlus("Distance Transform of " + img.getTitle(), dtIp)).show();
     }
+    
+	private boolean showDialog() {
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
+		gd.addEnumChoice("Distance norm", distanceNorm);
+
+		gd.showDialog();
+		if (gd.wasCanceled())
+			return false;
+		
+		distanceNorm = gd.getNextEnumChoice(Norm.class);
+		return true;
+	}
 		
 }
