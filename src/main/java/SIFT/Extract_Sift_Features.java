@@ -90,17 +90,17 @@ public class Extract_Sift_Features implements PlugInFilter {
 	
 	private boolean showDialog() {
 			GenericDialog gd = new GenericDialog("Set SIFT parameters");
-			gd.addNumericField("tMag :", params.t_Mag, 3, 6, "");
-			gd.addNumericField("rMax :", params.rho_Max, 3, 6, "");
-			gd.addNumericField("orientation histogram smoothing :", params.n_Smooth, 0, 6, "");
+			gd.addNumericField("tMag :", params.tMag, 3, 6, "");
+			gd.addNumericField("rMax :", params.rhoMax, 3, 6, "");
+			gd.addNumericField("orientation histogram smoothing :", params.nSmooth, 0, 6, "");
 			gd.addCheckbox("list all SIFT features (might be many!)", ListSiftFeatures);
 			gd.showDialog();
 			if (gd.wasCanceled()) {
 				return false;
 			}
-			params.t_Mag = gd.getNextNumber();
-			params.rho_Max = gd.getNextNumber();
-			params.n_Smooth = (int) gd.getNextNumber();
+			params.tMag = gd.getNextNumber();
+			params.rhoMax = gd.getNextNumber();
+			params.nSmooth = (int) gd.getNextNumber();
 			ListSiftFeatures = gd.getNextBoolean();
 			if(gd.invalidNumber()) {
 				IJ.error("Input Error", "Invalid input number");
