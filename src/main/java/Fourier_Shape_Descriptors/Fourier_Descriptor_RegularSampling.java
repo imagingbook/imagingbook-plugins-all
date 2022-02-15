@@ -76,7 +76,7 @@ public class Fourier_Descriptor_RegularSampling extends CommonSetup implements P
 		FourierDescriptor fd = new FourierDescriptorUniform(V, Mp);
 		
 		// reconstruct the corresponding shape with 100 contour points:
-		Complex[] R = fd.getReconstruction(100);
+		Complex[] R = fd.getReconstruction(ShapeReconstructionPoints);
 		
 		// create a pair of invariant descriptors (G^A, G^B):
 		FourierDescriptor[] fdAB = fd.makeInvariant();

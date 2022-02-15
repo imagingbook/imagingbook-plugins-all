@@ -51,7 +51,6 @@ abstract class CommonSetup {
 		gd.addCheckbox("Draw original sample points", DrawOriginalSamplePoints);
 		gd.addCheckbox("Draw shape center", DrawShapeCenter);
 		gd.addCheckbox("Draw Fourier reconstruction", DrawReconstruction);
-		gd.addCheckbox("Draw original sample points", DrawOriginalSamplePoints);
 		gd.addCheckbox("Draw normalized shapes", DrawNormalizedShapes);
 		gd.showDialog();
 		if (gd.wasCanceled()) {
@@ -63,7 +62,6 @@ abstract class CommonSetup {
 		DrawOriginalSamplePoints = gd.getNextBoolean();
 		DrawShapeCenter = gd.getNextBoolean();
 		DrawReconstruction = gd.getNextBoolean();
-		DrawOriginalSamplePoints = gd.getNextBoolean();
 		DrawNormalizedShapes = gd.getNextBoolean();
 		return true;
 	}
