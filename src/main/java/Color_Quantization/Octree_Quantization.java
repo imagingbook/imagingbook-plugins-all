@@ -10,6 +10,7 @@
 package Color_Quantization;
 
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.io.LogStream;
@@ -17,8 +18,9 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.color.quantize.OctreeQuantizer;
-import imagingbook.pub.color.quantize.OctreeQuantizer.Parameters;
+import tmp.OctreeQuantizer;
+import tmp.OctreeQuantizer.Parameters;
+
 
 /**
  * ImageJ plugin demonstrating the use of the {@link OctreeQuantizer} class.
@@ -54,6 +56,10 @@ public class Octree_Quantization implements PlugInFilter {
 		
 		String qck = params.quickQuantization ? " quick" : "";
 		
+		if (LIST_COLOR_TABLE) {
+			quantizer.listColorMap();
+		}
+		
 		if (CREATE_INDEXED_IMAGE) {
 			// quantize to an indexed color image
 			ByteProcessor idxIp = quantizer.quantize(cp);
@@ -67,9 +73,6 @@ public class Octree_Quantization implements PlugInFilter {
 			(new ImagePlus("Quantized RGB Image (" + nCols + " colors)" + qck, rgbIp)).show();
 		}
 		
-		if (LIST_COLOR_TABLE) {
-			quantizer.listColorMap();
-		}
 	}
 	
 	private boolean showDialog(Parameters params) {
