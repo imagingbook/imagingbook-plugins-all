@@ -16,7 +16,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.color.quantize.ColorQuantizerOld;
+import imagingbook.pub.color.quantize.ColorQuantizer;
 import imagingbook.pub.color.quantize.KMeansClusteringQuantizerApache;
 import imagingbook.pub.color.quantize.KMeansClusteringQuantizerApache.Parameters;
 
@@ -51,7 +51,7 @@ public class KMeans_Quantization_Apache implements PlugInFilter {
 		int[] pixels = (int[]) cp.getPixels();
 		
 		// create a quantizer object
-		ColorQuantizerOld quantizer = new KMeansClusteringQuantizerApache(pixels, params);
+		ColorQuantizer quantizer = new KMeansClusteringQuantizerApache(pixels, params);
 		int nCols = quantizer.getColorMap().length;
 		
 		if (CREATE_INDEXED_IMAGE) {
@@ -60,12 +60,12 @@ public class KMeans_Quantization_Apache implements PlugInFilter {
 			(new ImagePlus("Quantized Index Color Image (" + nCols + " colors)", idxIp)).show();
 		}
 		
-		if (CREATE_RGB_IMAGE) {
-			// quantize to a full-color RGB image
-			int[] rgbPix = quantizer.quantize(pixels);
-			ColorProcessor rgbIp = new ColorProcessor(cp.getWidth(), cp.getHeight(), rgbPix);
-			(new ImagePlus("Quantized RGB Image (" + nCols + " colors)" , rgbIp)).show();
-		}
+//		if (CREATE_RGB_IMAGE) {
+//			// quantize to a full-color RGB image
+//			int[] rgbPix = quantizer.quantize(pixels);
+//			ColorProcessor rgbIp = new ColorProcessor(cp.getWidth(), cp.getHeight(), rgbPix);
+//			(new ImagePlus("Quantized RGB Image (" + nCols + " colors)" , rgbIp)).show();
+//		}
 		
 		if (LIST_COLOR_TABLE) {
 			quantizer.listColorMap();
