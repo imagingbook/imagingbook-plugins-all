@@ -16,7 +16,7 @@ import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.util.Enums;
-import imagingbook.pub.color.quantize.ColorQuantizer;
+import imagingbook.pub.color.quantize.ColorQuantizerOld;
 import imagingbook.pub.color.quantize.KMeansClusteringQuantizer;
 import imagingbook.pub.color.quantize.KMeansClusteringQuantizer.Parameters;
 import imagingbook.pub.color.quantize.KMeansClusteringQuantizer.SamplingMethod;
@@ -52,7 +52,7 @@ public class KMeans_Quantization implements PlugInFilter {
 		int[] pixels = (int[]) cp.getPixels();
 		
 		// create a quantizer object
-		ColorQuantizer quantizer = new KMeansClusteringQuantizer(pixels, params);
+		ColorQuantizerOld quantizer = new KMeansClusteringQuantizer(pixels, params);
 		int nCols = quantizer.getColorMap().length;
 		
 		if (CREATE_INDEXED_IMAGE) {
