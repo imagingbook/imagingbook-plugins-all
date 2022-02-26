@@ -8,10 +8,13 @@
  *******************************************************************************/
 package Color_Images;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+
+import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 
 public class Index_To_Rgb implements PlugInFilter {
@@ -25,9 +28,11 @@ public class Index_To_Rgb implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
-		int w = ip.getWidth();
-		int h = ip.getHeight();
-		
+		ColorModel cm =  ip.getColorModel();
+		if (!(cm instanceof IndexColorModel)) {
+			IJ.error("Color model not of type IndexedColorModel");
+			return;
+		}
 		// retrieve the lookup tables (maps) for R,G,B:
 		IndexColorModel icm = (IndexColorModel) ip.getColorModel(); 
 		int nColors = icm.getMapSize(); 
@@ -41,7 +46,9 @@ public class Index_To_Rgb implements PlugInFilter {
 		icm.getBlues(Pblu);
 		  
 		// create a new 24-bit RGB image:
-		ColorProcessor cp = new ColorProcessor(w,h);
+		int w = ip.getWidth();
+		int h = ip.getHeight();
+		ColorProcessor cp = new ColorProcessor(w, h);
 		int[] RGB = new int[3];
 		for (int v = 0; v < h; v++) {
 			for (int u = 0; u < w; u++) {

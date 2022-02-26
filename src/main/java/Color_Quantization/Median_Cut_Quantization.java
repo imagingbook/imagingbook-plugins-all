@@ -59,7 +59,9 @@ public class Median_Cut_Quantization implements PlugInFilter {
 		if (CREATE_INDEXED_IMAGE) {
 			// quantize to an indexed color image
 			ByteProcessor qip = quantizer.quantize(cp);
-			(new ImagePlus(title + "MedianCut" + nCols, qip)).show();
+			ImagePlus imp = new ImagePlus(title + "-MedianCut" + nCols, qip);
+			imp.setTypeToColor256();
+			imp.show();
 		}
 		
 //		if (CREATE_RGB_IMAGE) {

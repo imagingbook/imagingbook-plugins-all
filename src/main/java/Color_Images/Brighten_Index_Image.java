@@ -8,9 +8,12 @@
  *******************************************************************************/
 package Color_Images;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+
+import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 
 public class Brighten_Index_Image implements PlugInFilter {
@@ -20,29 +23,39 @@ public class Brighten_Index_Image implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
-		IndexColorModel icm = (IndexColorModel) ip.getColorModel(); 
+		ColorModel cm =  ip.getColorModel();
+		if (!(cm instanceof IndexColorModel)) {
+			IJ.error("Color model not of type IndexedColorModel");
+			return;
+		}
+		
+		IndexColorModel icm = (IndexColorModel) cm; 
 		//IJ.write("Color Model=" + ip.getColorModel() + " " + ip.isColorLut());
 	
 		int pixBits = icm.getPixelSize(); 
 		int nColors = icm.getMapSize(); 
 		
 		//retrieve the current lookup tables (maps) for R,G,B
-		byte[] Pred = new byte[nColors]; icm.getReds(Pred);  
-		byte[] Pgrn = new byte[nColors]; icm.getGreens(Pgrn);  
-		byte[] Pblu = new byte[nColors]; icm.getBlues(Pblu);  
+		byte[] pRed = new byte[nColors]; 
+		byte[] pGrn = new byte[nColors]; 
+		byte[] pBlu = new byte[nColors];
+		
+		icm.getReds(pRed);  
+		icm.getGreens(pGrn);
+		icm.getBlues(pBlu);  
 		
 		//modify the lookup tables	
 		for (int idx = 0; idx < nColors; idx++){ 
-			int r = 0xff & Pred[idx];	//mask to treat as unsigned byte 
-			int g = 0xff & Pgrn[idx];
-			int b = 0xff & Pblu[idx];   
-			Pred[idx] = (byte) Math.min(r + 10, 255); 
-			Pgrn[idx] = (byte) Math.min(g + 10, 255);
-			Pblu[idx] = (byte) Math.min(b + 10, 255); 
+			int r = 0xff & pRed[idx];	//mask to treat as unsigned byte 
+			int g = 0xff & pGrn[idx];
+			int b = 0xff & pBlu[idx];   
+			pRed[idx] = (byte) Math.min(r + 10, 255); 
+			pGrn[idx] = (byte) Math.min(g + 10, 255);
+			pBlu[idx] = (byte) Math.min(b + 10, 255); 
 		}
 		
 		//create a new color model and apply to the image
-		IndexColorModel icm2 = new IndexColorModel(pixBits, nColors, Pred, Pgrn, Pblu);  
+		IndexColorModel icm2 = new IndexColorModel(pixBits, nColors, pRed, pGrn, pBlu);  
 		ip.setColorModel(icm2);
 	}
 
