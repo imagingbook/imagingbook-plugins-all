@@ -36,26 +36,26 @@ public class Brighten_Index_Image implements PlugInFilter {
 		int nColors = icm.getMapSize(); 
 		
 		//retrieve the current lookup tables (maps) for R,G,B
-		byte[] pRed = new byte[nColors]; 
-		byte[] pGrn = new byte[nColors]; 
-		byte[] pBlu = new byte[nColors];
+		byte[] rMap = new byte[nColors]; 
+		byte[] gMap = new byte[nColors]; 
+		byte[] bMap = new byte[nColors];
 		
-		icm.getReds(pRed);  
-		icm.getGreens(pGrn);
-		icm.getBlues(pBlu);  
+		icm.getReds(rMap);  
+		icm.getGreens(gMap);
+		icm.getBlues(bMap);  
 		
 		//modify the lookup tables	
 		for (int idx = 0; idx < nColors; idx++){ 
-			int r = 0xff & pRed[idx];	//mask to treat as unsigned byte 
-			int g = 0xff & pGrn[idx];
-			int b = 0xff & pBlu[idx];   
-			pRed[idx] = (byte) Math.min(r + 10, 255); 
-			pGrn[idx] = (byte) Math.min(g + 10, 255);
-			pBlu[idx] = (byte) Math.min(b + 10, 255); 
+			int r = 0xff & rMap[idx];	//mask to treat as unsigned byte 
+			int g = 0xff & gMap[idx];
+			int b = 0xff & bMap[idx];   
+			rMap[idx] = (byte) Math.min(r + 10, 255); 
+			gMap[idx] = (byte) Math.min(g + 10, 255);
+			bMap[idx] = (byte) Math.min(b + 10, 255); 
 		}
 		
 		//create a new color model and apply to the image
-		IndexColorModel icm2 = new IndexColorModel(pixBits, nColors, pRed, pGrn, pBlu);  
+		IndexColorModel icm2 = new IndexColorModel(pixBits, nColors, rMap, gMap, bMap);  
 		ip.setColorModel(icm2);
 	}
 

@@ -37,13 +37,13 @@ public class Index_To_Rgb implements PlugInFilter {
 		IndexColorModel icm = (IndexColorModel) ip.getColorModel(); 
 		int nColors = icm.getMapSize(); 
 		
-		byte[] Pred = new byte[nColors]; 
-		byte[] Pgrn = new byte[nColors]; 
-		byte[] Pblu = new byte[nColors];
+		byte[] rMap = new byte[nColors]; 
+		byte[] gMap = new byte[nColors]; 
+		byte[] bMap = new byte[nColors];
 		
-		icm.getReds(Pred); 
-		icm.getGreens(Pgrn);
-		icm.getBlues(Pblu);
+		icm.getReds(rMap); 
+		icm.getGreens(gMap);
+		icm.getBlues(bMap);
 		  
 		// create a new 24-bit RGB image:
 		int w = ip.getWidth();
@@ -53,9 +53,9 @@ public class Index_To_Rgb implements PlugInFilter {
 		for (int v = 0; v < h; v++) {
 			for (int u = 0; u < w; u++) {
 				int idx = ip.getPixel(u, v);
-				RGB[R] = 0xFF & Pred[idx];
-				RGB[G] = 0xFF & Pgrn[idx];
-				RGB[B] = 0xFF & Pblu[idx];
+				RGB[R] = 0xFF & rMap[idx];
+				RGB[G] = 0xFF & gMap[idx];
+				RGB[B] = 0xFF & bMap[idx];
 				cp.putPixel(u, v, RGB); 
 			}
 		}
