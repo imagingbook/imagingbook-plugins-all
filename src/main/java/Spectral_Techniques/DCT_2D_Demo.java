@@ -30,7 +30,7 @@ public class DCT_2D_Demo implements PlugInFilter {
 	static boolean reconstructImage = false;
 
 	public int setup(String arg, ImagePlus im) {
-		return DOES_ALL + NO_CHANGES;
+		return DOES_8G + DOES_32 + NO_CHANGES;
 	}
 
 	public void run(ImageProcessor ip) {
