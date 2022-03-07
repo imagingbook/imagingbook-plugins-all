@@ -70,7 +70,7 @@
 <span class="sourceLineNo">060</span><a id="line.60">        Rotation2D imap = new Rotation2D(-2 * Math.PI * angle / 360);   // inverse mapping (target to source)</a>
 <span class="sourceLineNo">061</span><a id="line.61">        FloatProcessor[] processors = ColorStack.getProcessors(colStack);</a>
 <span class="sourceLineNo">062</span><a id="line.62">  </a>
-<span class="sourceLineNo">063</span><a id="line.63">        ImageMapper mapper = new ImageMapper(imap, InterpolationMethod.Bilinear);</a>
+<span class="sourceLineNo">063</span><a id="line.63">        ImageMapper mapper = new ImageMapper(imap, null, InterpolationMethod.Bilinear);</a>
 <span class="sourceLineNo">064</span><a id="line.64">                for (FloatProcessor fp : processors) {</a>
 <span class="sourceLineNo">065</span><a id="line.65">                        //imap.applyTo(fp, InterpolationMethod.Bilinear);</a>
 <span class="sourceLineNo">066</span><a id="line.66">                        mapper.map(fp);</a>

@@ -33,7 +33,7 @@
 <span class="sourceLineNo">023</span><a id="line.23">import imagingbook.pub.fd.FourierDescriptorUniform;</a>
 <span class="sourceLineNo">024</span><a id="line.24">import imagingbook.pub.geometry.basic.Pnt2d;</a>
 <span class="sourceLineNo">025</span><a id="line.25">import imagingbook.pub.regions.Contour;</a>
-<span class="sourceLineNo">026</span><a id="line.26">import imagingbook.pub.regions.SegmentationRegionContour;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import imagingbook.pub.regions.segment.RegionContourSegmentation;</a>
 <span class="sourceLineNo">027</span><a id="line.27"></a>
 <span class="sourceLineNo">028</span><a id="line.28"></a>
 <span class="sourceLineNo">029</span><a id="line.29">/**</a>
@@ -72,7 +72,7 @@
 <span class="sourceLineNo">062</span><a id="line.62">                ByteProcessor bp = (ByteProcessor) ip;</a>
 <span class="sourceLineNo">063</span><a id="line.63">                </a>
 <span class="sourceLineNo">064</span><a id="line.64">                // segment the image and select the longest outer region contour:</a>
-<span class="sourceLineNo">065</span><a id="line.65">                SegmentationRegionContour labeling = new SegmentationRegionContour(bp);</a>
+<span class="sourceLineNo">065</span><a id="line.65">                RegionContourSegmentation labeling = new RegionContourSegmentation(bp);</a>
 <span class="sourceLineNo">066</span><a id="line.66">                List&lt;? extends Contour&gt; outerContours = labeling.getOuterContours(true);</a>
 <span class="sourceLineNo">067</span><a id="line.67">                if (outerContours.isEmpty()) {</a>
 <span class="sourceLineNo">068</span><a id="line.68">                        IJ.error("no regions found");</a>
@@ -86,7 +86,7 @@
 <span class="sourceLineNo">076</span><a id="line.76">                FourierDescriptor fd = new FourierDescriptorUniform(V, Mp);</a>
 <span class="sourceLineNo">077</span><a id="line.77">                </a>
 <span class="sourceLineNo">078</span><a id="line.78">                // reconstruct the corresponding shape with 100 contour points:</a>
-<span class="sourceLineNo">079</span><a id="line.79">                Complex[] R = fd.getReconstruction(100);</a>
+<span class="sourceLineNo">079</span><a id="line.79">                Complex[] R = fd.getReconstruction(ShapeReconstructionPoints);</a>
 <span class="sourceLineNo">080</span><a id="line.80">                </a>
 <span class="sourceLineNo">081</span><a id="line.81">                // create a pair of invariant descriptors (G^A, G^B):</a>
 <span class="sourceLineNo">082</span><a id="line.82">                FourierDescriptor[] fdAB = fd.makeInvariant();</a>

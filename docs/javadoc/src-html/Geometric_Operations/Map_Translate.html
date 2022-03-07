@@ -37,7 +37,7 @@
 <span class="sourceLineNo">027</span><a id="line.27">    public void run(ImageProcessor ip) {</a>
 <span class="sourceLineNo">028</span><a id="line.28"></a>
 <span class="sourceLineNo">029</span><a id="line.29">                Translation2D imap = new Translation2D(dx, dy).getInverse();</a>
-<span class="sourceLineNo">030</span><a id="line.30">                new ImageMapper(imap, InterpolationMethod.Bicubic).map(ip);</a>
+<span class="sourceLineNo">030</span><a id="line.30">                new ImageMapper(imap, null, InterpolationMethod.Bicubic).map(ip);</a>
 <span class="sourceLineNo">031</span><a id="line.31">    }</a>
 <span class="sourceLineNo">032</span><a id="line.32"></a>
 <span class="sourceLineNo">033</span><a id="line.33">}</a>

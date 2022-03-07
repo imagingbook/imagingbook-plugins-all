@@ -33,8 +33,8 @@
 <span class="sourceLineNo">023</span><a id="line.23">import imagingbook.lib.ij.IjUtils;</a>
 <span class="sourceLineNo">024</span><a id="line.24">import imagingbook.pub.geometry.basic.Pnt2d;</a>
 <span class="sourceLineNo">025</span><a id="line.25">import imagingbook.pub.geometry.basic.Pnt2d.PntDouble;</a>
-<span class="sourceLineNo">026</span><a id="line.26">import imagingbook.pub.regions.SegmentationRegionContour;</a>
-<span class="sourceLineNo">027</span><a id="line.27">import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import imagingbook.pub.regions.BinaryRegion;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import imagingbook.pub.regions.segment.RegionContourSegmentation;</a>
 <span class="sourceLineNo">028</span><a id="line.28">import imagingbook.pub.geometry.hulls.ConvexHull;</a>
 <span class="sourceLineNo">029</span><a id="line.29"></a>
 <span class="sourceLineNo">030</span><a id="line.30">/**</a>
@@ -66,7 +66,7 @@
 <span class="sourceLineNo">056</span><a id="line.56">                        return;</a>
 <span class="sourceLineNo">057</span><a id="line.57">                }</a>
 <span class="sourceLineNo">058</span><a id="line.58">                </a>
-<span class="sourceLineNo">059</span><a id="line.59">                SegmentationRegionContour segmenter = new SegmentationRegionContour((ByteProcessor) ip);</a>
+<span class="sourceLineNo">059</span><a id="line.59">                RegionContourSegmentation segmenter = new RegionContourSegmentation((ByteProcessor) ip);</a>
 <span class="sourceLineNo">060</span><a id="line.60">//              RegionLabeling segmenter = new DepthFirstLabeling((ByteProcessor) ip);</a>
 <span class="sourceLineNo">061</span><a id="line.61">                </a>
 <span class="sourceLineNo">062</span><a id="line.62">                List&lt;BinaryRegion&gt; regions = segmenter.getRegions();</a>

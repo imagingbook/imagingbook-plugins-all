@@ -19,23 +19,23 @@
 <span class="sourceLineNo">009</span><a id="line.9">package Color_Edges;</a>
 <span class="sourceLineNo">010</span><a id="line.10"></a>
 <span class="sourceLineNo">011</span><a id="line.11"></a>
-<span class="sourceLineNo">012</span><a id="line.12">import java.awt.Point;</a>
-<span class="sourceLineNo">013</span><a id="line.13">import java.util.List;</a>
-<span class="sourceLineNo">014</span><a id="line.14"></a>
-<span class="sourceLineNo">015</span><a id="line.15">import ij.IJ;</a>
-<span class="sourceLineNo">016</span><a id="line.16">import ij.ImagePlus;</a>
-<span class="sourceLineNo">017</span><a id="line.17">import ij.gui.GenericDialog;</a>
-<span class="sourceLineNo">018</span><a id="line.18">import ij.io.LogStream;</a>
-<span class="sourceLineNo">019</span><a id="line.19">import ij.plugin.filter.PlugInFilter;</a>
-<span class="sourceLineNo">020</span><a id="line.20">import ij.process.ImageProcessor;</a>
-<span class="sourceLineNo">021</span><a id="line.21">import imagingbook.pub.color.edge.CannyEdgeDetector;</a>
-<span class="sourceLineNo">022</span><a id="line.22">import imagingbook.pub.color.edge.CannyEdgeDetector.Parameters;</a>
+<span class="sourceLineNo">012</span><a id="line.12">import java.util.List;</a>
+<span class="sourceLineNo">013</span><a id="line.13"></a>
+<span class="sourceLineNo">014</span><a id="line.14">import ij.IJ;</a>
+<span class="sourceLineNo">015</span><a id="line.15">import ij.ImagePlus;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import ij.gui.GenericDialog;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import ij.io.LogStream;</a>
+<span class="sourceLineNo">018</span><a id="line.18">import ij.plugin.filter.PlugInFilter;</a>
+<span class="sourceLineNo">019</span><a id="line.19">import ij.process.ImageProcessor;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import imagingbook.pub.color.edge.CannyEdgeDetector;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import imagingbook.pub.color.edge.CannyEdgeDetector.Parameters;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import imagingbook.pub.color.edge.EdgeTrace;</a>
 <span class="sourceLineNo">023</span><a id="line.23"></a>
 <span class="sourceLineNo">024</span><a id="line.24">/**</a>
 <span class="sourceLineNo">025</span><a id="line.25"> * This plugin implements the Canny edge detector for all types of images.</a>
 <span class="sourceLineNo">026</span><a id="line.26"> * </a>
 <span class="sourceLineNo">027</span><a id="line.27"> * @author W. Burger</a>
-<span class="sourceLineNo">028</span><a id="line.28"> * @version 2014/12/03</a>
+<span class="sourceLineNo">028</span><a id="line.28"> * @version 2021/11/26</a>
 <span class="sourceLineNo">029</span><a id="line.29"> */</a>
 <span class="sourceLineNo">030</span><a id="line.30">public class Color_Edges_Canny implements PlugInFilter {</a>
 <span class="sourceLineNo">031</span><a id="line.31">        </a>
@@ -56,68 +56,67 @@
 <span class="sourceLineNo">046</span><a id="line.46">        }</a>
 <span class="sourceLineNo">047</span><a id="line.47"></a>
 <span class="sourceLineNo">048</span><a id="line.48">        public void run(ImageProcessor ip) {</a>
-<span class="sourceLineNo">049</span><a id="line.49">                IJ.log("Running lib " + this.getClass().getName());</a>
-<span class="sourceLineNo">050</span><a id="line.50">                </a>
-<span class="sourceLineNo">051</span><a id="line.51">                Parameters params = new Parameters();</a>
-<span class="sourceLineNo">052</span><a id="line.52">                if (!setParameters(params)) return;</a>
-<span class="sourceLineNo">053</span><a id="line.53">                </a>
-<span class="sourceLineNo">054</span><a id="line.54">                CannyEdgeDetector detector = new CannyEdgeDetector(ip, params);</a>
-<span class="sourceLineNo">055</span><a id="line.55">                </a>
-<span class="sourceLineNo">056</span><a id="line.56">                if (showEdgeMagnitude) {</a>
-<span class="sourceLineNo">057</span><a id="line.57">                        ImageProcessor eMag = detector.getEdgeMagnitude();</a>
-<span class="sourceLineNo">058</span><a id="line.58">                        (new ImagePlus("Canny Edge Magnitude sigma=" + params.gSigma, eMag)).show();</a>
-<span class="sourceLineNo">059</span><a id="line.59">                }</a>
-<span class="sourceLineNo">060</span><a id="line.60">                </a>
-<span class="sourceLineNo">061</span><a id="line.61">                if (showEdgeOrientation) {</a>
-<span class="sourceLineNo">062</span><a id="line.62">                        ImageProcessor eOrt = detector.getEdgeOrientation();</a>
-<span class="sourceLineNo">063</span><a id="line.63">                        (new ImagePlus("Canny Edge Orientation sigma=" + params.gSigma, eOrt)).show();</a>
-<span class="sourceLineNo">064</span><a id="line.64">                }</a>
-<span class="sourceLineNo">065</span><a id="line.65">                </a>
-<span class="sourceLineNo">066</span><a id="line.66">                if (showBinaryEdges) {</a>
-<span class="sourceLineNo">067</span><a id="line.67">                        ImageProcessor eBin = detector.getEdgeBinary();</a>
-<span class="sourceLineNo">068</span><a id="line.68">                        (new ImagePlus("Canny Binary Edges sigma=" + params.gSigma, eBin)).show();</a>
-<span class="sourceLineNo">069</span><a id="line.69">                }</a>
-<span class="sourceLineNo">070</span><a id="line.70">                </a>
-<span class="sourceLineNo">071</span><a id="line.71">                if(listEdgeTraces) {</a>
-<span class="sourceLineNo">072</span><a id="line.72">                        List&lt;List&lt;Point&gt;&gt; edgeTraces = detector.getEdgeTraces();</a>
-<span class="sourceLineNo">073</span><a id="line.73">                        IJ.log("number of edge traces: " + edgeTraces.size());</a>
-<span class="sourceLineNo">074</span><a id="line.74">                }</a>
-<span class="sourceLineNo">075</span><a id="line.75">        }</a>
-<span class="sourceLineNo">076</span><a id="line.76"></a>
-<span class="sourceLineNo">077</span><a id="line.77">        boolean setParameters(Parameters params) {</a>
-<span class="sourceLineNo">078</span><a id="line.78">                GenericDialog gd = new GenericDialog("Canny Detector");</a>
-<span class="sourceLineNo">079</span><a id="line.79">                // Canny parameters:</a>
-<span class="sourceLineNo">080</span><a id="line.80">                gd.addNumericField("Sigma (0.5 - 20)", params.gSigma, 1);</a>
-<span class="sourceLineNo">081</span><a id="line.81">                gd.addNumericField("Low Threshold", params.loThr, 2);</a>
-<span class="sourceLineNo">082</span><a id="line.82">                gd.addNumericField("High Threshold", params.hiThr, 2);</a>
-<span class="sourceLineNo">083</span><a id="line.83">                gd.addCheckbox("Normalize gradient magnitude", params.normGradMag);</a>
-<span class="sourceLineNo">084</span><a id="line.84">                // plugin parameters:</a>
-<span class="sourceLineNo">085</span><a id="line.85">                gd.addMessage("Plugin parameters:");</a>
-<span class="sourceLineNo">086</span><a id="line.86">                gd.addCheckbox("Show edge magnitude", showEdgeMagnitude);</a>
-<span class="sourceLineNo">087</span><a id="line.87">                gd.addCheckbox("Show edge orientation", showEdgeOrientation); </a>
-<span class="sourceLineNo">088</span><a id="line.88">                gd.addCheckbox("Show binary edges", showBinaryEdges);</a>
-<span class="sourceLineNo">089</span><a id="line.89">                gd.addCheckbox("List edge traces", listEdgeTraces);</a>
-<span class="sourceLineNo">090</span><a id="line.90">                // display</a>
-<span class="sourceLineNo">091</span><a id="line.91">                gd.showDialog();</a>
-<span class="sourceLineNo">092</span><a id="line.92">                if (gd.wasCanceled()) {</a>
-<span class="sourceLineNo">093</span><a id="line.93">                        return false;</a>
-<span class="sourceLineNo">094</span><a id="line.94">                }       </a>
-<span class="sourceLineNo">095</span><a id="line.95">                // update Canny parameters:</a>
-<span class="sourceLineNo">096</span><a id="line.96">                params.gSigma = (float) gd.getNextNumber();</a>
-<span class="sourceLineNo">097</span><a id="line.97">                if (params.gSigma &lt; 0.5) params.gSigma = 0.5;</a>
-<span class="sourceLineNo">098</span><a id="line.98">                if (params.gSigma &gt; 20) params.gSigma = 20;</a>
-<span class="sourceLineNo">099</span><a id="line.99">                params.loThr = (float) gd.getNextNumber();</a>
-<span class="sourceLineNo">100</span><a id="line.100">                params.hiThr = (float) gd.getNextNumber();</a>
-<span class="sourceLineNo">101</span><a id="line.101">                params.normGradMag = gd.getNextBoolean();</a>
-<span class="sourceLineNo">102</span><a id="line.102">                // update plugin parameters:</a>
-<span class="sourceLineNo">103</span><a id="line.103">                showEdgeMagnitude = gd.getNextBoolean();</a>
-<span class="sourceLineNo">104</span><a id="line.104">                showEdgeOrientation = gd.getNextBoolean();</a>
-<span class="sourceLineNo">105</span><a id="line.105">                showBinaryEdges = gd.getNextBoolean();</a>
-<span class="sourceLineNo">106</span><a id="line.106">                listEdgeTraces = gd.getNextBoolean();</a>
-<span class="sourceLineNo">107</span><a id="line.107">                return true;</a>
-<span class="sourceLineNo">108</span><a id="line.108">        }</a>
-<span class="sourceLineNo">109</span><a id="line.109">        </a>
-<span class="sourceLineNo">110</span><a id="line.110">}</a>
+<span class="sourceLineNo">049</span><a id="line.49">                </a>
+<span class="sourceLineNo">050</span><a id="line.50">                Parameters params = new Parameters();</a>
+<span class="sourceLineNo">051</span><a id="line.51">                if (!setParameters(params)) return;</a>
+<span class="sourceLineNo">052</span><a id="line.52">                </a>
+<span class="sourceLineNo">053</span><a id="line.53">                CannyEdgeDetector detector = new CannyEdgeDetector(ip, params);</a>
+<span class="sourceLineNo">054</span><a id="line.54">                </a>
+<span class="sourceLineNo">055</span><a id="line.55">                if (showEdgeMagnitude) {</a>
+<span class="sourceLineNo">056</span><a id="line.56">                        ImageProcessor eMag = detector.getEdgeMagnitude();</a>
+<span class="sourceLineNo">057</span><a id="line.57">                        (new ImagePlus("Canny Edge Magnitude sigma=" + params.gSigma, eMag)).show();</a>
+<span class="sourceLineNo">058</span><a id="line.58">                }</a>
+<span class="sourceLineNo">059</span><a id="line.59">                </a>
+<span class="sourceLineNo">060</span><a id="line.60">                if (showEdgeOrientation) {</a>
+<span class="sourceLineNo">061</span><a id="line.61">                        ImageProcessor eOrt = detector.getEdgeOrientation();</a>
+<span class="sourceLineNo">062</span><a id="line.62">                        (new ImagePlus("Canny Edge Orientation sigma=" + params.gSigma, eOrt)).show();</a>
+<span class="sourceLineNo">063</span><a id="line.63">                }</a>
+<span class="sourceLineNo">064</span><a id="line.64">                </a>
+<span class="sourceLineNo">065</span><a id="line.65">                if (showBinaryEdges) {</a>
+<span class="sourceLineNo">066</span><a id="line.66">                        ImageProcessor eBin = detector.getEdgeBinary();</a>
+<span class="sourceLineNo">067</span><a id="line.67">                        (new ImagePlus("Canny Binary Edges sigma=" + params.gSigma, eBin)).show();</a>
+<span class="sourceLineNo">068</span><a id="line.68">                }</a>
+<span class="sourceLineNo">069</span><a id="line.69">                </a>
+<span class="sourceLineNo">070</span><a id="line.70">                if(listEdgeTraces) {</a>
+<span class="sourceLineNo">071</span><a id="line.71">                        List&lt;EdgeTrace&gt; edgeTraces = detector.getTraces();</a>
+<span class="sourceLineNo">072</span><a id="line.72">                        IJ.log("number of edge traces: " + edgeTraces.size());</a>
+<span class="sourceLineNo">073</span><a id="line.73">                }</a>
+<span class="sourceLineNo">074</span><a id="line.74">        }</a>
+<span class="sourceLineNo">075</span><a id="line.75"></a>
+<span class="sourceLineNo">076</span><a id="line.76">        boolean setParameters(Parameters params) {</a>
+<span class="sourceLineNo">077</span><a id="line.77">                GenericDialog gd = new GenericDialog("Canny Detector");</a>
+<span class="sourceLineNo">078</span><a id="line.78">                // Canny parameters:</a>
+<span class="sourceLineNo">079</span><a id="line.79">                gd.addNumericField("Sigma (0.5 - 20)", params.gSigma, 1);</a>
+<span class="sourceLineNo">080</span><a id="line.80">                gd.addNumericField("Low Threshold", params.loThr, 2);</a>
+<span class="sourceLineNo">081</span><a id="line.81">                gd.addNumericField("High Threshold", params.hiThr, 2);</a>
+<span class="sourceLineNo">082</span><a id="line.82">                gd.addCheckbox("Normalize gradient magnitude", params.normGradMag);</a>
+<span class="sourceLineNo">083</span><a id="line.83">                // plugin parameters:</a>
+<span class="sourceLineNo">084</span><a id="line.84">                gd.addMessage("Plugin parameters:");</a>
+<span class="sourceLineNo">085</span><a id="line.85">                gd.addCheckbox("Show edge magnitude", showEdgeMagnitude);</a>
+<span class="sourceLineNo">086</span><a id="line.86">                gd.addCheckbox("Show edge orientation", showEdgeOrientation); </a>
+<span class="sourceLineNo">087</span><a id="line.87">                gd.addCheckbox("Show binary edges", showBinaryEdges);</a>
+<span class="sourceLineNo">088</span><a id="line.88">                gd.addCheckbox("List edge traces", listEdgeTraces);</a>
+<span class="sourceLineNo">089</span><a id="line.89">                // display</a>
+<span class="sourceLineNo">090</span><a id="line.90">                gd.showDialog();</a>
+<span class="sourceLineNo">091</span><a id="line.91">                if (gd.wasCanceled()) {</a>
+<span class="sourceLineNo">092</span><a id="line.92">                        return false;</a>
+<span class="sourceLineNo">093</span><a id="line.93">                }       </a>
+<span class="sourceLineNo">094</span><a id="line.94">                // update Canny parameters:</a>
+<span class="sourceLineNo">095</span><a id="line.95">                params.gSigma = (float) gd.getNextNumber();</a>
+<span class="sourceLineNo">096</span><a id="line.96">                if (params.gSigma &lt; 0.5) params.gSigma = 0.5;</a>
+<span class="sourceLineNo">097</span><a id="line.97">                if (params.gSigma &gt; 20) params.gSigma = 20;</a>
+<span class="sourceLineNo">098</span><a id="line.98">                params.loThr = (float) gd.getNextNumber();</a>
+<span class="sourceLineNo">099</span><a id="line.99">                params.hiThr = (float) gd.getNextNumber();</a>
+<span class="sourceLineNo">100</span><a id="line.100">                params.normGradMag = gd.getNextBoolean();</a>
+<span class="sourceLineNo">101</span><a id="line.101">                // update plugin parameters:</a>
+<span class="sourceLineNo">102</span><a id="line.102">                showEdgeMagnitude = gd.getNextBoolean();</a>
+<span class="sourceLineNo">103</span><a id="line.103">                showEdgeOrientation = gd.getNextBoolean();</a>
+<span class="sourceLineNo">104</span><a id="line.104">                showBinaryEdges = gd.getNextBoolean();</a>
+<span class="sourceLineNo">105</span><a id="line.105">                listEdgeTraces = gd.getNextBoolean();</a>
+<span class="sourceLineNo">106</span><a id="line.106">                return true;</a>
+<span class="sourceLineNo">107</span><a id="line.107">        }</a>
+<span class="sourceLineNo">108</span><a id="line.108">        </a>
+<span class="sourceLineNo">109</span><a id="line.109">}</a>
 
 
 

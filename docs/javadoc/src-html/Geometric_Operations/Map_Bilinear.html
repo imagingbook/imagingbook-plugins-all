@@ -51,7 +51,7 @@
 <span class="sourceLineNo">041</span><a id="line.41">                </a>
 <span class="sourceLineNo">042</span><a id="line.42">                // we want the inverse mapping (Q -&gt; P, so we swap P/Q):</a>
 <span class="sourceLineNo">043</span><a id="line.43">                BilinearMapping2D mi = BilinearMapping2D.fromPoints(Q, P);</a>
-<span class="sourceLineNo">044</span><a id="line.44">                new ImageMapper(mi, InterpolationMethod.Bicubic).map(ip);</a>
+<span class="sourceLineNo">044</span><a id="line.44">                new ImageMapper(mi, null, InterpolationMethod.Bicubic).map(ip);</a>
 <span class="sourceLineNo">045</span><a id="line.45">    }</a>
 <span class="sourceLineNo">046</span><a id="line.46">}</a>
 

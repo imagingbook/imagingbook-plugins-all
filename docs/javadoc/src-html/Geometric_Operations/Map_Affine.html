@@ -48,7 +48,7 @@
 <span class="sourceLineNo">038</span><a id="line.38"></a>
 <span class="sourceLineNo">039</span><a id="line.39">                // inverse mapping (target to source):</a>
 <span class="sourceLineNo">040</span><a id="line.40">                AffineMapping2D mi = AffineMapping2D.fromPoints(P, Q).getInverse(); </a>
-<span class="sourceLineNo">041</span><a id="line.41">                new ImageMapper(mi, InterpolationMethod.Bicubic).map(ip);</a>
+<span class="sourceLineNo">041</span><a id="line.41">                new ImageMapper(mi, null, InterpolationMethod.Bicubic).map(ip);</a>
 <span class="sourceLineNo">042</span><a id="line.42">    }</a>
 <span class="sourceLineNo">043</span><a id="line.43">}</a>
 

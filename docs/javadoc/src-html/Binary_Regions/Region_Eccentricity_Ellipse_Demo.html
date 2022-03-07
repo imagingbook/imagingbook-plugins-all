@@ -41,10 +41,10 @@
 <span class="sourceLineNo">031</span><a id="line.31">import ij.process.ImageProcessor;</a>
 <span class="sourceLineNo">032</span><a id="line.32">import imagingbook.lib.ij.IjUtils;</a>
 <span class="sourceLineNo">033</span><a id="line.33">import imagingbook.lib.math.eigen.Eigensolver2x2;</a>
-<span class="sourceLineNo">034</span><a id="line.34">import imagingbook.pub.geometry.basic.Pnt2d;</a>
-<span class="sourceLineNo">035</span><a id="line.35">import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;</a>
-<span class="sourceLineNo">036</span><a id="line.36">import imagingbook.pub.regions.NeighborhoodType;</a>
-<span class="sourceLineNo">037</span><a id="line.37">import imagingbook.pub.regions.SegmentationRegionContour;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import imagingbook.pub.geometry.basic.NeighborhoodType2D;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import imagingbook.pub.geometry.basic.Pnt2d;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import imagingbook.pub.regions.segment.RegionContourSegmentation;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import imagingbook.pub.regions.BinaryRegion;</a>
 <span class="sourceLineNo">038</span><a id="line.38"></a>
 <span class="sourceLineNo">039</span><a id="line.39">/**</a>
 <span class="sourceLineNo">040</span><a id="line.40"> * Performs binary region segmentation, then</a>
@@ -69,7 +69,7 @@
 <span class="sourceLineNo">059</span><a id="line.59">                Locale.setDefault(Locale.US);</a>
 <span class="sourceLineNo">060</span><a id="line.60">        }</a>
 <span class="sourceLineNo">061</span><a id="line.61">        </a>
-<span class="sourceLineNo">062</span><a id="line.62">        private static NeighborhoodType NhT = NeighborhoodType.N4;</a>
+<span class="sourceLineNo">062</span><a id="line.62">        private static NeighborhoodType2D NhT = NeighborhoodType2D.N4;</a>
 <span class="sourceLineNo">063</span><a id="line.63">        </a>
 <span class="sourceLineNo">064</span><a id="line.64">        private static double   AxisScale = 1.0;</a>
 <span class="sourceLineNo">065</span><a id="line.65">        private static int              MinRegionSize = 10;</a>
@@ -112,7 +112,7 @@
 <span class="sourceLineNo">102</span><a id="line.102">                Overlay oly = new Overlay();</a>
 <span class="sourceLineNo">103</span><a id="line.103">                </a>
 <span class="sourceLineNo">104</span><a id="line.104">                // perform region segmentation:</a>
-<span class="sourceLineNo">105</span><a id="line.105">                SegmentationRegionContour segmenter = new SegmentationRegionContour((ByteProcessor) ip, NhT);</a>
+<span class="sourceLineNo">105</span><a id="line.105">                RegionContourSegmentation segmenter = new RegionContourSegmentation((ByteProcessor) ip, NhT);</a>
 <span class="sourceLineNo">106</span><a id="line.106">                List&lt;BinaryRegion&gt; regions = segmenter.getRegions();</a>
 <span class="sourceLineNo">107</span><a id="line.107"></a>
 <span class="sourceLineNo">108</span><a id="line.108">                for (BinaryRegion r : regions) {</a>
@@ -171,69 +171,67 @@
 <span class="sourceLineNo">161</span><a id="line.161">                                roi.setStrokeWidth(AxisLineWidth);</a>
 <span class="sourceLineNo">162</span><a id="line.162">                                roi.setStrokeColor(EllipseColor);</a>
 <span class="sourceLineNo">163</span><a id="line.163">                                oly.add(roi);</a>
-<span class="sourceLineNo">164</span><a id="line.164">                        }</a>
-<span class="sourceLineNo">165</span><a id="line.165">                        </a>
-<span class="sourceLineNo">166</span><a id="line.166">                        // same result via Eigenvalues:</a>
-<span class="sourceLineNo">167</span><a id="line.167">                        Eigensolver2x2 es = new Eigensolver2x2(mu20, mu11, mu11, mu02);</a>
-<span class="sourceLineNo">168</span><a id="line.168">                        double lambda1 = es.getEigenvalue(0);</a>
-<span class="sourceLineNo">169</span><a id="line.169">                        double lambda2 = es.getEigenvalue(1);</a>
-<span class="sourceLineNo">170</span><a id="line.170">                        double ra2 = 2 * sqrt(lambda1 / n);</a>
-<span class="sourceLineNo">171</span><a id="line.171">                        double rb2 = 2 * sqrt(lambda2 / n);</a>
-<span class="sourceLineNo">172</span><a id="line.172">                        IJ.log(String.format("V2: ra=%.2f rb=%.2f", ra2, rb2));</a>
-<span class="sourceLineNo">173</span><a id="line.173">                        IJ.log(String.format("    a1=%.2f   lam1=%.2f  2*lam1=%.2f", a1, lambda1, 2 * lambda1));</a>
-<span class="sourceLineNo">174</span><a id="line.174">                        IJ.log(String.format("    a2=%.2f   lam2=%.2f  2*lam2=%.2f", a2, lambda2, 2 * lambda2));</a>
-<span class="sourceLineNo">175</span><a id="line.175">                        </a>
-<span class="sourceLineNo">176</span><a id="line.176">                        IJ.log("");</a>
-<span class="sourceLineNo">177</span><a id="line.177">                }</a>
-<span class="sourceLineNo">178</span><a id="line.178">                </a>
-<span class="sourceLineNo">179</span><a id="line.179">                im.setOverlay(oly);</a>
-<span class="sourceLineNo">180</span><a id="line.180">        }</a>
-<span class="sourceLineNo">181</span><a id="line.181">        </a>
-<span class="sourceLineNo">182</span><a id="line.182">        public Roi makeEllipse(double xc, double yc, double ra, double rb, double theta) {</a>
-<span class="sourceLineNo">183</span><a id="line.183">                Ellipse2D e = new Ellipse2D.Double(-ra, -rb, 2 * ra, 2 * rb);</a>
-<span class="sourceLineNo">184</span><a id="line.184">                AffineTransform t = new AffineTransform();</a>
-<span class="sourceLineNo">185</span><a id="line.185">                t.translate(xc, yc);</a>
-<span class="sourceLineNo">186</span><a id="line.186">                t.rotate(theta);</a>
-<span class="sourceLineNo">187</span><a id="line.187">                return new ShapeRoi(t.createTransformedShape(e));</a>
-<span class="sourceLineNo">188</span><a id="line.188">        }</a>
-<span class="sourceLineNo">189</span><a id="line.189">        </a>
-<span class="sourceLineNo">190</span><a id="line.190">        private Roi makeCenterMark(double x, double y, double r) {</a>
-<span class="sourceLineNo">191</span><a id="line.191">                Path2D.Double m = new Path2D.Double();</a>
-<span class="sourceLineNo">192</span><a id="line.192">                m.moveTo(x - r, y - r);</a>
-<span class="sourceLineNo">193</span><a id="line.193">                m.lineTo(x + r, y + r);</a>
-<span class="sourceLineNo">194</span><a id="line.194">                m.moveTo(x + r, y - r);</a>
-<span class="sourceLineNo">195</span><a id="line.195">                m.lineTo(x - r, y + r);</a>
-<span class="sourceLineNo">196</span><a id="line.196">                return new ShapeRoi(m);</a>
-<span class="sourceLineNo">197</span><a id="line.197">        }</a>
+<span class="sourceLineNo">164</span><a id="line.164">                                </a>
+<span class="sourceLineNo">165</span><a id="line.165">//                              // same result via Eigenvalues:</a>
+<span class="sourceLineNo">166</span><a id="line.166">//                              Eigensolver2x2 es = new Eigensolver2x2(mu20, mu11, mu11, mu02);</a>
+<span class="sourceLineNo">167</span><a id="line.167">//                              double lambda0 = es.getEigenvalue(0);</a>
+<span class="sourceLineNo">168</span><a id="line.168">//                              double lambda1 = es.getEigenvalue(1);</a>
+<span class="sourceLineNo">169</span><a id="line.169">//                              double ra2 = 2 * sqrt(lambda0 / n);</a>
+<span class="sourceLineNo">170</span><a id="line.170">//                              double rb2 = 2 * sqrt(lambda1 / n);</a>
+<span class="sourceLineNo">171</span><a id="line.171">//                              IJ.log(String.format("V1: ra=%.2f rb=%.2f", ra, rb));</a>
+<span class="sourceLineNo">172</span><a id="line.172">//                              IJ.log(String.format("V2: ra=%.2f rb=%.2f", ra2, rb2));</a>
+<span class="sourceLineNo">173</span><a id="line.173">//                              IJ.log("");</a>
+<span class="sourceLineNo">174</span><a id="line.174">                        }       </a>
+<span class="sourceLineNo">175</span><a id="line.175">                }</a>
+<span class="sourceLineNo">176</span><a id="line.176">                </a>
+<span class="sourceLineNo">177</span><a id="line.177">                im.setOverlay(oly);</a>
+<span class="sourceLineNo">178</span><a id="line.178">        }</a>
+<span class="sourceLineNo">179</span><a id="line.179">        </a>
+<span class="sourceLineNo">180</span><a id="line.180">        public Roi makeEllipse(double xc, double yc, double ra, double rb, double theta) {</a>
+<span class="sourceLineNo">181</span><a id="line.181">                Ellipse2D e = new Ellipse2D.Double(-ra, -rb, 2 * ra, 2 * rb);</a>
+<span class="sourceLineNo">182</span><a id="line.182">                AffineTransform t = new AffineTransform();</a>
+<span class="sourceLineNo">183</span><a id="line.183">                t.translate(xc, yc);</a>
+<span class="sourceLineNo">184</span><a id="line.184">                t.rotate(theta);</a>
+<span class="sourceLineNo">185</span><a id="line.185">                return new ShapeRoi(t.createTransformedShape(e));</a>
+<span class="sourceLineNo">186</span><a id="line.186">        }</a>
+<span class="sourceLineNo">187</span><a id="line.187">        </a>
+<span class="sourceLineNo">188</span><a id="line.188">        private Roi makeCenterMark(double x, double y, double r) {</a>
+<span class="sourceLineNo">189</span><a id="line.189">                Path2D.Double m = new Path2D.Double();</a>
+<span class="sourceLineNo">190</span><a id="line.190">                m.moveTo(x - r, y - r);</a>
+<span class="sourceLineNo">191</span><a id="line.191">                m.lineTo(x + r, y + r);</a>
+<span class="sourceLineNo">192</span><a id="line.192">                m.moveTo(x + r, y - r);</a>
+<span class="sourceLineNo">193</span><a id="line.193">                m.lineTo(x - r, y + r);</a>
+<span class="sourceLineNo">194</span><a id="line.194">                return new ShapeRoi(m);</a>
+<span class="sourceLineNo">195</span><a id="line.195">        }</a>
+<span class="sourceLineNo">196</span><a id="line.196">        </a>
+<span class="sourceLineNo">197</span><a id="line.197">        // -----------------------------------------------------------------</a>
 <span class="sourceLineNo">198</span><a id="line.198">        </a>
-<span class="sourceLineNo">199</span><a id="line.199">        // -----------------------------------------------------------------</a>
-<span class="sourceLineNo">200</span><a id="line.200">        </a>
-<span class="sourceLineNo">201</span><a id="line.201">        private boolean getUserInput() {</a>
-<span class="sourceLineNo">202</span><a id="line.202">                GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());</a>
-<span class="sourceLineNo">203</span><a id="line.203">                gd.addEnumChoice("Neighborhood type", NhT);</a>
-<span class="sourceLineNo">204</span><a id="line.204">                gd.addNumericField("Min. region size", MinRegionSize, 0);</a>
-<span class="sourceLineNo">205</span><a id="line.205">                gd.addNumericField("Max. eccentricity", MaxEccentricity, 0);</a>
-<span class="sourceLineNo">206</span><a id="line.206">                gd.addNumericField("Axis scale", AxisScale, 1);</a>
-<span class="sourceLineNo">207</span><a id="line.207">                gd.addCheckbox("Show center marks", ShowCenterMark);</a>
-<span class="sourceLineNo">208</span><a id="line.208">                gd.addCheckbox("Show major axes", ShowMajorAxis);</a>
-<span class="sourceLineNo">209</span><a id="line.209">                gd.addCheckbox("Show ellipses", ShowEllipse);</a>
-<span class="sourceLineNo">210</span><a id="line.210">                                </a>
-<span class="sourceLineNo">211</span><a id="line.211">                gd.showDialog();</a>
-<span class="sourceLineNo">212</span><a id="line.212">                if (gd.wasCanceled())</a>
-<span class="sourceLineNo">213</span><a id="line.213">                        return false;</a>
-<span class="sourceLineNo">214</span><a id="line.214"></a>
-<span class="sourceLineNo">215</span><a id="line.215">                NhT = gd.getNextEnumChoice(NeighborhoodType.class);</a>
-<span class="sourceLineNo">216</span><a id="line.216">                MinRegionSize = (int) gd.getNextNumber();</a>
-<span class="sourceLineNo">217</span><a id="line.217">                MaxEccentricity = gd.getNextNumber();</a>
-<span class="sourceLineNo">218</span><a id="line.218">                AxisScale = gd.getNextNumber();</a>
-<span class="sourceLineNo">219</span><a id="line.219">                </a>
-<span class="sourceLineNo">220</span><a id="line.220">                ShowCenterMark = gd.getNextBoolean();</a>
-<span class="sourceLineNo">221</span><a id="line.221">                ShowMajorAxis = gd.getNextBoolean();</a>
-<span class="sourceLineNo">222</span><a id="line.222">                ShowEllipse = gd.getNextBoolean();</a>
-<span class="sourceLineNo">223</span><a id="line.223">                return true;</a>
-<span class="sourceLineNo">224</span><a id="line.224">        }</a>
-<span class="sourceLineNo">225</span><a id="line.225"></a>
-<span class="sourceLineNo">226</span><a id="line.226">}</a>
+<span class="sourceLineNo">199</span><a id="line.199">        private boolean getUserInput() {</a>
+<span class="sourceLineNo">200</span><a id="line.200">                GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());</a>
+<span class="sourceLineNo">201</span><a id="line.201">                gd.addEnumChoice("Neighborhood type", NhT);</a>
+<span class="sourceLineNo">202</span><a id="line.202">                gd.addNumericField("Min. region size", MinRegionSize, 0);</a>
+<span class="sourceLineNo">203</span><a id="line.203">                gd.addNumericField("Max. eccentricity", MaxEccentricity, 0);</a>
+<span class="sourceLineNo">204</span><a id="line.204">                gd.addNumericField("Axis scale", AxisScale, 1);</a>
+<span class="sourceLineNo">205</span><a id="line.205">                gd.addCheckbox("Show center marks", ShowCenterMark);</a>
+<span class="sourceLineNo">206</span><a id="line.206">                gd.addCheckbox("Show major axes", ShowMajorAxis);</a>
+<span class="sourceLineNo">207</span><a id="line.207">                gd.addCheckbox("Show ellipses", ShowEllipse);</a>
+<span class="sourceLineNo">208</span><a id="line.208">                                </a>
+<span class="sourceLineNo">209</span><a id="line.209">                gd.showDialog();</a>
+<span class="sourceLineNo">210</span><a id="line.210">                if (gd.wasCanceled())</a>
+<span class="sourceLineNo">211</span><a id="line.211">                        return false;</a>
+<span class="sourceLineNo">212</span><a id="line.212"></a>
+<span class="sourceLineNo">213</span><a id="line.213">                NhT = gd.getNextEnumChoice(NeighborhoodType2D.class);</a>
+<span class="sourceLineNo">214</span><a id="line.214">                MinRegionSize = (int) gd.getNextNumber();</a>
+<span class="sourceLineNo">215</span><a id="line.215">                MaxEccentricity = gd.getNextNumber();</a>
+<span class="sourceLineNo">216</span><a id="line.216">                AxisScale = gd.getNextNumber();</a>
+<span class="sourceLineNo">217</span><a id="line.217">                </a>
+<span class="sourceLineNo">218</span><a id="line.218">                ShowCenterMark = gd.getNextBoolean();</a>
+<span class="sourceLineNo">219</span><a id="line.219">                ShowMajorAxis = gd.getNextBoolean();</a>
+<span class="sourceLineNo">220</span><a id="line.220">                ShowEllipse = gd.getNextBoolean();</a>
+<span class="sourceLineNo">221</span><a id="line.221">                return true;</a>
+<span class="sourceLineNo">222</span><a id="line.222">        }</a>
+<span class="sourceLineNo">223</span><a id="line.223"></a>
+<span class="sourceLineNo">224</span><a id="line.224">}</a>
 
 
 

@@ -70,12 +70,12 @@
 <span class="sourceLineNo">060</span><a id="line.60">                        (new ImagePlus("Quantized Index Color Image (" + nCols + " colors)", idxIp)).show();</a>
 <span class="sourceLineNo">061</span><a id="line.61">                }</a>
 <span class="sourceLineNo">062</span><a id="line.62">                </a>
-<span class="sourceLineNo">063</span><a id="line.63">                if (CREATE_RGB_IMAGE) {</a>
-<span class="sourceLineNo">064</span><a id="line.64">                        // quantize to a full-color RGB image</a>
-<span class="sourceLineNo">065</span><a id="line.65">                        int[] rgbPix = quantizer.quantize(pixels);</a>
-<span class="sourceLineNo">066</span><a id="line.66">                        ColorProcessor rgbIp = new ColorProcessor(cp.getWidth(), cp.getHeight(), rgbPix);</a>
-<span class="sourceLineNo">067</span><a id="line.67">                        (new ImagePlus("Quantized RGB Image (" + nCols + " colors)" , rgbIp)).show();</a>
-<span class="sourceLineNo">068</span><a id="line.68">                }</a>
+<span class="sourceLineNo">063</span><a id="line.63">//              if (CREATE_RGB_IMAGE) {</a>
+<span class="sourceLineNo">064</span><a id="line.64">//                      // quantize to a full-color RGB image</a>
+<span class="sourceLineNo">065</span><a id="line.65">//                      int[] rgbPix = quantizer.quantize(pixels);</a>
+<span class="sourceLineNo">066</span><a id="line.66">//                      ColorProcessor rgbIp = new ColorProcessor(cp.getWidth(), cp.getHeight(), rgbPix);</a>
+<span class="sourceLineNo">067</span><a id="line.67">//                      (new ImagePlus("Quantized RGB Image (" + nCols + " colors)" , rgbIp)).show();</a>
+<span class="sourceLineNo">068</span><a id="line.68">//              }</a>
 <span class="sourceLineNo">069</span><a id="line.69">                </a>
 <span class="sourceLineNo">070</span><a id="line.70">                if (LIST_COLOR_TABLE) {</a>
 <span class="sourceLineNo">071</span><a id="line.71">                        quantizer.listColorMap();</a>

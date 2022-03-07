@@ -24,8 +24,8 @@
 <span class="sourceLineNo">014</span><a id="line.14">import ij.process.ImageProcessor;</a>
 <span class="sourceLineNo">015</span><a id="line.15">import imagingbook.lib.ij.IjUtils;</a>
 <span class="sourceLineNo">016</span><a id="line.16">import imagingbook.pub.geometry.basic.Pnt2d;</a>
-<span class="sourceLineNo">017</span><a id="line.17">import imagingbook.pub.regions.SegmentationRegionContour;</a>
-<span class="sourceLineNo">018</span><a id="line.18">import imagingbook.pub.regions.BinaryRegionSegmentation.BinaryRegion;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import imagingbook.pub.regions.BinaryRegion;</a>
+<span class="sourceLineNo">018</span><a id="line.18">import imagingbook.pub.regions.segment.RegionContourSegmentation;</a>
 <span class="sourceLineNo">019</span><a id="line.19"></a>
 <span class="sourceLineNo">020</span><a id="line.20">/**</a>
 <span class="sourceLineNo">021</span><a id="line.21"> * Shows each region's major axis as a vector scaled by the region's eccentricity.</a>
@@ -58,7 +58,7 @@
 <span class="sourceLineNo">048</span><a id="line.48">                }</a>
 <span class="sourceLineNo">049</span><a id="line.49">                </a>
 <span class="sourceLineNo">050</span><a id="line.50">                // perform region segmentation:</a>
-<span class="sourceLineNo">051</span><a id="line.51">                SegmentationRegionContour segmenter = new SegmentationRegionContour((ByteProcessor) ip);</a>
+<span class="sourceLineNo">051</span><a id="line.51">                RegionContourSegmentation segmenter = new RegionContourSegmentation((ByteProcessor) ip);</a>
 <span class="sourceLineNo">052</span><a id="line.52">                List&lt;BinaryRegion&gt; regions = segmenter.getRegions(true);</a>
 <span class="sourceLineNo">053</span><a id="line.53"></a>
 <span class="sourceLineNo">054</span><a id="line.54">                // calculate and register certain region properties:</a>

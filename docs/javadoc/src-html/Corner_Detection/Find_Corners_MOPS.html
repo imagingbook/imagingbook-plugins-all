@@ -23,9 +23,9 @@
 <span class="sourceLineNo">013</span><a id="line.13"></a>
 <span class="sourceLineNo">014</span><a id="line.14">import ij.IJ;</a>
 <span class="sourceLineNo">015</span><a id="line.15">import ij.ImagePlus;</a>
-<span class="sourceLineNo">016</span><a id="line.16">import ij.plugin.filter.PlugInFilter;</a>
-<span class="sourceLineNo">017</span><a id="line.17">import ij.process.ImageProcessor;</a>
-<span class="sourceLineNo">018</span><a id="line.18">import imagingbook.lib.ij.GenericDialogPlus;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import ij.gui.GenericDialog;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import ij.plugin.filter.PlugInFilter;</a>
+<span class="sourceLineNo">018</span><a id="line.18">import ij.process.ImageProcessor;</a>
 <span class="sourceLineNo">019</span><a id="line.19">import imagingbook.pub.corners.Corner;</a>
 <span class="sourceLineNo">020</span><a id="line.20">import imagingbook.pub.corners.GradientCornerDetector;</a>
 <span class="sourceLineNo">021</span><a id="line.21">import imagingbook.pub.corners.MopsCornerDetector;</a>
@@ -80,7 +80,7 @@
 <span class="sourceLineNo">070</span><a id="line.70">    </a>
 <span class="sourceLineNo">071</span><a id="line.71">        private boolean showDialog() {</a>
 <span class="sourceLineNo">072</span><a id="line.72">                // display dialog , return false if cancelled or on error.</a>
-<span class="sourceLineNo">073</span><a id="line.73">                GenericDialogPlus dlg = new GenericDialogPlus("Harris Corner Detector");</a>
+<span class="sourceLineNo">073</span><a id="line.73">                GenericDialog dlg = new GenericDialog("Harris Corner Detector");</a>
 <span class="sourceLineNo">074</span><a id="line.74">                </a>
 <span class="sourceLineNo">075</span><a id="line.75">                dlg.addCheckbox("Apply pre-filter", params.doPreFilter);</a>
 <span class="sourceLineNo">076</span><a id="line.76">                dlg.addNumericField("Smoothing radius (\u03C3)", params.sigma, 3);</a>
