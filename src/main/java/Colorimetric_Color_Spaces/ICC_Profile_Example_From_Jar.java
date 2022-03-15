@@ -35,7 +35,7 @@ public class ICC_Profile_Example_From_Jar implements PlugIn {
 	
 	public void run(String arg) {
 		
-		ResourceLocation loc = new imagingbook.lib.color.DATA.iccProfiles.Resources();
+		ResourceLocation loc = new imagingbook.lib.color.iccProfiles.RLOC();
 		
 		IJ.log("Reading from JAR: " + (loc.insideJAR()));
 		choices = loc.getResourceNames();
