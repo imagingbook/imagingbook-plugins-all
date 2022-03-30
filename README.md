@@ -1,5 +1,7 @@
 # imagingbook-plugins-all
 
+**NOTE:** This repository is currently frozen at Release 3.1 (imagingbook-common) and will be re-structured in the future (using modular Maven dependencies).
+
 This repository provides Java source code supplementing 
 the digital image processing books by W. Burger & M. J. Burge
 (see [imagingbook.com](https://imagingbook.com) for details).
