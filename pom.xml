@@ -25,20 +25,24 @@
 		</repository>
 	</repositories>
 
-	<dependencies>	
+	<dependencies>
+	
 		<dependency>
 			<groupId>net.imagej</groupId>
 			<artifactId>ij</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.github.librepdf</groupId>
 			<artifactId>openpdf</artifactId>
-		</dependency>	
+		</dependency>
+		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook-common</artifactId>
 			<version>3.1</version>
 		</dependency>
+		
 	</dependencies>
 	
 	<build>
