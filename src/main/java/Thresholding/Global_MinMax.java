@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Thresholding.Global;
+package Thresholding;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -22,7 +22,7 @@ import imagingbook.pub.threshold.global.MinMaxThresholder;
  * @author WB
  * @version 2022/04/02
  */
-public class Threshold_MinMax implements PlugInFilter {
+public class Global_MinMax implements PlugInFilter {
 	
 	@Override
 	public int setup(String arg, ImagePlus imp) {

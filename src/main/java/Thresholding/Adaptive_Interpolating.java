@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Thresholding.Adaptive;
+package Thresholding;
 
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -23,7 +23,7 @@ import imagingbook.pub.threshold.adaptive.InterpolatingThresholder.Parameters;
  * @author WB
  * @version 2022/04/01
  */
-public class Threshold_Interpolating implements PlugInFilter {
+public class Adaptive_Interpolating implements PlugInFilter {
 	
 	private static Parameters params = new Parameters();
 

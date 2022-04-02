@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Thresholding.Global;
+package Thresholding;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -14,34 +14,34 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.threshold.global.GlobalThresholder;
-import imagingbook.pub.threshold.global.MeanThresholder;
+import imagingbook.pub.threshold.global.IsodataThresholder;
 
 /**
- * Demo plugin showing the use of the {@link MeanThresholder} class.
- *
+ * Demo plugin showing the use of the {@link IsodataThresholder} class.
+ * 
  * @author WB
  * @version 2022/04/02
  */
-public class Threshold_Mean implements PlugInFilter {
+public class Global_Isodata implements PlugInFilter {
 
 	@Override
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
 	}
-	
+
 	@Override
 	public void run(ImageProcessor ip) {
 		ByteProcessor bp = (ByteProcessor) ip;
-
-		GlobalThresholder thr = new MeanThresholder();
+		
+		GlobalThresholder thr = new IsodataThresholder();
 		int q = thr.getThreshold(bp);
-		if (q >= 0) {
+		
+		if (q > 0) {
 			IJ.log("threshold = " + q);
-			ip.threshold(q);
+			bp.threshold(q);
 		}
 		else {
 			IJ.showMessage("no threshold found");
-		}	
-
+		}
 	}
 }

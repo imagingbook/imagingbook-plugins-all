@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Thresholding.Adaptive;
+package Thresholding;
 
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -20,13 +20,13 @@ import imagingbook.lib.ij.IjUtils;
  * @author WB
  * @version 2022/04/01
  */
-public class Threshold_Adaptive_All implements PlugInFilter {
+public class Adaptive_All implements PlugInFilter {
 	
 	enum Algorithm {
-		Bernsen(Threshold_Bernsen.class), 
-		Interpolating(Threshold_Interpolating.class),
-		Niblack(Threshold_Niblack.class),
-		Sauvola(Threshold_Sauvola.class);
+		Bernsen(Adaptive_Bernsen.class), 
+		Interpolating(Adaptive_Interpolating.class),
+		Niblack(Adaptive_Niblack.class),
+		Sauvola(Adaptive_Sauvola.class);
 		
 		final Class<? extends PlugInFilter> pluginClass;
 		

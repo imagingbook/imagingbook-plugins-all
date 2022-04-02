@@ -6,55 +6,55 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Thresholding.Adaptive;
+package Thresholding;
 
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.threshold.adaptive.NiblackThresholder;
-import imagingbook.pub.threshold.adaptive.NiblackThresholder.Parameters;
-import imagingbook.pub.threshold.adaptive.NiblackThresholder.RegionType;
+import imagingbook.pub.threshold.adaptive.SauvolaThresholder;
+import imagingbook.pub.threshold.adaptive.SauvolaThresholder.Parameters;
 
 /**
- * Demo plugin showing the use of the {@link NiblackThresholder} class.
- * 
+ * Demo plugin showing the use of the {@link SauvolaThresholder} class.
+ *
  * @author WB
  * @version 2022/04/01
  */
-public class Threshold_Niblack implements PlugInFilter {
+public class Adaptive_Sauvola implements PlugInFilter {
 	
-//	enum RegionType { Box, Disk, Gaussian }
-	
-	private static RegionType regType = RegionType.Box;
 	private static Parameters params = new Parameters();
-
+	private static boolean showThresholdImage = false;
+	
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
 	}
 
 	public void run(ImageProcessor ip) {
+		
 		if (!runDialog(params))
 			return;
 		
 		ByteProcessor I = (ByteProcessor) ip;
-		NiblackThresholder thr = NiblackThresholder.create(regType, params);
+		SauvolaThresholder thr = new SauvolaThresholder(params);
 		ByteProcessor Q = thr.getThreshold(I);
 		thr.threshold(I, Q);
+		
+		if (showThresholdImage) {
+			(new ImagePlus("Sauvola-Threshold", Q)).show();
+		}
 	}
 	
 	boolean runDialog(Parameters params) {
 		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
-		gd.addEnumChoice("Region type", regType);
 		params.addToDialog(gd);
 		
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			return false;
 		}
-		
-		regType = gd.getNextEnumChoice(RegionType.class);
+
 		params.getFromDialog(gd);
 		return true;
 	}

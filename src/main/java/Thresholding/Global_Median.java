@@ -6,7 +6,7 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Thresholding.Global;
+package Thresholding;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -14,17 +14,15 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.threshold.global.GlobalThresholder;
-import imagingbook.pub.threshold.global.QuantileThresholder;
+import imagingbook.pub.threshold.global.MedianThresholder;
 
 /**
- * Demo plugin showing the use of the {@link QuantileThresholder} class.
+ * Demo plugin showing the use of the {@link MedianThresholder} class.
  * 
  * @author WB
  * @version 2022/04/02
  */
-public class Threshold_Quantile implements PlugInFilter {
-	
-	static double quantile = 0.5;
+public class Global_Median implements PlugInFilter {
 
 	@Override
 	public int setup(String arg, ImagePlus imp) {
@@ -35,12 +33,9 @@ public class Threshold_Quantile implements PlugInFilter {
 	public void run(ImageProcessor ip) {
 		ByteProcessor bp = (ByteProcessor) ip;
 		
-		quantile = IJ.getNumber("Black quantile [0,1]", quantile);
-		if (quantile < 0) quantile = 0;
-		if (quantile > 1) quantile = 1;
-		
-		GlobalThresholder thr = new QuantileThresholder(quantile);
+		GlobalThresholder thr = new MedianThresholder();
 		int q = thr.getThreshold(bp);
+		
 		if (q >= 0) {
 			IJ.log("threshold = " + q);
 			ip.threshold(q);
@@ -48,5 +43,7 @@ public class Threshold_Quantile implements PlugInFilter {
 		else {
 			IJ.showMessage("no threshold found");
 		}
+		
+
 	}
 }

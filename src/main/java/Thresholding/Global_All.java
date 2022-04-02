@@ -6,51 +6,61 @@
  * Copyright (c) 2006-2020 Wilhelm Burger, Mark J. Burge. All rights reserved. 
  * Visit http://imagingbook.com for additional details.
  *******************************************************************************/
-package Thresholding.Adaptive;
+package Thresholding;
 
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.pub.threshold.adaptive.AdaptiveThresholder;
-import imagingbook.pub.threshold.adaptive.BernsenThresholder;
-import imagingbook.pub.threshold.adaptive.BernsenThresholder.Parameters;
+import imagingbook.lib.ij.IjUtils;
 
 /**
- * Demo plugin showing the use of the {@link BernsenThresholder} class.
+ * Demo plugin making available a selection of global thresholders.
  * 
  * @author WB
- * @version 2022/04/01
+ * @version 2022/04/02
  */
-public class Threshold_Bernsen implements PlugInFilter {
+public class Global_All implements PlugInFilter {
 	
-	private static Parameters params = new Parameters();
+	enum Algorithm {
+		IsoData(Global_Isodata.class), 
+		MaxEntropy(Global_MaxEntropy.class),
+		Mean(Global_Mean.class),
+		Median(Global_Median.class),
+		MinError(Global_MinError.class),
+		MinMax(Global_MinMax.class),
+		Otsu(Global_Otsu.class);
+		
+		final Class<? extends PlugInFilter> pluginClass;
+		
+		Algorithm(Class<? extends PlugInFilter> cls) {
+			this.pluginClass = cls;
+		}
+	}
 	
+	private static Algorithm algo = Algorithm.IsoData;
+	private ImagePlus imp = null;
+	
+	@Override
 	public int setup(String arg, ImagePlus imp) {
+		this.imp = imp;
 		return DOES_8G;
 	}
 
+	@Override
 	public void run(ImageProcessor ip) {
-		if (!runDialog(params))
-			return;
-		
-		ByteProcessor I = (ByteProcessor) ip;	
-		AdaptiveThresholder thr = new BernsenThresholder(params);
-		ByteProcessor Q = thr.getThreshold(I);
-		thr.threshold(I, Q);
-	}
-	
-	boolean runDialog(Parameters params) {
 		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
-		params.addToDialog(gd);
+		gd.addEnumChoice("Algorithm", algo);
 		
 		gd.showDialog();
-		if (gd.wasCanceled()) {
-			return false;
-		}	
+		if (gd.wasCanceled())
+			return;
 		
-		params.getFromDialog(gd);
-		return true;
+		algo = gd.getNextEnumChoice(Algorithm.class);
+		imp.unlock();
+		
+		IjUtils.runPlugInFilter(algo.pluginClass);
+//		IJ.runPlugIn(imp, algo.pluginClass.getCanonicalName(), null);
 	}
+
 }
