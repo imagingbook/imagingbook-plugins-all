@@ -38,6 +38,7 @@ import ij.process.ImageProcessor;
  * @version 2021/04/06 (added automatic image upscaling, open PFD after export)
  * @version 2021/04/21 (converted from PlugInFilter to PlugIn)
  */
+@Deprecated		// newer version available!
 public class Export_PDF_With_Overlay implements PlugIn {
 	
 	private static boolean IncludeImage = true;

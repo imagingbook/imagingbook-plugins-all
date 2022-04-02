@@ -19,49 +19,58 @@ import imagingbook.pub.dct.Dct2d;
 /** 
  * Calculates and displays the 2-dimensional DCT after converting the input image to a float image.
  * of arbitrary size.
- * Optionally, either a direct DCT or a fast implementation is used. 
- * @author W. Burger
- * @version 2019-12-26
+ * Optionally, either a direct DCT or a fast implementation is used.
+ * 
+ * @author WB
+ * @version 2022/04/01
+ * 
+ * @see Dct2d
  */
 public class DCT_2D_Demo implements PlugInFilter {
 	
-	static boolean useFastMode = true;
-	static boolean showLogSpectrum = true;
-	static boolean reconstructImage = false;
+	private static boolean UseFastMode = true;
+	private static boolean ShowLogSpectrum = true;
+	private static boolean ReconstructImage = false;
+	
+	private ImagePlus imp;
 
-	public int setup(String arg, ImagePlus im) {
+	@Override
+	public int setup(String arg, ImagePlus imp) {
+		this.imp = imp;
 		return DOES_8G + DOES_32 + NO_CHANGES;
 	}
 
+	@Override
 	public void run(ImageProcessor ip) {
-		if (!runDialog()) return;
+		if (!runDialog()) 
+			return;
 
 		FloatProcessor fp = ip.convertToFloatProcessor();
 		float[][] g = fp.getFloatArray();
 
 		// create a new DCT instance:
 		Dct2d.Float dct = new Dct2d.Float();
-		dct.useFastMode(useFastMode);
+		dct.useFastMode(UseFastMode);
 		
 		// calculate the forward DCT:
 		dct.forward(g);
 
 		FloatProcessor spectrum = new FloatProcessor(g);
-		if (showLogSpectrum) {
+		if (ShowLogSpectrum) {
 			spectrum.abs();
 			spectrum.add(1.0);
 			spectrum.log();
 		}
 		spectrum.resetMinAndMax();
-		new ImagePlus("DCT Spectrum", spectrum).show();
+		new ImagePlus(imp.getShortTitle() + "-DCT (log. magnitude)", spectrum).show();
 		
 		// ----------------------------------------------------
 		
-		if (reconstructImage) {
+		if (ReconstructImage) {
 			dct.inverse(g);
 			FloatProcessor reconstructed = new FloatProcessor(g);
 			reconstructed.setMinAndMax(0, 255);
-			new ImagePlus("Reconstructed image", reconstructed).show();
+			new ImagePlus(imp.getShortTitle() + "-reconstructed", reconstructed).show();
 		}
 
 	}
@@ -70,15 +79,17 @@ public class DCT_2D_Demo implements PlugInFilter {
 
 	private boolean runDialog() {
 		GenericDialog gd = new GenericDialog(getClass().getSimpleName());
-		gd.addCheckbox("Use fast transform", useFastMode);
-		gd.addCheckbox("Show absolute/log spectrum", showLogSpectrum);
-		gd.addCheckbox("Reconstruct the input image", reconstructImage);
+		gd.addCheckbox("Use fast transform", UseFastMode);
+		gd.addCheckbox("Show absolute/log spectrum", ShowLogSpectrum);
+		gd.addCheckbox("Reconstruct the input image", ReconstructImage);
+		
 		gd.showDialog(); 
 		if (gd.wasCanceled()) 
 			return false;
-		useFastMode = gd.getNextBoolean();
-		showLogSpectrum = gd.getNextBoolean();
-		reconstructImage = gd.getNextBoolean();
+		
+		UseFastMode = gd.getNextBoolean();
+		ShowLogSpectrum = gd.getNextBoolean();
+		ReconstructImage = gd.getNextBoolean();
 		return true;
 	}
 

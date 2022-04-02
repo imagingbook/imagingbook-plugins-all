@@ -12,7 +12,9 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.Panel;
 import java.awt.TextField;
+import java.util.Locale;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
@@ -29,15 +31,13 @@ import imagingbook.pub.geometry.mappings.linear.AffineMapping2D;
  */
 public class Map_Affine_Matrix implements PlugInFilter {
 
-	private static String[][] elementNames = {
+	private static String[][] ElemNames = {
 			{ "a00", "a01", "a02" },
 			{ "a10", "a11", "a12" }};
 
 	private static double[][] A = {
 			{ 1, 0, 0 },
 			{ 0, 1, 0 }};
-	
-	private TextField[] tf = new TextField[A[0].length * A.length];
 	
 	@Override
 	public int setup(String arg, ImagePlus imp) {
@@ -53,54 +53,54 @@ public class Map_Affine_Matrix implements PlugInFilter {
 		new ImageMapper(imap).map(ip);
 	}
 
-
+	// --------------------------------------------------------------------------------------
 	// Dialog example taken from http://rsbweb.nih.gov/ij/plugins/download/Dialog_Grid_Demo.java
 
 	private boolean showDialog() {
 		GenericDialog gd = new GenericDialog("Enter affine transformation matrix");
-		gd.addPanel(makePanel(gd));
+		
+		// TODO: define proper class to hold all these items (instances to be passed to/from generic dialog)
+		TextField[] txtField = new TextField[A[0].length * A.length];
+		Panel panel = makePanel(A, ElemNames, txtField);
+		gd.addPanel(panel);
+		
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			return false;
 		}
-		getValues();
-		return true;
+		
+		return getPanelValues(A, txtField);
 	}
 
-	private Panel makePanel(GenericDialog gd) {
+	private Panel makePanel(double[][] vals, String[][] names, TextField[] textfield) {
 		Panel panel = new Panel();
-		panel.setLayout(new GridLayout(A.length, A[0].length * 2));
+		panel.setLayout(new GridLayout(vals.length, vals[0].length * 2));
 		int i = 0;
-		for (int row = 0; row < A.length; row++) {
-			for (int col = 0; col < A[0].length; col++) {
-				tf[i] = new TextField("" + A[row][col]);
-				panel.add(tf[i]);
-				panel.add(new Label(elementNames[row][col]));
+		for (int row = 0; row < vals.length; row++) {
+			for (int col = 0; col < vals[row].length; col++) {
+				textfield[i] = new TextField(String.format(Locale.US, "%.2f", vals[row][col]));
+				panel.add(textfield[i]);
+				panel.add(new Label(names[row][col]));
 				i++;
 			}
 		}
 		return panel;
 	}
 
-	private void getValues() {
+	private boolean getPanelValues(double[][] A, TextField[] tf) {
 		int i = 0; 
 		for (int r = 0; r < A.length; r++) {
 			for (int c = 0; c < A[0].length; c++) {
-				String s = tf[i].getText();
-				A[r][c] = getValue(s);
+				try {
+					A[r][c] = Double.valueOf(tf[i].getText());
+				} catch (NumberFormatException e) {	
+					IJ.log("NumberFormatException: " + e.getMessage());
+					return false;
+				}
 				i++;
 			}
 		}
-	}
-
-	private double getValue(String valueAsText) {
-		Double d;
-		try {
-			d = new Double(valueAsText);
-		} catch (NumberFormatException e) {
-			d = null;
-		}
-		return (d == null) ? Double.NaN : d.doubleValue();
+		return true;
 	}
 
 }

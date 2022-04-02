@@ -15,20 +15,20 @@ import imagingbook.lib.image.data.PixelPack;
  * See the inner class {@link JitterFilter} for the actual implementation
  * of the filter.
  * 
- * @author wilbur
+ * @author WB
  * @version 2021/01/12
  */
 public class Jitter_Filter_GenericFilter implements PlugInFilter {
 	
-	private final int rad = 3;	// the radius (should be user-specified)
+	private static final int RAD = 3;	// the radius (should be user-specified)
 		
 	public int setup(String arg, ImagePlus im) {
 		return DOES_ALL;
 	}
 
 	public void run(ImageProcessor ip) {
-		GenericFilter gf = new JitterFilter();
-		gf.applyTo(ip);
+		GenericFilter filter = new JitterFilter();	// see below
+		filter.applyTo(ip);
 	}
 	
 	// --------------------------------------------------------------
@@ -37,14 +37,14 @@ public class Jitter_Filter_GenericFilter implements PlugInFilter {
 	 * This inner class actually implements the Jitter filter,
 	 * based on the functionality provided by {@link GenericFilter}.
 	 */
-	public class JitterFilter extends GenericFilterVector {
-		private final int d = 2 * rad + 1;	// width/height of the "kernel"
+	private static class JitterFilter extends GenericFilterVector {
+		private final int dist = 2 * RAD + 1;	// width/height of the "kernel"
 		private final Random rnd = new Random();
 		
 		@Override
 		protected float[] doPixel(PixelPack source, int u, int v) {
-			int rx = rnd.nextInt(d) - rad;
-			int ry = rnd.nextInt(d) - rad;
+			int rx = rnd.nextInt(dist) - RAD;
+			int ry = rnd.nextInt(dist) - RAD;
 			return source.getVec(rx, ry);
 		}
 	}

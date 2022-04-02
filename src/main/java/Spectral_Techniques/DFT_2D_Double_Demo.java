@@ -22,17 +22,28 @@ import imagingbook.pub.dft.Dft2d;
  * Optionally, either a direct DFT or a fast FFT implementation is used. 
  * Note that the use of double-arrays is rather wasteful in terms 
  * of resources and shown only for demonstration and testing purposes.
+ * 
+ * @author WB
+ * @version 2022/04/01
+ * 
+ * @see Dft2d.Double
  */
 public class DFT_2D_Double_Demo implements PlugInFilter {
 	
-	static boolean useFastMode = true;
-	static boolean showLogSpectrum = true;
-	static boolean reconstructImage = true;
+	private static boolean UseFastMode = true;
+	private static boolean ShowLogSpectrum = true;
+	private static boolean ShowCenteredSpectrum = true;
+	private static boolean ReconstructImage = true;
 	
+	private ImagePlus imp;
+	
+	@Override
 	public int setup(String arg, ImagePlus imp) {
+		this.imp = imp;
 		return DOES_ALL + NO_CHANGES;
 	}
 
+	@Override
 	public void run(ImageProcessor ip) {
 		if (!runDialog()) 
 			return;
@@ -43,30 +54,40 @@ public class DFT_2D_Double_Demo implements PlugInFilter {
 		double[][] im = new double[fp.getWidth()][fp.getHeight()];
 		
 		Dft2d.Double dft2 = new Dft2d.Double();
-		dft2.useFastMode(useFastMode);
+		dft2.useFastMode(UseFastMode);
 		
 		dft2.forward(re, im);
 		
 		double[][] mag = dft2.getMagnitude(re, im);
 		FloatProcessor ms = new FloatProcessor(Matrix.toFloat(mag));
-		if (showLogSpectrum) {
+		
+		ms = (FloatProcessor) ms.duplicate();
+		if (ShowLogSpectrum) {
 			ms.add(1.0);
 			ms.log();
 		}
 		ms.resetMinAndMax();
-		new ImagePlus("DFT Magnitude Spectrum", ms).show();
+		
+		if (ShowCenteredSpectrum) {	// strange this only works here (not before) - big in Blitter?
+			Dft2d.swapQuadrants(ms);
+		}
+		
+		String title = (ShowLogSpectrum) ?
+				imp.getShortTitle() + "-DFT (log. magnitude)" :
+				imp.getShortTitle() + "-DFT (magnitude)";
+		new ImagePlus(title, ms).show();
 		
 		// ----------------------------------------------------
 		
-		if (reconstructImage) {
+		if (ReconstructImage) {
 			dft2.inverse(re, im);
 			FloatProcessor reIp = new FloatProcessor(Matrix.toFloat(re));
 			reIp.setMinAndMax(0, 255);
-			new ImagePlus("Reconstructed image (real part)", reIp).show();
+			new ImagePlus(imp.getShortTitle() + "-reconstructed (real part)", reIp).show();
 			
 			FloatProcessor imIp = new FloatProcessor(Matrix.toFloat(im));
 			imIp.setMinAndMax(0, 255);
-			new ImagePlus("Reconstructed image (imaginary part)",imIp).show();
+			new ImagePlus(imp.getShortTitle() + "-reconstructed (imag. part)",imIp).show();
 		}
 	}
 	
@@ -74,15 +95,19 @@ public class DFT_2D_Double_Demo implements PlugInFilter {
 
 	private boolean runDialog() {
 		GenericDialog gd = new GenericDialog(getClass().getSimpleName());
-		gd.addCheckbox("Use FFT", useFastMode);
-		gd.addCheckbox("Show logarithmic spectrum", showLogSpectrum);
-		gd.addCheckbox("Reconstruct image", reconstructImage);
+		gd.addCheckbox("Use FFT", UseFastMode);
+		gd.addCheckbox("Show logarithmic spectrum", ShowLogSpectrum);
+		gd.addCheckbox("Show centered spectrum", ShowCenteredSpectrum);
+		gd.addCheckbox("Reconstruct image", ReconstructImage);
+		
 		gd.showDialog(); 
 		if (gd.wasCanceled()) 
 			return false;
-		useFastMode = gd.getNextBoolean();
-		showLogSpectrum = gd.getNextBoolean();
-		reconstructImage = gd.getNextBoolean();
+		
+		UseFastMode = gd.getNextBoolean();
+		ShowLogSpectrum = gd.getNextBoolean();
+		ShowCenteredSpectrum = gd.getNextBoolean();
+		ReconstructImage = gd.getNextBoolean();
 		return true;
 	}
 

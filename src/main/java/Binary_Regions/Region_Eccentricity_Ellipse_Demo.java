@@ -30,11 +30,10 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
-import imagingbook.lib.math.eigen.Eigensolver2x2;
 import imagingbook.pub.geometry.basic.NeighborhoodType2D;
 import imagingbook.pub.geometry.basic.Pnt2d;
-import imagingbook.pub.regions.segment.RegionContourSegmentation;
 import imagingbook.pub.regions.BinaryRegion;
+import imagingbook.pub.regions.segment.RegionContourSegmentation;
 
 /**
  * Performs binary region segmentation, then
@@ -86,6 +85,7 @@ public class Region_Eccentricity_Ellipse_Demo implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
+		
 		if (!IjUtils.isBinary(ip)) {
 			IJ.showMessage("Plugin requires a binary image!");
 			return;

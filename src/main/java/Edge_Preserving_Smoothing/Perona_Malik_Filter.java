@@ -8,7 +8,6 @@
  *******************************************************************************/
 package Edge_Preserving_Smoothing;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
@@ -18,7 +17,6 @@ import imagingbook.lib.filter.GenericFilter;
 import imagingbook.lib.util.progress.ProgressMonitor;
 import imagingbook.lib.util.progress.ij.ProgressBarMonitor;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.ColorMode;
-import imagingbook.pub.edgepreservingfilters.PeronaMalikF.ConductanceFunction;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikF.Parameters;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterScalar;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterVector;
@@ -42,6 +40,7 @@ public class Perona_Malik_Filter implements PlugInFilter {
 
 	public void run(ImageProcessor ip) {
 		isColor = (ip instanceof ColorProcessor);
+		
 		if (!getParameters())
 			return;
 		
@@ -62,26 +61,15 @@ public class Perona_Malik_Filter implements PlugInFilter {
 	
 	private boolean getParameters() {
 		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
-		gd.addNumericField("Number of iterations", params.iterations, 0);
-		gd.addNumericField("Alpha (0,..,0.25)", params.alpha, 2);
-		gd.addNumericField("K", params.kappa, 0);
-		gd.addEnumChoice("Conductance function", params.conductanceFunType);
-		if (isColor) {
-			gd.addEnumChoice("Color method", params.colorMode);
-			//gd.addCheckbox("Use linear RGB", params.useLinearRgb);
-		}
+		params.addToDialog(gd);
+		
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return false;
-		params.iterations = (int) Math.max(gd.getNextNumber(), 1);
-		params.alpha = (float) gd.getNextNumber();
-		params.kappa = (float) gd.getNextNumber();
-		params.conductanceFunType = gd.getNextEnumChoice(ConductanceFunction.Type.class);
-		if (isColor) {
-			params.colorMode = gd.getNextEnumChoice(ColorMode.class);
-			//params.useLinearRgb = gd.getNextBoolean();
-		}
-		return true;
+		
+		params.getFromDialog(gd);
+		
+		return params.validate();
 	}
 }
 

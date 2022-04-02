@@ -21,7 +21,7 @@ import imagingbook.lib.image.ImageGraphics;
  * It uses anti-aliased drawing operations provided by 
  * imagingbook's {@link ImageGraphics} class.
  * 
- * @author W. Burger
+ * @author WB
  * @version 2021/10/07
  */
 public class Draw_Test_Grid implements PlugIn {

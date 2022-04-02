@@ -11,6 +11,7 @@ package Hough_Transform;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
+import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.hough.HoughTransformLines;
 import imagingbook.pub.hough.HoughTransformLines.Parameters;
@@ -23,8 +24,8 @@ import imagingbook.pub.hough.lines.HoughLine;
  * Output of results is text-only.
  * 
  * @author WB
- * @version 2018/12/25
-*/
+ * @version 2022/04/01
+ */
 public class Hough_Lines_Minimal implements PlugInFilter {
 
 	public int setup(String arg, ImagePlus im) {
@@ -38,7 +39,7 @@ public class Hough_Lines_Minimal implements PlugInFilter {
 		params.nRad = 256;		// = n
 
 		// compute the Hough Transform:
-		HoughTransformLines ht = new HoughTransformLines(ip, params);
+		HoughTransformLines ht = new HoughTransformLines((ByteProcessor)ip, params);
 		
 		// retrieve the 5 strongest lines with min. 50 points
 		HoughLine[] lines = ht.getLines(50, 5);

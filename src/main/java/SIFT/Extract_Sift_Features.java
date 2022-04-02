@@ -15,24 +15,29 @@ import java.util.List;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
+import ij.gui.Overlay;
 import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.overlay.ColoredStroke;
+import imagingbook.lib.ij.overlay.ShapeOverlayAdapter;
 import imagingbook.pub.sift.SiftDescriptor;
 import imagingbook.pub.sift.SiftDetector;
-import imagingbook.pub.sift.util.Colors;
-import imagingbook.pub.sift.util.SiftOverlay;
+import imagingbook.pub.sift.SiftDetector.Parameters;
+
+
 
 /**
  * This plugin extracts multi-scale SIFT features from the current 
  * image and displays them as M-shaped markers.
  * List of keypoints (if selected) is sorted by descending magnitude.
- * <br>
- * 2020/10/04: changed to use {@link SiftOverlay} (subclass of {@link imagingbook.lib.ij.CustomOverlay})
  *  
  * @author W. Burger
- * @version 2020/10/04
+ * @version 2022/04/01
+ * 
+ * @see SiftDetector
+ * @see SiftDescriptor
  */
 
 public class Extract_Sift_Features implements PlugInFilter {
@@ -41,19 +46,29 @@ public class Extract_Sift_Features implements PlugInFilter {
 		LogStream.redirectSystem();
 	}
 
+	private static Parameters params = new Parameters();
 	private static double FeatureScale = 1.0; // 1.5;
 	private static double FeatureStrokewidth = 0.5;
 	private static boolean ListSiftFeatures = false;
+	
+	private static Color[] MarkerColors = {
+			new Color(240,0,0), 	// red
+			new Color(0,185,15), 	// green
+			new Color(0,60,255), 	// blue
+			new Color(255,0,200), 	// magenta
+			new Color(255,155,0)	// yellow
+		};
 
 	ImagePlus imp;
-	Color[] colors = Colors.DefaultDisplayColors;
-	SiftDetector.Parameters params;
+	
 
+	@Override
 	public int setup(String arg0, ImagePlus imp) {
 		this.imp = imp;
 		return DOES_8G + NO_CHANGES;
 	}
 
+	@Override
 	public void run(ImageProcessor ip) {
 		params =  new SiftDetector.Parameters();
 						
@@ -75,13 +90,13 @@ public class Extract_Sift_Features implements PlugInFilter {
 
 		ImageProcessor ip2 = ip.duplicate();
 		ImagePlus imp2 = new ImagePlus(imp.getShortTitle() + "-SIFT", ip2);
-	
-		SiftOverlay oly = new SiftOverlay();
-		oly.setFeatureScale(FeatureScale);
-		oly.strokeWidth(FeatureStrokewidth);
+		
+		Overlay oly = new Overlay();
+		ShapeOverlayAdapter ola = new ShapeOverlayAdapter(oly);
 		for (SiftDescriptor sf : features) {
-			oly.strokeColor(colors[sf.getScaleLevel() % colors.length]);
-			oly.addItem(sf);
+			Color col = MarkerColors[sf.getScaleLevel() % MarkerColors.length];
+			ColoredStroke stroke = new ColoredStroke(FeatureStrokewidth, col);
+			ola.addShape(sf.getShape(FeatureScale), stroke);
 		}
 
 		imp2.setOverlay(oly);
@@ -89,24 +104,27 @@ public class Extract_Sift_Features implements PlugInFilter {
 	}
 	
 	private boolean showDialog() {
-			GenericDialog gd = new GenericDialog("Set SIFT parameters");
-			gd.addNumericField("tMag :", params.tMag, 3, 6, "");
-			gd.addNumericField("rMax :", params.rhoMax, 3, 6, "");
-			gd.addNumericField("orientation histogram smoothing :", params.nSmooth, 0, 6, "");
-			gd.addCheckbox("list all SIFT features (might be many!)", ListSiftFeatures);
-			gd.showDialog();
-			if (gd.wasCanceled()) {
-				return false;
-			}
-			params.tMag = gd.getNextNumber();
-			params.rhoMax = gd.getNextNumber();
-			params.nSmooth = (int) gd.getNextNumber();
-			ListSiftFeatures = gd.getNextBoolean();
-			if(gd.invalidNumber()) {
-				IJ.error("Input Error", "Invalid input number");
-				return false;
-			}	
-			return true;
+		// TODO: use ParameterBundle methods
+		GenericDialog gd = new GenericDialog("Set SIFT parameters");
+		gd.addNumericField("tMag :", params.tMag, 3, 6, "");
+		gd.addNumericField("rMax :", params.rhoMax, 3, 6, "");
+		gd.addNumericField("orientation histogram smoothing :", params.nSmooth, 0, 6, "");
+		gd.addCheckbox("list all SIFT features (might be many!)", ListSiftFeatures);
+		
+		gd.showDialog();
+		if (gd.wasCanceled()) {
+			return false;
+		}
+		
+		params.tMag = gd.getNextNumber();
+		params.rhoMax = gd.getNextNumber();
+		params.nSmooth = (int) gd.getNextNumber();
+		ListSiftFeatures = gd.getNextBoolean();
+		if(gd.invalidNumber()) {
+			IJ.error("Input Error", "Invalid input number");
+			return false;
+		}	
+		return true;
 	}
 	
 }

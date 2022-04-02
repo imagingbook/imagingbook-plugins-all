@@ -18,16 +18,27 @@ import imagingbook.pub.histogram.HistogramMatcher;
 import imagingbook.pub.histogram.HistogramPlot;
 import imagingbook.pub.histogram.Util;
 
+/**
+ * Adapts image intensities to match the histogram of another image.
+ * 
+ * @author WB
+ * 
+ * @see HistogramMatcher
+ * @see HistogramPlot
+ *
+ */
 public class Match_To_Image_Histogram implements PlugInFilter { 
 	
 	ImagePlus imB;	// reference image (selected interactively)
 	
-	public int setup(String arg0, ImagePlus imA) {
+	@Override
+	public int setup(String arg, ImagePlus imA) {
 		return DOES_8G;
 	}
 	
+	@Override
 	public void run(ImageProcessor ipA) {
-		if (!runDialog()) // select the reference image
+		if (!runDialog() || imB == null) // select the reference image
 			return;
 		
 		ImageProcessor ipB = imB.getProcessor();
@@ -40,7 +51,6 @@ public class Match_To_Image_Histogram implements PlugInFilter {
 		(new HistogramPlot(Util.Cdf(hA), "Cumulative Histogram A")).show();
 		(new HistogramPlot(Util.Cdf(hB), "Cumulative Histogram B")).show();
 		
-		
 		HistogramMatcher m = new HistogramMatcher();
 		int[] F = m.matchHistograms(hA, hB);
 		
@@ -52,11 +62,11 @@ public class Match_To_Image_Histogram implements PlugInFilter {
 		int[] hAm = ipA.getHistogram();
 		(new HistogramPlot(hAm, "Histogram A (mod)")).show();
 		(new HistogramPlot(Util.Cdf(hAm), "Cumulative Histogram A (mod)")).show();
-		
 	}
 
 	boolean runDialog() {
 		// get list of open images
+		// TODO: use IjUtils.getOpenImages (as in Linear_Blending)
 		int[] windowList = WindowManager.getIDList();
 		if(windowList==null){
 			IJ.noImage();
@@ -74,14 +84,14 @@ public class Match_To_Image_Histogram implements PlugInFilter {
 		// create dialog and show
 		GenericDialog gd = new GenericDialog("Select Reference Image");
 		gd.addChoice("Reference Image:", windowTitles, windowTitles[0]);
+		
 		gd.showDialog(); 
 		if (gd.wasCanceled()) 
 			return false;
-		else {
-			int img2Index = gd.getNextChoiceIndex();
-			imB = WindowManager.getImage(windowList[img2Index]);
-			return true;
-		}
+		
+		int img2Index = gd.getNextChoiceIndex();
+		imB = WindowManager.getImage(windowList[img2Index]);
+		return true;
 	}
 
 }

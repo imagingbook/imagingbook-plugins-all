@@ -16,12 +16,23 @@ import imagingbook.pub.histogram.HistogramPlot;
 import imagingbook.pub.histogram.PiecewiseLinearCdf;
 import imagingbook.pub.histogram.Util;
 
+/**
+ * Adapts image intensities to match a piecewise-linear histogram.
+ * 
+ * @author WB
+ * 
+ * @see HistogramMatcher
+ * @see HistogramPlot
+ * @see PiecewiseLinearCdf
+ */
 public class Match_To_Piecewise_Linear_Histogram implements PlugInFilter { 
 	
+	@Override
 	public int setup(String arg0, ImagePlus im) {
 		return DOES_8G;
 	}
 	
+	@Override
 	public void run(ImageProcessor ipA) {
 		// get histogram of original image
 		int[] hA = ipA.getHistogram();

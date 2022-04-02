@@ -8,13 +8,16 @@ import imagingbook.lib.image.access.ImageAccessor;
 import imagingbook.lib.image.access.OutOfBoundsStrategy;
 
 /**
- * Jitter filter implemented with 'ImageAccessor' for transparent
+ * Jitter filter implemented with {@link ImageAccessor} for transparent
  * image access.
  * Works for all image types, using nearest-border-pixel strategy.
  * The input image is destructively modified.
  * 
  * @author wilbur
  * @version 2016/11/01
+ * 
+ * @see ImageAccessor
+ * @see OutOfBoundsStrategy
  */
 public class Jitter_Filter_ImageAccessor implements PlugInFilter {
 	
@@ -41,7 +44,7 @@ public class Jitter_Filter_ImageAccessor implements PlugInFilter {
 				int ry = rnd.nextInt(d) - rad;
 				// pick a random position inside the current support region
 				float[] p = ia2.getPix(u + rx, v + ry);
-				// replace the current center pixel
+				// replace the current center pixel in ip1
 				ia1.setPix(u, v, p);
 			}
 		}

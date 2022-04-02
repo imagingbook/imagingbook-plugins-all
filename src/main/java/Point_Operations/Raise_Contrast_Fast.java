@@ -15,14 +15,17 @@ import ij.process.ImageProcessor;
 /**
  * Does the same as {@link Raise_Contrast} but uses the one-dimensional
  * pixel array to read and writes pixel values. Should be fast.
+ * 
  * @author WB
  */
 public class Raise_Contrast_Fast implements PlugInFilter {
 
+	@Override
 	public int setup(String arg, ImagePlus img) {
 		return DOES_8G;
 	}
 	
+	@Override
 	public void run(ImageProcessor ip) {
 		// ip is assumed to be of type ByteProcessor
 		byte[] pixels = (byte[]) ip.getPixels();

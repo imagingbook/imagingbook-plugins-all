@@ -33,11 +33,11 @@ public class Major_Axis_Demo implements PlugInFilter {
 	static Color MajorAxisColor = CenterColor;
 	static int LineWidth = 1;
 	
-	private String title = null;
-
+	private ImagePlus im;
+	
 	public int setup(String arg, ImagePlus im) {
-		title = im.getShortTitle();
-		return DOES_8G + NO_CHANGES;
+		this.im = im;
+		return DOES_8G + NO_CHANGES; 
 	}
 
 	public void run(ImageProcessor ip) {
@@ -79,7 +79,7 @@ public class Major_Axis_Demo implements PlugInFilter {
 		}
 		
 		// display the output image
-		new ImagePlus(title + "-major-axis", cp).show();
+		new ImagePlus(im.getShortTitle() + "-major-axis", cp).show();
 	}
 	
 	private void calculateRegionProperties(BinaryRegion r) {

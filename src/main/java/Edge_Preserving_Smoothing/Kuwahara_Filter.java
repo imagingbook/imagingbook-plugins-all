@@ -25,7 +25,7 @@ import imagingbook.pub.edgepreservingfilters.KuwaharaFilterVector;
  * it includes a centered subregion. This plugin works for all types of images and stacks.
  * 
  * @author WB
- * @version 2021/01/02
+ * @version 2022/03/30
  */
 public class Kuwahara_Filter implements PlugInFilter {
 
@@ -52,18 +52,21 @@ public class Kuwahara_Filter implements PlugInFilter {
 
 	private boolean getParameters() {
 		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
-		gd.addNumericField("Radius (>1)", params.radius, 0);
-		gd.addNumericField("Variance threshold", params.tsigma, 0);
+		params.addToDialog(gd);
 		if (isColor)
-			gd.addCheckbox("Use vector filter", UseVectorFilter);
+			gd.addCheckbox("Use vector filter (color only)", UseVectorFilter);
+		
 		gd.showDialog();
 		if(gd.wasCanceled()) 
 			return false;
-		params.radius = (int) Math.max(gd.getNextNumber(), 1);
-		params.tsigma = Math.max(gd.getNextNumber(), 0);
+		
+		params.getFromDialog(gd);
 		if (isColor)
 			UseVectorFilter = gd.getNextBoolean();
-		return true;
+		
+		params.radius = Math.max(params.radius, 1);
+		params.tsigma = Math.max(params.tsigma, 0);
+		return params.validate();
 	}
 }
 

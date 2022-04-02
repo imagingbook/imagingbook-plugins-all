@@ -14,6 +14,7 @@ import imagingbook.lib.ij.GuiTools;
  * The window size is reduced if too large but the given magnification factor
  * remains always unchanged.
  * 
+ * @author WB
  * @version 2020/10/08
  */
 public class Zoom_Exact implements PlugIn {
@@ -28,11 +29,12 @@ public class Zoom_Exact implements PlugIn {
 		}
 		
 		GenericDialog gd = new GenericDialog("Zoom Exact");
-		gd.addNumericField("Magnification (%): ", GuiTools.getMagnification(im) * 100, 0);
+		gd.addNumericField("Magnification (%): ", GuiTools.getMagnification(im) * 100, 2);
 		gd.addCheckbox("Log output", LOG_OUTPUT);
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return;
+		
 		double mag = gd.getNextNumber() / 100.0;
 		LOG_OUTPUT = gd.getNextBoolean();
 		

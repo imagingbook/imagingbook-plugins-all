@@ -24,10 +24,6 @@ import imagingbook.pub.sift.scalespace.GaussianScaleSpace;
  */
 
 public class Show_DogScaleSpace implements PlugInFilter {
-
-	public int setup(String arg0, ImagePlus arg1) {
-		return DOES_8G + DOES_32 + NO_CHANGES;
-	}
 	
 	static double sigma_0 = 1.6;	// initial scale level
 	static double sigma_s = 0.5;	// original image (sampling) scale
@@ -36,7 +32,13 @@ public class Show_DogScaleSpace implements PlugInFilter {
 	static int P = 4;	// number of octaves
 	static int botLevel = 0;	// index q of bottom level in each octave
 	static int topLevel = Q;	// index q of top level in each octave
+
+	@Override
+	public int setup(String arg0, ImagePlus arg1) {
+		return DOES_8G + DOES_32 + NO_CHANGES;
+	}
 	
+	@Override
 	public void run(ImageProcessor ip) {
 		FloatProcessor fp = (FloatProcessor) ip.convertToFloat();
 		GaussianScaleSpace gss =

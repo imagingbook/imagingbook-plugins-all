@@ -21,7 +21,9 @@ import imagingbook.pub.noise.perlin.PerlinNoiseGen2d;
  * generator. Several parameters can be adjusted. For details see
  * Ch. 8 of W. Burger and M. J. Burge. "Principles of Digital Image Processing -
  * Advanced Methods" (Vol. 3). Undergraduate Topics in Computer Science.
- * Springer-Verlag, London (2013). http://www.imagingbook.com
+ * Springer-Verlag, London (2013). https://www.imagingbook.com
+ * 
+ * TODO: add dialog to set size and other parameters
  * 
  * @author W. Burger
  * @version 2013/05/28
@@ -41,17 +43,21 @@ public class Demo_Perlin_2d implements PlugIn {
 //	HashFun hf = new Hash32ShiftMult(seed);
 //	HashFun hf = HashFun.create(seed);
 
+	@Override
 	public void run(String arg0) {
 		// create the noise generator:
 		PerlinNoiseGen2d ng = new PerlinNoiseGen2d(f_min, f_max, persistence, hf);
+		
 		// create a new image and fill with noise:
 		ImageProcessor fp = new FloatProcessor(w, h);
+		
 		for (int v = 0; v < h; v++) {
 			for (int u = 0; u < w; u++) {
 				double val = ng.NOISE(u, v);
-				fp.putPixelValue(u, v, val);
+				fp.setf(u, v, (float)val);
 			}
 		}
+		
 		// display the new image:
 		(new ImagePlus("Perlin Noise Image", fp)).show();
 	}

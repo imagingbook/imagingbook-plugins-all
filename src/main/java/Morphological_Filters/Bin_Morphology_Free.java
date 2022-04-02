@@ -22,7 +22,6 @@ import imagingbook.pub.morphology.BinaryErosion;
 import imagingbook.pub.morphology.BinaryMorphologyFilter;
 import imagingbook.pub.morphology.BinaryOpening;
 
-
 /**
  * This plugin implements a binary morphology filter using an arbitrary
  * structuring element that can be interactively specified by the user.
@@ -58,8 +57,8 @@ public class Bin_Morphology_Free implements PlugInFilter {
 		
 		byte[][] H = makeStructureElement(freeStructure);
 		ByteProcessor bp = (ByteProcessor) orig;
-		BinaryMorphologyFilter filter = null;
 		
+		BinaryMorphologyFilter filter = null;
 		switch(op) {
 		case Close:	
 			filter = new BinaryClosing(H); break;
@@ -84,7 +83,7 @@ public class Bin_Morphology_Free implements PlugInFilter {
 	}
 
 	private boolean showDialog() {
-		GenericDialog gd = new GenericDialog("Structuring Element");
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		String[] labels = makeFilterLabels();
 
 		gd.addCheckboxGroup(W, W, labels, freeStructure);

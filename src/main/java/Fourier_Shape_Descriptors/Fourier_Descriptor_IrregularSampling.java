@@ -33,6 +33,8 @@ import imagingbook.pub.fd.FourierDescriptorFromPolygon;
  * from the Fourier descriptor 'fd'. Finally, a pair of invariant descriptors (contained in the 
  * array 'fdAB') is calculated.
  * 
+ * TODO: Explain prerequisites!
+ * 
  * @author W. Burger
  * @version 2020/04/01
  */

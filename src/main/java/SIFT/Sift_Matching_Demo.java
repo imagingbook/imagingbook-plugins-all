@@ -61,11 +61,13 @@ public class Sift_Matching_Demo implements PlugInFilter {
 
 	ImagePlus imp = null;
 
+	@Override
 	public int setup(String arg0, ImagePlus imp) {
 		this.imp = imp;
 		return DOES_8G + PlugInFilter.STACK_REQUIRED + NO_CHANGES;
 	}
 
+	@Override
 	public void run(ImageProcessor ip) {
 		if (imp.getStackSize() < 2) {
 			IJ.error("Stack with at least 2 images required!");
@@ -138,7 +140,7 @@ public class Sift_Matching_Demo implements PlugInFilter {
 			for (SiftMatch m : matches) {
 				SiftDescriptor dA = m.getDescriptor1();
 				SiftDescriptor dB = m.getDescriptor2();
-				String label = new Integer(count).toString();
+				String label = Integer.toString(count);
 				oly.add(makeSiftLabel(dA, 0, 0, label));
 				oly.add(makeSiftLabel(dB, xoffset, 0, label));
 				count++;

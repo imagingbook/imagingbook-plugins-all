@@ -23,7 +23,7 @@ import imagingbook.pub.morphology.BinaryThinning;
  * background, values &gt; 0 are foreground. The plugin 
  * modifies the supplied image.
  * 
- * @author W. Burger
+ * @author WB
  * @version 2022/01/24
  *
  */
@@ -31,10 +31,12 @@ public class Thinning_Demo implements PlugInFilter {
 	
 	private int maxIterations;
 	
+	@Override
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
 	}
 
+	@Override
 	public void run(ImageProcessor ip) {
 		maxIterations = Math.max(ip.getWidth(), ip.getHeight());
 		
@@ -48,7 +50,7 @@ public class Thinning_Demo implements PlugInFilter {
 	}
 	
 	private boolean showDialog() {
-		GenericDialog gd = new GenericDialog("Structuring Element (Disk)");
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addNumericField("max. iterations", maxIterations, 0);
 
 		gd.showDialog();

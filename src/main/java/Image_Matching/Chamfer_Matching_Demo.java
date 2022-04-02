@@ -21,8 +21,11 @@ import imagingbook.pub.matching.DistanceTransform.Norm;
 
 
 /**
- * This ImageJ plugin demonstrates the use of the ChamferMatcher class.
- * @author W. Burger
+ * This ImageJ plugin demonstrates the use of the {@link ChamferMatcher} class.
+ * The active (search) image is assumed to be binary (not checked).
+ * The reference (template) image is selected interactively by the user.
+ * 
+ * @author WB
  * @version 2014-04-20
  */
 public class Chamfer_Matching_Demo implements PlugInFilter {
@@ -36,12 +39,14 @@ public class Chamfer_Matching_Demo implements PlugInFilter {
     }
 
     public void run(ImageProcessor ipI) {
-		if (!showDialog()) 
+		if (!showDialog() || imgR == null) {
 			return;
+		}
 		
-		ByteProcessor I = ipI.convertToByteProcessor();
-    	ByteProcessor R = imgR.getProcessor().convertToByteProcessor(); 
+		ByteProcessor I = ipI.convertToByteProcessor();					// search image I
+    	ByteProcessor R = imgR.getProcessor().convertToByteProcessor(); // reference image R
     	
+    	// TODO: better initialize matcher with reference image R?
     	ChamferMatcher matcher = new ChamferMatcher(I, Norm.L2);
     	float[][] Qa = matcher.getMatch(R);
     	
@@ -55,16 +60,17 @@ public class Chamfer_Matching_Demo implements PlugInFilter {
 			IJ.error("No other images are open.");
 			return false;
 		}
-		GenericDialog gd = new GenericDialog("Chamfer Matching");
+		
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		String[] titles = IjUtils.getImageShortTitles(openImages);
-		gd.addChoice("Reference image:", titles, titles[0]);
+		gd.addChoice("Reference image:", titles, titles[0]); // TODO: consider gd.addImageChoice()
+		
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return false;
-		else {
-			imgR = openImages[gd.getNextChoiceIndex()];
-			return true;
-		}
+		
+		imgR = openImages[gd.getNextChoiceIndex()];
+		return true;
     }
 		
 }

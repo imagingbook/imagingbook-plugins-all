@@ -8,13 +8,16 @@
  *******************************************************************************/
 package Geometric_Operations;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
+import imagingbook.lib.image.access.OutOfBoundsStrategy;
 import imagingbook.lib.interpolation.InterpolationMethod;
+import imagingbook.lib.math.Matrix;
 import imagingbook.pub.geometry.basic.Pnt2d;
-import imagingbook.pub.geometry.mappings.Mapping2D;
+import imagingbook.pub.geometry.mappings.linear.LinearMapping2D;
 import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
 
 /**
@@ -27,10 +30,15 @@ import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping2D;
  * Try on a suitable test image and check if the image corners (P) are
  * mapped to the points specified in Q.
  * This plugin works for all image types.
+ * The transformed image is shown in a new window, the priginaö
+ * image remains unchanged.
  * 
  * @author WB
  * @version 2021/10/03
  *
+ * @see LinearMapping2D
+ * @see ProjectiveMapping2D
+ * @see ImageMapper
  */
 public class Map_Projective implements PlugInFilter {
 	
@@ -46,28 +54,35 @@ public class Map_Projective implements PlugInFilter {
 			Pnt2d.from(300, 400),
 			Pnt2d.from(30, 200)};
 
-	public int setup(String arg, ImagePlus imp) {
+	private ImagePlus im;
+	
+	public int setup(String arg, ImagePlus im) {
+		this.im = im;
 		return DOES_ALL + NO_CHANGES;
 	}
 
 	public void run(ImageProcessor source) {
 		int W = source.getWidth();
 		int H = source.getHeight();
+		
 		// create the target image:
 		ImageProcessor target = source.createProcessor(W, H); 
 		
 		// create the target-to source mapping, i.e. Q -> P. 
 		// there are 2 alternatives:
-		Mapping2D mi = ProjectiveMapping2D.fromPoints(P, Q).getInverse();		// P -> Q, then invert
-		//Mapping2D mi = ProjectiveMapping2D.fromPoints(Q, P);		// Q -> P = inverse mapping
+		LinearMapping2D m = ProjectiveMapping2D.fromPoints(P, Q);		// P -> Q, then invert
+		LinearMapping2D mi = m.getInverse();		
+		//Mapping2D mi = ProjectiveMapping2D.fromPoints(Q, P);	// Q -> P = inverse mapping
 
 		// create a mapper instance:
-		ImageMapper mapper = new ImageMapper(mi, null, InterpolationMethod.Bicubic);
+		ImageMapper mapper = new ImageMapper(mi, OutOfBoundsStrategy.ZeroValues, InterpolationMethod.Bicubic);
 		
 		// apply the mapper:
 		mapper.map(source, target);
 		
 		// display the target image:
-		new ImagePlus("Target", target).show();
+		new ImagePlus(im.getShortTitle() + "-transformed", target).show();
+		
+		IJ.log("A = \n" + Matrix.toString(m.getTransformationMatrix()));
 	}
 }

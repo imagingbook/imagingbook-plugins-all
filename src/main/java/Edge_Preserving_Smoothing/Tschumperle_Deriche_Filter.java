@@ -25,6 +25,7 @@ import imagingbook.pub.edgepreservingfilters.TschumperleDericheFilter;
  * by David Tschumperle in D. Tschumperle and R. Deriche, Rachid, "Diffusion PDEs on 
  * vector-valued images}", IEEE Signal Processing Magazine, vol. 19, no. 5, pp. 16-25 
  * (Sep. 2002). This plugin works for all types of images and stacks.
+ * 
  * @author W. Burger
  * @version 2021/01/06
  */
@@ -59,13 +60,12 @@ public class Tschumperle_Deriche_Filter implements PlugInFilter {
 	private boolean getParameters() {
 		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		params.addToDialog(gd);
-		gd.addMessage("Incorrect values are replaced by defaults.");
 		
 		gd.showDialog();
 		if (gd.wasCanceled()) return false;
 
 		params.getFromDialog(gd);
-		return true;
+		return params.validate();
 	}
 	
 //	private boolean getParameters() {

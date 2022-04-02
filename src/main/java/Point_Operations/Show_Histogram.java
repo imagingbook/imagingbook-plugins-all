@@ -16,15 +16,18 @@ import imagingbook.pub.histogram.Util;
 
 public class Show_Histogram implements PlugInFilter { 
 	
-	String title;
+	private ImagePlus im;
 	
+	@Override
 	public int setup(String arg0, ImagePlus im) {
-		title = im.getTitle();
+		this.im = im;
 		return DOES_8G + NO_CHANGES;
 	}
 	
+	@Override
 	public void run(ImageProcessor ip) {
 		int[] h = ip.getHistogram();
+		String title = im.getShortTitle();
 		(new HistogramPlot(h, "Histogram of " + title)).show();
 		(new HistogramPlot(Util.Cdf(h), "Cum. Histogram of " + title)).show();
 	}

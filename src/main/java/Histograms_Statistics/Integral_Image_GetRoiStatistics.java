@@ -19,9 +19,10 @@ import ij.process.ImageProcessor;
 import imagingbook.lib.image.IntegralImage;
 
 /**
- * This ImageJ plugin calculates the integral image for the current
- * image (8 bit grayscale only) and displays the resulting first and
- * second order summed area tables.
+ * This ImageJ plugin first calculates the integral image for the current
+ * image (8 bit grayscale only) and uses it to find the mean and variance
+ * inside the specified rectangle (ROI).
+ *
  * @author WB
  *
  */

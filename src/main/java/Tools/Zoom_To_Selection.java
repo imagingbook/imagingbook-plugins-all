@@ -11,6 +11,7 @@ import imagingbook.lib.ij.GuiTools;
 
 
 /**
+ * <p>
  * Zooms the current image, such that the given selection (ROI) fits
  * the image window.
  * The top-left anchor corner of the new view is set to
@@ -21,10 +22,12 @@ import imagingbook.lib.ij.GuiTools;
  * If the resulting view has no complete coverage by the source image,
  * the plugin does nothing.
  * The size of the existing image window is never changed.
- * <br>
+ * </p>
+ * <p>
  * The functionality is similar to ImageJ's
  * "Image &rarr; Zoom &rarr; To Selection" operator which, however, only
- * supports a limited number of predefined magnification values.
+ * supports a limited number of predefined zoom factors.
+ * </p>
  * 
  * 
  * @author WB
@@ -32,7 +35,7 @@ import imagingbook.lib.ij.GuiTools;
  */
 public class Zoom_To_Selection implements PlugIn {
 	
-	private static boolean LOG_OUTPUT = false;
+	private static boolean LogOutput = false;
 	
 	@Override
 	public void run(String arg) {
@@ -65,7 +68,7 @@ public class Zoom_To_Selection implements PlugIn {
 			IJ.showMessage("Failed to set view");
 		}
 		else {
-			if (LOG_OUTPUT) {
+			if (LogOutput) {
 				IJ.log(String.format("new magnification: %.3f",  GuiTools.getMagnification(im)));
 			}
 		}

@@ -11,10 +11,8 @@ package Synthetic_Noise;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.gui.NewImage;
 import ij.plugin.PlugIn;
-import ij.process.ImageProcessor;
-import imagingbook.pub.noise.hashing.Hash32Shift;
+import ij.process.FloatProcessor;
 import imagingbook.pub.noise.hashing.HashFun;
 import imagingbook.pub.noise.perlin.PerlinNoiseGenNd;
 
@@ -23,7 +21,9 @@ import imagingbook.pub.noise.perlin.PerlinNoiseGenNd;
  * generator. Several parameters can be adjusted. For details see
  * Ch. 8 of W. Burger and M. J. Burge. "Principles of Digital Image Processing -
  * Advanced Methods" (Vol. 3). Undergraduate Topics in Computer Science.
- * Springer-Verlag, London (2013). http://www.imagingbook.com
+ * Springer-Verlag, London (2013). https://www.imagingbook.com
+ * 
+ * TODO: NOT WORKING! Needs to be fixed, results are not plausible!
  * 
  * @author W. Burger
  * @version 2013/05/28
@@ -50,39 +50,47 @@ public class Demo_Perlin_3d  implements PlugIn {
 	public void run(String arg0) {
 		
 		// choose hash function:
-//		HashFun hf = HashFun.create(seed);
-		HashFun hf = new Hash32Shift(seed);
+		HashFun hf = HashFun.create(seed);
+//		HashFun hf = new Hash32Shift(seed);
 //		HashFun hf = new Hash32ShiftMult(seed);
 //		HashFun hf = new Hash32Ward(seed);
 //		HashFun hf = new HashPermute(seed); 
 
 		// create the noise generator:
 		PerlinNoiseGenNd png = new PerlinNoiseGenNd(dim, f_min, f_max, persistence, hf);
-		createNoiseImage(wx, wy, wz, png).show();
+		ImageStack stack = createNoiseImage(wx, wy, wz, png);
+		ImagePlus im = new ImagePlus(this.getClass().getSimpleName(), stack);
+		im.setDisplayRange(-0.6,0.6);
+		im.show();
 	}
 	
-	ImagePlus createNoiseImage(int wx, int wy, int wz, PerlinNoiseGenNd ng) {
-		ImagePlus stackImg = 
-			NewImage.createFloatImage(title, wx, wy, wz, NewImage.FILL_BLACK);
-		ImageStack stack = stackImg.getStack();
+	ImageStack createNoiseImage(int wx, int wy, int wz, PerlinNoiseGenNd ng) {
+//		ImagePlus stackImg = 
+//			NewImage.createFloatImage(title, wx, wy, wz, NewImage.FILL_BLACK);		
+//		ImageStack stack = stackImg.getStack();
+		
+		ImageStack stack = new ImageStack(wx, wy);
 		double[] X = new double[dim];
 		IJ.showStatus("creating noise volume ...");
-		for (int z=1; z<=wz; z++) {
+		for (int z = 1; z <= wz; z++) {
 			IJ.showProgress(z, wz);
-			ImageProcessor fp = stack.getProcessor(z);
-			for (int v=0; v<wy; v++){
-				for (int u=0; u<wx; u++){
+//			ImageProcessor fp = stack.getProcessor(z);
+			FloatProcessor fp = new FloatProcessor(wx, wy);
+			for (int v = 0; v < wy; v++) {
+				for (int u = 0; u < wx; u++) {
 					X[0] = u;
 					X[1] = v;
 					X[2] = z * stepZ;
-					fp.putPixelValue(u, v, ng.NOISE(X));
+					fp.setf(u, v, (float)ng.NOISE(X));
 				}
 			}
-			//fp.setMinAndMax(-0.6,0.6); 	//fp.resetMinAndMax();
+			stack.addSlice(fp);
+			// fp.setMinAndMax(-0.6,0.6); //fp.resetMinAndMax();
 		}
 		IJ.showStatus("");
-		stackImg.setDisplayRange(-0.6,0.6);
-		return stackImg;
+//		stackImg.setDisplayRange(-0.6,0.6);
+//		return stackImg;
+		return stack;
 	}
 
 }

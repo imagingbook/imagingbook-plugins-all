@@ -24,7 +24,7 @@ import imagingbook.lib.interpolation.InterpolationMethod;
  * {@link ImageAccessor} class which gives uniform access
  * to all types of images.
  * 
- * @author W. Burger
+ * @author WB
  * @version 2015/12/17
  */
 public class Interpolation_Demo implements PlugInFilter {
@@ -35,7 +35,10 @@ public class Interpolation_Demo implements PlugInFilter {
 	static double dx = 10.50;	// translation parameters
 	static double dy = -3.25;
 	
-    public int setup(String arg, ImagePlus imp) {
+	private ImagePlus im;
+	
+    public int setup(String arg, ImagePlus im) {
+    	this.im = im;
         return DOES_ALL + NO_CHANGES;
     }
 
@@ -64,7 +67,7 @@ public class Interpolation_Demo implements PlugInFilter {
     	}
     	
     	// display the target image:
-    	(new ImagePlus("Target", target)).show();
+    	(new ImagePlus(im.getShortTitle() + "-transformed", target)).show();
     }
     
 	private boolean showDialog() {

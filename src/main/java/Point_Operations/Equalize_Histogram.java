@@ -14,10 +14,12 @@ import ij.process.ImageProcessor;
 
 public class Equalize_Histogram implements PlugInFilter {
 
+	@Override
 	public int setup(String arg, ImagePlus img) {
 		return DOES_8G;
 	}
     
+	@Override
 	public void run(ImageProcessor ip) {
 		int M = ip.getWidth();
 		int N = ip.getHeight();

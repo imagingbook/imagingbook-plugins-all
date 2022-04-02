@@ -34,6 +34,8 @@ import imagingbook.pub.geometry.hulls.ConvexHull;
  * image.
  * Requires a binary (segmented) image.
  * 
+ * TODO: convert to overlay display
+ * 
  * @author W. Burger
  * @version 2020/12/17
  * 
@@ -42,10 +44,10 @@ public class Convex_Hull_Demo implements PlugInFilter {
 	
 	static Color ConvexHullColor = Color.blue;
 	
-	private String title = null;
+	private ImagePlus im = null;
 	
 	public int setup(String arg, ImagePlus im) {
-		title = im.getShortTitle();
+		this.im = im;
 		return DOES_8G + NO_CHANGES; 
 	}
 	
@@ -76,7 +78,7 @@ public class Convex_Hull_Demo implements PlugInFilter {
 			drawHull(cp, segments);
 		}
 
-		(new ImagePlus(title + "-convex-hulls", cp)).show();
+		(new ImagePlus(im.getShortTitle() + "-convex-hulls", cp)).show();
 	}
 	
 	// ----------------------------------------------------

@@ -9,29 +9,31 @@
 package Hough_Transform;
 
 import java.awt.Color;
-import java.util.Arrays;
+import java.awt.geom.Path2D;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
+import ij.gui.Overlay;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.ColorProcessor;
+import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
+import imagingbook.lib.ij.overlay.ColoredStroke;
+import imagingbook.lib.ij.overlay.ShapeOverlayAdapter;
 import imagingbook.pub.hough.HoughTransformLines;
 import imagingbook.pub.hough.lines.HoughLine;
-import imagingbook.pub.hough.lines.HoughLineOverlay;
 
 /** 
  * This ImageJ plugin demonstrates the use of the {@link HoughTransformLines}
  * class for detecting straight lines in images.
- * It expects an input image with background = 0 and foreground (contour) 
+ * It expects a binary input image with background = 0 and foreground (contour) 
  * pixels with values &gt; 0.
  * A vector overlay is used to display the detected lines.
  * 
  * @author W. Burger
- * @version 2020/12/13
+ * @version 2022/04/01
  */
 public class Hough_Lines_Demo implements PlugInFilter {
 
@@ -51,15 +53,14 @@ public class Hough_Lines_Demo implements PlugInFilter {
 	static boolean ShowReferencePoint = true;
 	static Color   ReferencePointColor = Color.green;
 
-	ImagePlus imp;	
+	ImagePlus im;	
 
-	public int setup(String arg, ImagePlus imp) {
-		this.imp = imp;
-		return DOES_ALL + NO_CHANGES;
+	public int setup(String arg, ImagePlus im) {
+		this.im = im;
+		return DOES_8G + NO_CHANGES;
 	}
 
 	public void run(ImageProcessor ip) {
-		
 		if (!IjUtils.isBinary(ip)) {
 			IJ.showMessage("Binary (edge) image required!");
 			return;
@@ -71,7 +72,7 @@ public class Hough_Lines_Demo implements PlugInFilter {
 			return; 
 
 		// compute the Hough Transform and retrieve the strongest lines:
-		HoughTransformLines ht = new HoughTransformLines(ip, params);
+		HoughTransformLines ht = new HoughTransformLines((ByteProcessor)ip, params);
 		HoughLine[] lines = ht.getLines(MinPointsOnLine, MaxLines);
 
 		if (lines.length == 0) {
@@ -80,17 +81,17 @@ public class Hough_Lines_Demo implements PlugInFilter {
 
 		if (ShowAccumulator){
 			FloatProcessor accIp = ht.getAccumulatorImage();
-			(new ImagePlus("HT of " + imp.getTitle(), accIp)).show();
+			(new ImagePlus("Accumulator for " + im.getTitle(), accIp)).show();
 		}
 
 		if (ShowExtendedAccumulator){
 			FloatProcessor accEx = ht.getAccumulatorImageExtended();
-			(new ImagePlus("accumExt of " + imp.getTitle(), accEx)).show();
+			(new ImagePlus("Extended accumulator for " + im.getTitle(), accEx)).show();
 		}
 
 		if (ShowAccumulatorPeaks) {
 			FloatProcessor maxIp = ht.getAccumulatorMaxImage();
-			(new ImagePlus("Maxima of " + imp.getTitle(), maxIp)).show();
+			(new ImagePlus("Accumulator maxima for " + im.getTitle(), maxIp)).show();
 		}
 
 		if (ListStrongestLines) {
@@ -100,30 +101,31 @@ public class Hough_Lines_Demo implements PlugInFilter {
 		}
 		
 		if (ShowLines) {
-			ColorProcessor lineIp = ip.convertToColorProcessor();
+			ImageProcessor lineIp = ip.duplicate();
 			if (InvertOriginal) lineIp.invert();
-
-			HoughLineOverlay oly = new HoughLineOverlay(ip.getWidth(), ip.getHeight());
-			oly.strokeColor(LineColor);
-			oly.strokeWidth(LineWidth);
-			oly.addItems(Arrays.asList(lines));
-
+			double lineLength = Math.hypot(ip.getWidth(), ip.getHeight());
+			
+			Overlay oly = new Overlay();
+			ShapeOverlayAdapter ola = new ShapeOverlayAdapter(oly);
+			ola.setStroke(new ColoredStroke(LineWidth, LineColor));
+			for (HoughLine hl : lines) {
+				ola.addShape(hl.getShape(lineLength));
+			}
+			
 			if (ShowReferencePoint) {
-				oly.strokeColor(ReferencePointColor);
-				oly.strokeWidth(1.0);
-				oly.markPoint(ht.getXref(), ht.getYref(), ReferencePointColor);
+				ola.setStroke(new ColoredStroke(0.5, ReferencePointColor));
+				ola.addShape(markPoint(ht.getXref(), ht.getYref()));
 			}
 
-			ImagePlus him = new ImagePlus(imp.getShortTitle()+"-lines", lineIp);
-			him.setOverlay(oly);
-			him.show();
+			ImagePlus lim = new ImagePlus(im.getShortTitle()+"-lines", lineIp);
+			lim.setOverlay(oly);
+			lim.show();
 		}
 	}
 
 	// -----------------------------------------------------------------
 
 	private boolean showDialog(HoughTransformLines.Parameters params) {
-		// display dialog , return false if canceled or on error.
 		GenericDialog dlg = new GenericDialog("Hough Transform (lines)");
 		dlg.addNumericField("Axial steps", params.nAng, 0);
 		dlg.addNumericField("Radial steps", params.nRad, 0);
@@ -136,9 +138,11 @@ public class Hough_Lines_Demo implements PlugInFilter {
 		dlg.addCheckbox("Show lines", ShowLines);
 		dlg.addNumericField("Line width", LineWidth, 1);
 		dlg.addCheckbox("Show reference point", ShowReferencePoint);
+		
 		dlg.showDialog();
 		if(dlg.wasCanceled())
 			return false;
+		
 		params.nAng = (int) dlg.getNextNumber();
 		params.nRad = (int) dlg.getNextNumber();
 		MaxLines = (int) dlg.getNextNumber();
@@ -150,11 +154,22 @@ public class Hough_Lines_Demo implements PlugInFilter {
 		ShowLines = dlg.getNextBoolean();
 		LineWidth = dlg.getNextNumber();
 		ShowReferencePoint = dlg.getNextBoolean();
+		
 		if(dlg.invalidNumber()) {
 			IJ.showMessage("Error", "Invalid input number");
 			return false;
 		}
 		return true;
+	}
+	
+	private Path2D markPoint(double xc, double yc) {
+		double markerSize = 2.0;
+		Path2D path = new Path2D.Double();
+		path.moveTo(xc - markerSize, yc);
+		path.lineTo(xc + markerSize, yc);
+		path.moveTo(xc, yc - markerSize);
+		path.lineTo(xc, yc + markerSize);
+		return path;
 	}
 
 }

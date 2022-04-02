@@ -19,13 +19,14 @@ import imagingbook.pub.morphology.BinaryClosing;
 import imagingbook.pub.morphology.BinaryDilation;
 import imagingbook.pub.morphology.BinaryErosion;
 import imagingbook.pub.morphology.BinaryMorphologyFilter;
-import imagingbook.pub.morphology.BinaryMorphologyOperator;
 import imagingbook.pub.morphology.BinaryOpening;
-
 
 /**
  * This plugin implements a binary morphology filter using a disk-shaped
  * structuring element whose radius can be specified.
+ * 
+ * @author WB
+ * @version 2022/01/24
  */
 public class Bin_Morphology_Disk implements PlugInFilter {
 	
@@ -37,33 +38,33 @@ public class Bin_Morphology_Disk implements PlugInFilter {
 	private static double radius = 1.0;
 	private static boolean showStructuringElement = false;
 
-	
+	@Override
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
 	}
 
+	@Override
 	public void run(ImageProcessor ip) {
-		
 		if (!showDialog()) {
 			return;
 		}
 		
 		ByteProcessor bp = (ByteProcessor) ip;
 		byte[][] H = BinaryMorphologyFilter.makeDiskKernel(radius);
-		BinaryMorphologyOperator bmf = null; // new BinaryMorphologyFilter.Disk(radius);
-
+		
+		BinaryMorphologyFilter filter = null; // new BinaryMorphologyFilter.Disk(radius);
 		switch(op) {
 		case Close:
-			bmf = new BinaryClosing(H); break;
+			filter = new BinaryClosing(H); break;
 		case Dilate:
-			bmf = new BinaryDilation(H); break;
+			filter = new BinaryDilation(H); break;
 		case Erode:
-			bmf = new BinaryErosion(H); break;
+			filter = new BinaryErosion(H); break;
 		case Open:
-			bmf = new BinaryOpening(H); break;
+			filter = new BinaryOpening(H); break;
 		}
 		
-		bmf.applyTo(bp);
+		filter.applyTo(bp);
 		
 		if (showStructuringElement) {
 			ByteProcessor pH = IjUtils.toByteProcessor(H);
@@ -76,7 +77,7 @@ public class Bin_Morphology_Disk implements PlugInFilter {
 	}
 
 	private boolean showDialog() {
-		GenericDialog gd = new GenericDialog("Structuring Element (Disk)");
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addNumericField("Radius (filters only)", 1.0, 1, 5, "pixels");
 		gd.addEnumChoice("Operation", OpType.Dilate);
 		gd.addCheckbox("Show structuring element", showStructuringElement);

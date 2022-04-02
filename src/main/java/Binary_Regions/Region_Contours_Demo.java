@@ -17,10 +17,9 @@ import ij.gui.Overlay;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.ij.IjUtils;
 import imagingbook.pub.geometry.basic.NeighborhoodType2D;
-import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.regions.BinaryRegion;
-import imagingbook.pub.regions.Contour;
 import imagingbook.pub.regions.segment.RegionContourSegmentation;
 import imagingbook.pub.regions.utils.ContourOverlay;
 import imagingbook.pub.regions.utils.Display;
@@ -38,7 +37,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 	static NeighborhoodType2D NT = NeighborhoodType2D.N8;
 	
 	static boolean ListRegions = true;
-	static boolean ListContours = true;
+//	static boolean ListContours = true;
 	static boolean ShowContours = true;
 	
 	public int setup(String arg, ImagePlus im) { 
@@ -46,6 +45,12 @@ public class Region_Contours_Demo implements PlugInFilter {
 	}
 	
 	public void run(ImageProcessor ip) {
+		
+	   	if (!IjUtils.isBinary(ip)) {
+				IJ.showMessage("Plugin requires a binary image!");
+				return;
+		}
+	   	
 	   	if (!getUserInput())
     		return;
 	   	
@@ -70,30 +75,30 @@ public class Region_Contours_Demo implements PlugInFilter {
 		}
 		
 		// Get the largest region:
-		BinaryRegion Rmax = regions.get(0);
+//		BinaryRegion Rmax = regions.get(0);
 		
-		// Get the outer contour of the largest region:
-		Contour oc =  Rmax.getOuterContour();
-		IJ.log("Points on outer contour of largest region:");
-		for (Pnt2d p : oc) {
-			IJ.log("Point " + p);
-		}
+//		// Get the outer contour of the largest region:
+//		Contour oc =  Rmax.getOuterContour();
+//		IJ.log("Points on outer contour of largest region:");
+//		for (Pnt2d p : oc) {
+//			IJ.log("Point " + p);
+//		}
 	
-		// Get all inner contours of the largest region:
-		if (ListContours) {
-			IJ.log("\nCountours:");
-			for (BinaryRegion R : regions) {
-				IJ.log("   " + R.toString());
-				IJ.log("       " + oc);
-				
-				List<Contour> ics = R.getInnerContours();
-				if (ics != null && !ics.isEmpty()) {
-					for(Contour ic : R.getInnerContours()) {
-						IJ.log("       " + ic);
-					}
-				}
-			}
-		}
+//		// Get all inner contours of the largest region:
+//		if (ListContours) {
+//			IJ.log("\nCountours:");
+//			for (BinaryRegion R : regions) {
+//				IJ.log("   " + R.toString());
+//				IJ.log("       " + oc);
+//				
+//				List<Contour> ics = R.getInnerContours();
+//				if (ics != null && !ics.isEmpty()) {
+//					for(Contour ic : R.getInnerContours()) {
+//						IJ.log("       " + ic);
+//					}
+//				}
+//			}
+//		}
 		
 		// Display the contours if desired:
 		if (ShowContours) {
@@ -111,7 +116,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 		GenericDialog gd = new GenericDialog(Region_Contours_Demo.class.getSimpleName());
 		gd.addEnumChoice("Neighborhood type", NT);
 		gd.addCheckbox("List regions", ListRegions);
-		gd.addCheckbox("List contours", ListContours);
+//		gd.addCheckbox("List contours", ListContours);
 		gd.addCheckbox("Show contours", ShowContours);
 		gd.showDialog();
 		if (gd.wasCanceled()) {
@@ -119,7 +124,7 @@ public class Region_Contours_Demo implements PlugInFilter {
 		}
 		NT = gd.getNextEnumChoice(NeighborhoodType2D.class);
 		ListRegions  = gd.getNextBoolean();
-		ListContours = gd.getNextBoolean();
+//		ListContours = gd.getNextBoolean();
 		ShowContours = gd.getNextBoolean();
 		return true;
 	}

@@ -17,28 +17,31 @@ import imagingbook.pub.matching.DistanceTransform;
 import imagingbook.pub.matching.DistanceTransform.Norm;
 
 /**
- * Demonstrates the use of the DistanceTransform class.
- * @author W. Burger
+ * Demonstrates the use of the {@link DistanceTransform} class.
+ * The active image is assumed to be binary (not checked).
+ * 
+ * @author WB
  * @version 2014-04-20
  */
 public class Show_Distance_Map implements PlugInFilter {
 	
-	static Norm distanceNorm = Norm.L1;
+	private static Norm distanceNorm = Norm.L1;
 	
-	ImagePlus img;
+	private ImagePlus im;
 	
-    public int setup(String arg, ImagePlus imp) {
-    	this.img = imp;
+    public int setup(String arg, ImagePlus im) {
+    	this.im = im;
         return DOES_8G + NO_CHANGES;
     }
 
     public void run(ImageProcessor ip) {
-    	if (!showDialog())
+    	if (!showDialog()) {
 			return;
+    	}
     	
     	DistanceTransform dt = new DistanceTransform(ip, distanceNorm);
 		FloatProcessor dtIp = new FloatProcessor(dt.getDistanceMap());
-		(new ImagePlus("Distance Transform of " + img.getTitle(), dtIp)).show();
+		(new ImagePlus("Distance Transform of " + im.getShortTitle(), dtIp)).show();
     }
     
 	private boolean showDialog() {

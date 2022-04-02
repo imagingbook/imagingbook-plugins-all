@@ -8,34 +8,35 @@
  *******************************************************************************/
 package Point_Operations;
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.Blitter;
-import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
 
 /**
  * This plugin demonstrates alpha blending between two images:
- * bg: the background image (passed to and modified by the run method),
- * fg: the foreground image (selected in a user dialog).
+ * imBG: the background image (passed to and modified by the run method),
+ * imFG: the foreground image (selected in a user dialog).
  * New (simpler) version using the {@code imagingbook.lib.ij.IjUtils.getOpenImages} library method.
+ * 
  * @author WB
+ * @version 2022/04/01
  */
 public class Linear_Blending implements PlugInFilter {
 	
-	static double alpha = 0.5;	// transparency of foreground image
-	ImagePlus imFG = null;		// foreground image (to be selected)
+	private static double alpha = 0.5;	// transparency of foreground image
+	private ImagePlus imFG = null;		// foreground image (to be selected)
 	
-	public int setup(String arg, ImagePlus im) {
+	@Override
+	public int setup(String arg, ImagePlus imBG) {
 		return DOES_8G;
 	}	
 	
-	public void run(ImageProcessor ipBG) {	// iBG = background image
-		if(!runDialog()) {
+	@Override
+	public void run(ImageProcessor ipBG) {	// ipBG = background image
+		if(!runDialog() || imFG == null) {
 			return;
 		}
 		ImageProcessor ipFG = imFG.getProcessor().convertToByte(false);
@@ -53,17 +54,17 @@ public class Linear_Blending implements PlugInFilter {
 			titles[i] = images[i].getShortTitle();
 		}
 		// create the dialog and show:
-		GenericDialog gd = new GenericDialog("Alpha Blending");
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addChoice("Foreground image:", titles, titles[0]);
-		gd.addNumericField("Alpha value [0..1]:", alpha, 2);
+		gd.addNumericField("Alpha value (0,..,1)", alpha, 2);
+		
 		gd.showDialog(); 
 		if (gd.wasCanceled()) {
 			return false;
 		}
-		else {
-			imFG = images[gd.getNextChoiceIndex()];
-			alpha = gd.getNextNumber();
-			return true;
-		}
+
+		imFG = images[gd.getNextChoiceIndex()];
+		alpha = gd.getNextNumber();
+		return true;
 	}
 }

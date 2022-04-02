@@ -8,23 +8,33 @@
  *******************************************************************************/
 package Point_Operations;
 
+import java.util.Random;
+
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 
-public class Make_Uniform_Noise implements PlugInFilter { 
+/**
+ * Fills the active image with uniform noise.
+ * 
+ * @author WB
+ *
+ */
+public class Make_Uniform_Noise implements PlugInFilter {
 	
+	@Override
 	public int setup(String arg0, ImagePlus im) {
 		return DOES_8G;
 	}
 	
+	@Override
 	public void run(ImageProcessor ip) {
+		Random rg = new Random();
 		int w = ip.getWidth();
 		int h = ip.getHeight();
 		for (int v = 0; v < h; v++) {
 			for (int u = 0; u < w; u++) {
-				int p = (int) (Math.random() * 256);
-				ip.putPixel(u, v, p);
+				ip.putPixel(u, v, rg.nextInt(256));
 			}
 		}
 	}

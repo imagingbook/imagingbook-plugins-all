@@ -12,6 +12,8 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
+import imagingbook.lib.image.access.OutOfBoundsStrategy;
+import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.mappings.Mapping2D;
 
@@ -48,7 +50,7 @@ public class Map_Twirl implements PlugInFilter {
 			}
 		};
 		
-		new ImageMapper(imap).map(ip);
+		new ImageMapper(imap, OutOfBoundsStrategy.ZeroValues, InterpolationMethod.Bicubic).map(ip);
 	}
 	
 }

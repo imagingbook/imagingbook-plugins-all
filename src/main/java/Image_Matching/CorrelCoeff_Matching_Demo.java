@@ -20,26 +20,30 @@ import imagingbook.pub.matching.CorrCoeffMatcher;
 
 /** 
  * Template matching plugin based on the local correlation coefficient.
- * Slow because it uses getPixelValue() for pixel access.
+ * TODO: Slow because it uses getPixelValue() for pixel access.
+ * 
+ * @author WB
  */
 public class CorrelCoeff_Matching_Demo implements PlugInFilter {
 
-	private ImagePlus refImg;
+	private ImagePlus imgR = null;
 
     public int setup(String arg, ImagePlus im) {
-        return DOES_8G + NO_CHANGES;
+        return DOES_8G + DOES_32 + NO_CHANGES;
     }
     
     //--------------------------------------------------------------------
 
-    public void run(ImageProcessor ip) {
-		if (!showDialog()) return;
+    public void run(ImageProcessor ipI) {
+		if (!showDialog() || imgR == null) {
+			return;
+		}
 		
-    	FloatProcessor I = (FloatProcessor) ip.convertToFloatProcessor();
+    	FloatProcessor I = (FloatProcessor) ipI.convertToFloatProcessor();	// search image
 		CorrCoeffMatcher matcher = new CorrCoeffMatcher(I);
 		
-		ImageProcessor refIp = refImg.getProcessor();
-		FloatProcessor R = (FloatProcessor) refIp.convertToFloatProcessor();
+		ImageProcessor ipR = imgR.getProcessor();
+		FloatProcessor R = (FloatProcessor) ipR.convertToFloatProcessor();	// reference image
 		
 		float[][] C = matcher.getMatch(R);
 		FloatProcessor Cp = new FloatProcessor(C);
@@ -65,10 +69,10 @@ public class CorrelCoeff_Matching_Demo implements PlugInFilter {
 		}
 		GenericDialog gd = new GenericDialog("Select Reference Image");
 		String title2;
-		if (refImg == null)
+		if (imgR == null)
 			title2 = titles[0];
 		else
-			title2 = refImg.getTitle();
+			title2 = imgR.getTitle();
 		gd.addChoice("Template:", titles, title2);
 		gd.showDialog();
 		if (gd.wasCanceled())
@@ -76,7 +80,7 @@ public class CorrelCoeff_Matching_Demo implements PlugInFilter {
 		else {
 			int index2 = gd.getNextChoiceIndex();
 			title2 = titles[index2];
-			refImg = WindowManager.getImage(wList[index2]);
+			imgR = WindowManager.getImage(wList[index2]);
 			return true;
 		}
     }

@@ -29,14 +29,18 @@ import imagingbook.pub.regions.BinaryRegion;
 import imagingbook.pub.regions.utils.Display;
 
 /**
- * This ImageJ plugin is an example for how to use the region
- * labeling classes in the "regions" package:
- * {@link BreadthFirstSegmentation},
- * {@link DepthFirstSegmentation},
- * {@link RecursiveSegmentation},
- * {@link RegionContourSegmentation},
- * {@link SequentialSegmentation}.
- * One of four labeling types can be selected (see the {@code run()} method).
+ * <p>
+ * This ImageJ plugin demonstrates the use of the region
+ * labeling classes in the imagingbook's "regions" package:
+ * </p>
+ * <ul>
+ * <li>{@link BreadthFirstSegmentation},</li>
+ * <li>{@link DepthFirstSegmentation},</li>
+ * <li>{@link RecursiveSegmentation},</li>
+ * <li>{@link RegionContourSegmentation},</li>
+ * <li>{@link SequentialSegmentation}.</li>
+ * </ul>
+ * One of four labeling types can be selected (see the {@link #run(ImageProcessor)} method).
  * All should produce the same results (except {@link RegionContourSegmentation},
  * which may run out of memory easily).
  * Requires a binary (segmented) image.
@@ -66,6 +70,7 @@ public class Region_Segmentation_Demo implements PlugInFilter {
     }
 	
     public void run(ImageProcessor ip) {
+    	
 		if (!IjUtils.isBinary(ip)) {
 			IJ.showMessage("Plugin requires a binary image!");
 			return;
@@ -105,10 +110,8 @@ public class Region_Segmentation_Demo implements PlugInFilter {
 			return;
 		}
 		
-		IJ.log("Detected regions: " + regions.size());
-		
 		if (ListRegions) {
-			IJ.log("Regions sorted by size: ");
+			IJ.log("Regions sorted by size: " + regions.size());
 			for (BinaryRegion r: regions) {
 				IJ.log(r.toString());
 			}

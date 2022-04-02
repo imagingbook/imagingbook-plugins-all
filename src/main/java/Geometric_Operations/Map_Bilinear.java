@@ -12,11 +12,23 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.lib.image.ImageMapper;
+import imagingbook.lib.image.access.OutOfBoundsStrategy;
 import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.basic.Pnt2d.PntInt;
+import imagingbook.pub.geometry.mappings.linear.AffineMapping2D;
 import imagingbook.pub.geometry.mappings.nonlinear.BilinearMapping2D;
 
+/**
+ * Demo plugin showing how to specify a bilinear transformation from
+ * a pair of quadrilaterals (point arrays).
+ * Also illustrates the use of {@link ImageMapper}.
+ * 
+ * @author WB
+ *
+ * @see AffineMapping2D
+ * @see ImageMapper
+ */
 public class Map_Bilinear implements PlugInFilter {
 
     public int setup(String arg, ImagePlus imp) {
@@ -25,22 +37,22 @@ public class Map_Bilinear implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
 	
-	   	Pnt2d[] P = {
+	   	Pnt2d[] P = {			// source quadrilateral
 				PntInt.from(0, 0),
 				PntInt.from(400, 0),
 				PntInt.from(400, 400),
 				PntInt.from(0, 400)
 	    	};
 
-	    	Pnt2d[] Q = {
+	    	Pnt2d[] Q = {		// target quadrilateral
 				PntInt.from(0, 60),
 				PntInt.from(400, 20),
-				 PntInt.from(300, 400),
-				 PntInt.from(30, 200)
+				PntInt.from(300, 400),
+				PntInt.from(30, 200)
 	    	};
 		
 		// we want the inverse mapping (Q -> P, so we swap P/Q):
 		BilinearMapping2D mi = BilinearMapping2D.fromPoints(Q, P);
-		new ImageMapper(mi, null, InterpolationMethod.Bicubic).map(ip);
+		new ImageMapper(mi, OutOfBoundsStrategy.ZeroValues, InterpolationMethod.Bicubic).map(ip);
     }
 }

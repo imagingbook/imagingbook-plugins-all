@@ -7,6 +7,7 @@
  * All rights reserved. Visit http://www.imagingbook.com for additional details.
  *  
  *******************************************************************************/
+
 package Binary_Regions;
 
 import java.awt.Color;
@@ -19,6 +20,7 @@ import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.ij.IjUtils;
+import imagingbook.pluginutils.annotations.IjMenuEntry;
 import imagingbook.pub.geometry.basic.Pnt2d;
 import imagingbook.pub.geometry.hulls.AxisAlignedBoundingBox;
 import imagingbook.pub.regions.BinaryRegion;
@@ -33,15 +35,16 @@ import imagingbook.pub.regions.segment.RegionContourSegmentation;
  * @author WB
  * @version 2020/12/17
  */
+@IjMenuEntry("Axis-Aligned Bounding Box")
 public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 	
 	static Color CenterColor = Color.magenta;
 	static Color BoundingBoxColor = Color.blue;
+
+	private ImagePlus im;
 	
-	private String title = null;
-	
-	public int setup(String arg, ImagePlus im) { 
-		title = im.getShortTitle();
+	public int setup(String arg, ImagePlus im) {
+		this.im = im;
 		return DOES_8G + NO_CHANGES; 
 	}
 	
@@ -75,7 +78,7 @@ public class AxisAlignedBoundingBox_Demo implements PlugInFilter {
 			}
 		}
 
-		(new ImagePlus(title + "-aligned-bb", cp)).show();
+		(new ImagePlus(im.getShortTitle() + "-aligned-bb", cp)).show();
 	}
 	
 	

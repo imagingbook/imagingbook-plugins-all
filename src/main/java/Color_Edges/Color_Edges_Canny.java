@@ -14,7 +14,6 @@ import java.util.List;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
-import ij.io.LogStream;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import imagingbook.pub.color.edge.CannyEdgeDetector;
@@ -23,20 +22,16 @@ import imagingbook.pub.color.edge.EdgeTrace;
 
 /**
  * This plugin implements the Canny edge detector for all types of images.
- * 
  * @author W. Burger
  * @version 2021/11/26
+ * @version 2022/03/22 revised dialog
  */
 public class Color_Edges_Canny implements PlugInFilter {
-	
-	static {
-		LogStream.redirectSystem();
-	}
 	
 	static boolean showEdgeMagnitude = true;
 	static boolean showEdgeOrientation = true;
 	static boolean showBinaryEdges = true;
-	static boolean listEdgeTraces = true;
+	static boolean listEdgeTraces = false;
 	
 	ImagePlus imp = null;
 	
@@ -70,34 +65,34 @@ public class Color_Edges_Canny implements PlugInFilter {
 		if(listEdgeTraces) {
 			List<EdgeTrace> edgeTraces = detector.getTraces();
 			IJ.log("number of edge traces: " + edgeTraces.size());
+			int i = 0;
+			for (EdgeTrace et : edgeTraces) {
+				IJ.log(i + ". " + et.toString());
+				i++;
+			}
 		}
 	}
 
 	boolean setParameters(Parameters params) {
 		GenericDialog gd = new GenericDialog("Canny Detector");
 		// Canny parameters:
-		gd.addNumericField("Sigma (0.5 - 20)", params.gSigma, 1);
-		gd.addNumericField("Low Threshold", params.loThr, 2);
-		gd.addNumericField("High Threshold", params.hiThr, 2);
-		gd.addCheckbox("Normalize gradient magnitude", params.normGradMag);
+		params.addToDialog(gd);
 		// plugin parameters:
 		gd.addMessage("Plugin parameters:");
 		gd.addCheckbox("Show edge magnitude", showEdgeMagnitude);
 		gd.addCheckbox("Show edge orientation", showEdgeOrientation); 
 		gd.addCheckbox("Show binary edges", showBinaryEdges);
 		gd.addCheckbox("List edge traces", listEdgeTraces);
-		// display
+		// display dialog
 		gd.showDialog();
 		if (gd.wasCanceled()) {
 			return false;
 		}	
 		// update Canny parameters:
-		params.gSigma = (float) gd.getNextNumber();
-		if (params.gSigma < 0.5) params.gSigma = 0.5;
+		params.getFromDialog(gd);
+		if (params.gSigma < 0.5f) params.gSigma = 0.5f;
 		if (params.gSigma > 20) params.gSigma = 20;
-		params.loThr = (float) gd.getNextNumber();
-		params.hiThr = (float) gd.getNextNumber();
-		params.normGradMag = gd.getNextBoolean();
+		
 		// update plugin parameters:
 		showEdgeMagnitude = gd.getNextBoolean();
 		showEdgeOrientation = gd.getNextBoolean();

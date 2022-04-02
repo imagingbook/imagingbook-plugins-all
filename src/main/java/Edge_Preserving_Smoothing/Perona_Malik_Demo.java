@@ -19,11 +19,15 @@ import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterScalar;
 import imagingbook.pub.edgepreservingfilters.PeronaMalikFilterVector;
 
 /**
- * This plugin demonstrates the use of the PeronaMalikFilter class.
+ * Minimal plugin to demonstrate the use of the PeronaMalikFilter class.
  * This plugin works for all types of images and stacks.
  * 
  * @author W. Burger
- * @version 2022/02/01
+ * @version 2022/03/30
+ * 
+ * @see PeronaMalikFilterScalar
+ * @see PeronaMalikFilterVector
+ * @see GenericFilter
  */
 public class Perona_Malik_Demo implements PlugInFilter {
 
@@ -32,21 +36,18 @@ public class Perona_Malik_Demo implements PlugInFilter {
 	}
 
 	public void run(ImageProcessor ip) {
+		
 		// create a parameter object, modify settings if needed:
 		Parameters params = new Parameters();
 		params.iterations = 20;
-		params.alpha = 0.15f;
-		params.kappa = 20.0f;
+		params.alpha = 0.15;
+		params.kappa = 20.0;
+		params.colorMode = ColorMode.ColorGradient;
 
 		// create the actual filter:
-		GenericFilter filter = null;
-		if (ip instanceof ColorProcessor) {
-			params.colorMode = ColorMode.ColorGradient;
-			filter = new PeronaMalikFilterVector(params);
-		}
-		else {
-			filter = new PeronaMalikFilterScalar(params);
-		}
+		GenericFilter filter = (ip instanceof ColorProcessor) ?
+			new PeronaMalikFilterVector(params) :
+			new PeronaMalikFilterScalar(params);
 		
 		// apply the filter:
 		filter.applyTo(ip);

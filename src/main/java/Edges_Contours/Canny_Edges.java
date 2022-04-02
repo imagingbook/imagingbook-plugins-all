@@ -13,24 +13,29 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.color.edge.CannyEdgeDetector;
+import imagingbook.pub.color.edge.CannyEdgeDetector.Parameters;
 
 /**
  * This ImageJ plugin shows the use of the Canny edge detector in
  * its simplest form. It works on all image types.
  * 
- * See also {@link CannyEdgeDetector} and {@link Color_Edges.Color_Edges_Canny}.
- * 
  * @author WB
  *
+ * @see CannyEdgeDetector
  */
 public class Canny_Edges implements PlugInFilter {
 	
-	public int setup(String arg0, ImagePlus imp) {
+	private static Parameters params = new Parameters(); 
+	
+	private ImagePlus im;
+	
+	public int setup(String arg0, ImagePlus im) {
+		this.im = im;
 		return DOES_ALL + NO_CHANGES;
 	}
 
 	public void run(ImageProcessor ip) {
-		CannyEdgeDetector.Parameters params = new CannyEdgeDetector.Parameters(); 			
+					
 		params.gSigma = 3.0;	// sigma of Gaussian
 		params.hiThr  = 20.0;	// 20% of max. edge magnitude
 		params.loThr  = 5.0;	// 5% of max. edge magnitude
@@ -42,6 +47,6 @@ public class Canny_Edges implements PlugInFilter {
 //		List<List<Point>> edgeTraces = detector.getEdgeTraces();
 		
 		ByteProcessor edge = detector.getEdgeBinary();
-		(new ImagePlus("Canny Edges", edge)).show();
+		(new ImagePlus(im.getShortTitle() + "-CannyEdges", edge)).show();
 	}
 }

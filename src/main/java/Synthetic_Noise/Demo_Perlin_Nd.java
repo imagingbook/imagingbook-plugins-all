@@ -20,7 +20,9 @@ import ij.process.ImageProcessor;
  * generator. Several parameters can be adjusted. For details see
  * Ch. 8 of W. Burger and M. J. Burge. "Principles of Digital Image Processing -
  * Advanced Methods" (Vol. 3). Undergraduate Topics in Computer Science.
- * Springer-Verlag, London (2013). http://www.imagingbook.com
+ * Springer-Verlag, London (2013). https://www.imagingbook.com
+ * 
+ * TODO: NOT WORKING! Needs to be fixed, results are not plausible!
  * 
  * @author W. Burger
  * @version 2013/05/28
@@ -62,7 +64,7 @@ public class Demo_Perlin_Nd  implements PlugIn {
 			for (int u=0; u<w; u++){
 				X[0] = u;
 				X[1] = v;
-				fp.putPixelValue(u, v, ng.NOISE(X));
+				fp.setf(u, v, (float) ng.NOISE(X));
 			}
 		}
 		fp.setMinAndMax(-0.6,0.6); 	//fp.resetMinAndMax();

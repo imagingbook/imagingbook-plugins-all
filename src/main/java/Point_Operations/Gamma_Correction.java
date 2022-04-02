@@ -14,10 +14,12 @@ import ij.process.ImageProcessor;
 
 public class Gamma_Correction implements PlugInFilter {
 
+	@Override
 	public int setup(String arg, ImagePlus img) {
 		return DOES_8G;
 	}
     
+	@Override
 	public void run(ImageProcessor ip) {
 		// works for 8-bit images only 
 	    int K = 256;

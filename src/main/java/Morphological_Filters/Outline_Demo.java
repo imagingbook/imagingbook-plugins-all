@@ -15,6 +15,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.pub.geometry.basic.NeighborhoodType2D;
+import imagingbook.pub.morphology.BinaryMorphologyOperator;
 import imagingbook.pub.morphology.BinaryOutline;
 
 /**
@@ -23,7 +24,7 @@ import imagingbook.pub.morphology.BinaryOutline;
  * background, values &gt; 0 are foreground. The plugin 
  * modifies the supplied image.
  * 
- * @author W. Burger
+ * @author WB
  * @version 2022/01/24
  *
  */
@@ -31,22 +32,24 @@ public class Outline_Demo implements PlugInFilter {
 	
 	private static NeighborhoodType2D nh = NeighborhoodType2D.N4;
 	
+	@Override
 	public int setup(String arg, ImagePlus imp) {
 		return DOES_8G;
 	}
 
+	@Override
 	public void run(ImageProcessor ip) {
 		
 		if (!showDialog()) {
 			return;
 		}
 		
-		BinaryOutline outline = new BinaryOutline(nh);
+		BinaryMorphologyOperator outline = new BinaryOutline(nh);
 		outline.applyTo((ByteProcessor) ip);
 	}
 	
 	private boolean showDialog() {
-		GenericDialog gd = new GenericDialog(getClass().getSimpleName());
+		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
 		gd.addEnumChoice("Neighborhood type", nh);
 
 		gd.showDialog();

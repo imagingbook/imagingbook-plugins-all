@@ -24,11 +24,13 @@ import imagingbook.lib.util.Enums;
  * (parameters can be specified). Note the use if the
  * {@link ImageAccessor} class which gives uniform access
  * to all types of images.
- * See also {@link InterpolationMethod}, {@link OutOfBoundsStrategy}, 
- * {@link ImageAccessor}.
  * 
  * @author W. Burger
  * @version 2015/12/17
+ * 
+ * @see InterpolationMethod
+ * @see OutOfBoundsStrategy
+ * @see ImageAccessor
  */
 public class Interpolator_Demo implements PlugInFilter {
 	
@@ -38,10 +40,12 @@ public class Interpolator_Demo implements PlugInFilter {
 	static double dx = 10.50;	// translation parameters
 	static double dy = -3.25;
 	
+	@Override
     public int setup(String arg, ImagePlus imp) {
         return DOES_ALL + NO_CHANGES;
     }
 
+    @Override
     public void run(ImageProcessor source) {
     	if (!showDialog())
 			return;
@@ -87,6 +91,7 @@ public class Interpolator_Demo implements PlugInFilter {
 		gd.showDialog();
 		if (gd.wasCanceled())
 			return false;
+		
 		dx = gd.getNextNumber();
 		dy = gd.getNextNumber();
 		ipm = InterpolationMethod.valueOf(gd.getNextChoice());

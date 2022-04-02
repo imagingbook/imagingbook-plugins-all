@@ -16,10 +16,10 @@ import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 
 /**
- * This plugin tests the ImageStatistics class. It is poorly documented and the API is suboptimal.
+ * This plugin tests ImageJ's ImageStatistics class. It is poorly documented and the API is suboptimal.
  * Don't use!
+ * 
  * @author WB
- *
  */
 public class Test_GetStatistics implements PlugIn {
 
@@ -45,29 +45,24 @@ public class Test_GetStatistics implements PlugIn {
 		
 		ImageStatistics stats = ImageStatistics.getStatistics(ip, mOptions, null);
 		
-		IJ.log("area = " + stats.area);
-		IJ.log("areaFraction = " + stats.areaFraction);
-		IJ.log("histMax = " + stats.histMax);
-		IJ.log("histMin = " + stats.histMin);
-		IJ.log("kurtosis = " + stats.kurtosis);
-		IJ.log("mean = " + stats.mean);
-		IJ.log("median = " + stats.median);
-		IJ.log("stdDev = " + stats.stdDev);
-		IJ.log("skewness = " + stats.skewness);
-		IJ.log("xCentroid = " + stats.xCentroid);
-		IJ.log("yCentroid = " + stats.yCentroid);
-		IJ.log("xCenterOfMass = " + stats.xCenterOfMass);
-		IJ.log("yCenterOfMass = " + stats.yCenterOfMass);
-		IJ.log("major = " + stats.major);
-		IJ.log("minor = " + stats.minor);
-		IJ.log("angle = " + stats.angle);
-
+		IJ.log("area = " 			+ stats.area);
+		IJ.log("areaFraction = " 	+ stats.areaFraction);
+		IJ.log("histMax = " 		+ stats.histMax);
+		IJ.log("histMin = " 		+ stats.histMin);
+		IJ.log("kurtosis = " 		+ stats.kurtosis);
+		IJ.log("mean = " 			+ stats.mean);
+		IJ.log("median = " 			+ stats.median);
+		IJ.log("stdDev = " 			+ stats.stdDev);
+		IJ.log("skewness = " 		+ stats.skewness);
+		IJ.log("xCentroid = " 		+ stats.xCentroid);
+		IJ.log("yCentroid = " 		+ stats.yCentroid);
+		IJ.log("xCenterOfMass = " 	+ stats.xCenterOfMass);
+		IJ.log("yCenterOfMass = " 	+ stats.yCenterOfMass);
+		IJ.log("major = " 			+ stats.major);
+		IJ.log("minor = " 			+ stats.minor);
+		IJ.log("angle = " 			+ stats.angle);
 		
 		IJ.log(stats.toString());
-		
-		//stats.g
-
-		
 	}
 
 }

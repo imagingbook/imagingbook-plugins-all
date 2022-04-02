@@ -14,7 +14,6 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.filter.GenericFilter;
-import imagingbook.lib.math.VectorNorm.NormType;
 import imagingbook.lib.util.progress.ProgressMonitor;
 import imagingbook.lib.util.progress.ij.ProgressBarMonitor;
 import imagingbook.pub.edgepreservingfilters.BilateralF.Parameters;
@@ -26,11 +25,12 @@ import imagingbook.pub.edgepreservingfilters.BilateralFilterVectorSeparable;
 /**
  * This plugin demonstrates the use of the (full) BilateralFilter class.
  * This plugin works for all types of images.
- * When used on a color image, the filter is applied separately to
- * each color component.
+ * Given a color image, the filter is applied separately to
+ * each color component if {@link #UseScalarFilter} is set true.
+ * Otherwise a vector filter is applied, using the specified color norm.
  * 
  * @author WB
- * @version 2021/01/02
+ * @version 2022/03/30
  */
 public class Bilateral_Filter implements PlugInFilter {
 	
@@ -51,10 +51,14 @@ public class Bilateral_Filter implements PlugInFilter {
 		
 		GenericFilter filter = null;	
 		if (isColor && !UseScalarFilter) {  	// use a vector filter
-			filter = (UseSeparableFilter) ? new BilateralFilterVectorSeparable(params) : new BilateralFilterVector(params);
+			filter = (UseSeparableFilter) ? 
+					new BilateralFilterVectorSeparable(params) : 
+					new BilateralFilterVector(params);
 		}
 		else {									// use a scalar filter
-			filter = (UseSeparableFilter) ? new BilateralFilterScalarSeparable(params) : new BilateralFilterScalar(params);
+			filter = (UseSeparableFilter) ? 
+					new BilateralFilterScalarSeparable(params) : 
+					new BilateralFilterScalar(params);
 		}
 		
 		try (ProgressMonitor m = new ProgressBarMonitor(filter)) {
@@ -64,23 +68,21 @@ public class Bilateral_Filter implements PlugInFilter {
 		
 	private boolean getParameters() {
 		GenericDialog gd = new GenericDialog(this.getClass().getSimpleName());
-		gd.addNumericField("Sigma domain", params.sigmaD, 1);
-		gd.addNumericField("Sigma range", params.sigmaR, 1);
-		if (isColor) {
-			gd.addEnumChoice("Color norm", params.colorNormType);
-			gd.addCheckbox("Use scalar filter", UseScalarFilter );
-		}
+		params.addToDialog(gd);
+		gd.addCheckbox("Use scalar filters (color only)", UseScalarFilter);
 		gd.addCheckbox("Use X/Y-separable filter", UseSeparableFilter);
+		
 		gd.showDialog();
-		if (gd.wasCanceled()) return false;
-		params.sigmaD = Math.max(gd.getNextNumber(), 0.5);
-		params.sigmaR = Math.max(gd.getNextNumber(), 1);
-		if (isColor) {
-			params.colorNormType = gd.getNextEnumChoice(NormType.class);
-			UseScalarFilter = gd.getNextBoolean();
-		}
+		if (gd.wasCanceled()) 
+			return false;
+		
+		params.getFromDialog(gd);
+		UseScalarFilter = gd.getNextBoolean();
 		UseSeparableFilter = gd.getNextBoolean();
-		return true;
+		
+		params.sigmaD = Math.max(params.sigmaD, 0.5);
+		params.sigmaR = Math.max(params.sigmaR, 1);
+		return params.validate();
     }
 }
 

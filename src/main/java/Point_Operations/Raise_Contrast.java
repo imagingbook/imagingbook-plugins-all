@@ -14,10 +14,12 @@ import ij.process.ImageProcessor;
 
 public class Raise_Contrast implements PlugInFilter {
 
+	@Override
 	public int setup(String arg, ImagePlus img) {
 		return DOES_8G;
 	}
     
+	@Override
 	public void run(ImageProcessor ip) {
 		int w = ip.getWidth();
 		int h = ip.getHeight();
