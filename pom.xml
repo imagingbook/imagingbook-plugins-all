@@ -8,7 +8,7 @@
 	with the standard naming scheme for ImageJ plugins 
 	(see https://imagej.nih.gov/ij/plugins/jar-demo.html). -->
 
-	<artifactId>imagingbook_plugins_all</artifactId>
+	<artifactId>imagingbook-plugins-all</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -25,6 +25,11 @@
 			<url>https://raw.github.com/imagingbook/imagingbook-maven-repository/master</url>
 		</repository>
 	</repositories>
+	
+	<properties>
+		<imagingbook.skipdeploy>true</imagingbook.skipdeploy>
+    	<maven.javadoc.skip>true</maven.javadoc.skip>
+	</properties>
 
 	<dependencies>
 	
@@ -41,7 +46,11 @@
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook-common</artifactId>
-			<!-- <version>3.1</version> -->
+		</dependency>
+		
+		<dependency>
+			<groupId>com.imagingbook</groupId>
+			<artifactId>imagingbook_plugins_book</artifactId>
 		</dependency>
 		
 	</dependencies>
