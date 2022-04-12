@@ -4,7 +4,6 @@ import java.net.URI;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.io.Opener;
 import ij.plugin.PlugIn;
 import imagingbook.testimages.MyImages;
 
