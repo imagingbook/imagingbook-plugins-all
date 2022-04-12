@@ -24,9 +24,9 @@ public class List_Test_Images implements PlugIn {
 			im.show();
 		}
 		
-		MyImages res = MyImages.noisyCircles;
-		res.getURI();
-		URI uir = MyImages.noisyCircles.getURI();
+//		MyImages res = MyImages.noisyCircles;
+//		res.getURI();
+//		URI uir = MyImages.noisyCircles.getURI();
 		
 	}
 
