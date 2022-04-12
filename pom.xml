@@ -62,6 +62,12 @@
 			<version>4.0A-SNAPSHOT</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>com.imagingbook</groupId>
+			<artifactId>imagingbook-test-images</artifactId>
+			<version>4.0A-SNAPSHOT</version>
+		</dependency>
+		
 	</dependencies>
 	
 	<build>
