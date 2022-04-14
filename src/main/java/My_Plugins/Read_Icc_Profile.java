@@ -16,7 +16,7 @@ public class Read_Icc_Profile implements PlugIn {
 	@Override
 	public void run(String arg) {
 		NamedResource res = IccProfile.AdobeRGB1998;
-		IJ.log("URI = " + res.getURI());
+		IJ.log("URL = " + res.getURL());
 		IJ.log("inside JAR = " + res.isInsideJar());
 		
 		ICC_Profile profile = null;

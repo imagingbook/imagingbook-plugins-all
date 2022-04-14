@@ -1,6 +1,6 @@
 package My_Plugins;
 
-import java.net.URI;
+import java.net.URL;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -16,12 +16,12 @@ public class List_Test_Images implements PlugIn {
 			String relPath = res.getRelativePath();
 			IJ.log(relPath);
 
-			URI uri = res.getURI();
-			IJ.log("uri = " + uri);
+			URL url = res.getURL();
+			IJ.log("URL = " + url);
 			IJ.log("inside JAR = " + res.isInsideJar());
 			
-//			ImagePlus im = new Opener().openImage(uri.toString());
-//			ImagePlus im = IJ.openImage(uri.toString());
+//			ImagePlus im = new Opener().openImage(url.toString());
+//			ImagePlus im = IJ.openImage(url.toString());
 			ImagePlus im = res.getImage();
 			im.show();
 		}
