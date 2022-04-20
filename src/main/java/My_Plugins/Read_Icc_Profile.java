@@ -7,9 +7,9 @@ import java.io.InputStream;
 
 import ij.IJ;
 import ij.plugin.PlugIn;
+import imagingbook.common.color.IccProfile;
+import imagingbook.common.math.Matrix;
 import imagingbook.core.resource.NamedResource;
-import imagingbook.lib.color.IccProfile;
-import imagingbook.lib.math.Matrix;
 
 public class Read_Icc_Profile implements PlugIn {
 
