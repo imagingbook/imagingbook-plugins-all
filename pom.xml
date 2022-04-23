@@ -3,30 +3,20 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
-	<!-- Note: The artifact ID has hyphens replaced by underscores to be compatible
-	with the standard naming scheme for ImageJ plugins 
-	(see https://imagej.nih.gov/ij/plugins/jar-demo.html). -->
 
 	<artifactId>imagingbook-plugins-all</artifactId>
+	<!-- <version>2.0.0</version> -->
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>com.imagingbook</groupId>
 		<artifactId>imagingbook-plugins-pom</artifactId>
-		<version>4.0A-SNAPSHOT</version>
+		<version>4.0.1-SNAPSHOT</version>
 		<relativePath />
 	</parent>
 	
-	<!-- needed for stand-alone build -->
-	<!-- <repositories>
-		<repository>
-			<id>imagingbook-maven-repository</id>
-			<url>https://raw.github.com/imagingbook/imagingbook-maven-repository/master</url>
-		</repository>
-	</repositories> -->
-	
 	<properties>
+		<imagingbook.version>4.0.1-SNAPSHOT</imagingbook.version>
 		<imagingbook.skipdeploy>true</imagingbook.skipdeploy>
     	<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
@@ -36,37 +26,37 @@
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook-common</artifactId>
-			<version>4.0A-SNAPSHOT</version>
+			<version>${imagingbook.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook_plugins_book</artifactId>
-			<version>4.0A-SNAPSHOT</version>
+			<version>${imagingbook.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook_plugins_tools</artifactId>
-			<version>4.0A-SNAPSHOT</version>
+			<version>${imagingbook.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook_plugins_extras</artifactId>
-			<version>4.0A-SNAPSHOT</version>
+			<version>${imagingbook.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook_plugins_demos</artifactId>
-			<version>4.0A-SNAPSHOT</version>
+			<version>${imagingbook.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
-			<artifactId>imagingbook-test-images</artifactId>
-			<version>4.0A-SNAPSHOT</version>
+			<artifactId>imagingbook-sample-images</artifactId>
+			<version>${imagingbook.version}</version>
 		</dependency>
 		
 	</dependencies>

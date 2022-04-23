@@ -6,7 +6,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.PlugIn;
 import imagingbook.core.resource.ImageResource;
-import imagingbook.testimages.RansacTestImage;
+import imagingbook.sampleimages.RansacTestImage;
 
 public class List_Test_Images implements PlugIn {
 
