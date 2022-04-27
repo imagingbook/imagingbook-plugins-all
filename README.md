@@ -19,6 +19,8 @@ The project also includes the required setup files to be opened in Eclipse.
 * Edit your own plugins in `src/main/java` (the associated `.class` files are output to `ImageJ/plugins`).
 * To update, run Maven `clean` and `install`.
 
+See also https://github.com/imagingbook/imagingbook-maven-demo-project
+
 Main repository: [**imagingbook-public**](https://github.com/imagingbook/imagingbook-public)
 
 
