@@ -11,8 +11,14 @@ The project is set up to run ImageJ out of the box, i.e., no Maven build is need
 get started.
 The project also includes the required setup files to be opened in Eclipse.
 
+## To Use:
 
+* Clone this repository.
+* Open/import as a Maven project in your favorite IDE (project is set up for Eclipse).
+* Run `ImageJ`.
+* Edit your own plugins in `src/main/java` (the associated `.class` files are output to `ImageJ/plugins`).
+* To update, run Maven `clean` and `install`.
 
-Main repository: [imagingbook-public](https://github.com/imagingbook/imagingbook-public)
+Main repository: [**imagingbook-public**](https://github.com/imagingbook/imagingbook-public)
 
 
