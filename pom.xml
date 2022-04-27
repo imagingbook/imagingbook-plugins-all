@@ -52,13 +52,7 @@
 			<artifactId>imagingbook_plugins_demos</artifactId>
 			<version>${imagingbook.version}</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.imagingbook</groupId>
-			<artifactId>imagingbook-sample-images</artifactId>
-			<version>${imagingbook.version}</version>
-		</dependency>
-		
+
 	</dependencies>
 	
 	<build>
