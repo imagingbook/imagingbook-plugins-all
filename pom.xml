@@ -5,7 +5,6 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>imagingbook-plugins-all</artifactId>
-	<!-- <version>2.0.0</version> -->
 	<packaging>jar</packaging>
 
 	<parent>
@@ -16,7 +15,6 @@
 	</parent>
 	
 	<properties>
-		<imagingbook.version>4.0.1-SNAPSHOT</imagingbook.version>
 		<imagingbook.skipdeploy>true</imagingbook.skipdeploy>
     	<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
@@ -26,31 +24,31 @@
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook-common</artifactId>
-			<version>${imagingbook.version}</version>
+			<version>5.0.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook_plugins_book</artifactId>
-			<version>${imagingbook.version}</version>
+			<version>5.0.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook_plugins_tools</artifactId>
-			<version>${imagingbook.version}</version>
+			<version>5.0.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook_plugins_extras</artifactId>
-			<version>${imagingbook.version}</version>
+			<version>5.0.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.imagingbook</groupId>
 			<artifactId>imagingbook_plugins_demos</artifactId>
-			<version>${imagingbook.version}</version>
+			<version>5.0.0</version>
 		</dependency>
 
 	</dependencies>
