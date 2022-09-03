@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 import ij.IJ;
 import ij.plugin.PlugIn;
-import imagingbook.common.color.IccProfile;
+import imagingbook.common.color.colorspace.IccProfile;
 import imagingbook.common.math.Matrix;
 import imagingbook.core.resource.NamedResource;
 
