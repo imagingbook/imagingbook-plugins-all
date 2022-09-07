@@ -6,13 +6,13 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.PlugIn;
 import imagingbook.core.resource.ImageResource;
-import imagingbook.sampleimages.RansacTestImage;
+import imagingbook.sampleimages.GeneralSampleImage;
 
 public class List_Test_Images implements PlugIn {
 
 	@Override
 	public void run(String arg) {
-		for (ImageResource res : RansacTestImage.values()) {
+		for (ImageResource res : GeneralSampleImage.values()) {
 			String relPath = res.getRelativePath();
 			IJ.log(relPath);
 
