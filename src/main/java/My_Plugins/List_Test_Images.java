@@ -8,6 +8,7 @@ import ij.plugin.PlugIn;
 import imagingbook.core.resource.ImageResource;
 import imagingbook.sampleimages.GeneralSampleImage;
 
+
 public class List_Test_Images implements PlugIn {
 
 	@Override
