@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 import ij.IJ;
 import ij.plugin.PlugIn;
-import imagingbook.common.color.colorspace.IccProfiles;
+import imagingbook.common.color.colorspace.NamedIccProfile;
 import imagingbook.common.math.Matrix;
 import imagingbook.core.resource.NamedResource;
 
@@ -16,7 +16,7 @@ public class Read_Icc_Profile implements PlugIn {
 
 	@Override
 	public void run(String arg) {
-		NamedResource res = IccProfiles.AdobeRGB1998;
+		NamedResource res = NamedIccProfile.AdobeRGB1998;
 		IJ.log("URL = " + res.getURL());
 		IJ.log("inside JAR = " + res.isInsideJar());
 		
