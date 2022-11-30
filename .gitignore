@@ -1,3 +1,6 @@
 /target
 /ImageJ/jars
 /ImageJ/plugins
+/.settings
+/.classpath
+/.project
