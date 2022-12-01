@@ -1,6 +1,5 @@
 /target
-/ImageJ/jars
-/ImageJ/plugins
 /.settings
 /.classpath
 /.project
+/ImageJ/plugins/META-INF
