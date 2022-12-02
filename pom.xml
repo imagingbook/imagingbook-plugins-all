@@ -10,14 +10,15 @@
 	<parent>
 		<groupId>com.imagingbook</groupId>
 		<artifactId>imagingbook-plugins-pom</artifactId>
-		<version>6.0.1-SNAPSHOT</version>
+		<!-- see https://central.sonatype.dev/namespace/com.imagingbook for latest versions! -->
+		<version>6.0.0</version>
 		<relativePath />
 	</parent>
 	
 	<properties>
+		<imagingbook.version>${project.parent.version}</imagingbook.version>
 		<imagingbook.skipdeploy>true</imagingbook.skipdeploy>
     	<maven.javadoc.skip>true</maven.javadoc.skip>
-		<imagingbook.version>6.0.1-SNAPSHOT</imagingbook.version>
 	</properties>
 
 	<dependencies>
