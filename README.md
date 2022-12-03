@@ -9,7 +9,7 @@ In addition, there is a small source code section for adding custom ImageJ plugi
 The project is set up to run ImageJ out of the box, i.e., no Maven build is needed to
 get started.
 
-## To Use:
+## How to Use:
 
 * Clone this repository.
 * Open/import as a Maven project in your favorite IDE.
