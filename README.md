@@ -14,7 +14,7 @@ The project also includes the required setup files to be opened in Eclipse.
 ## To Use:
 
 * Clone this repository.
-* Open/import as a Maven project in your favorite IDE (project is set up for Eclipse).
+* Open/import as a Maven project in your favorite IDE.
 * Run `ImageJ`.
 * Edit your own plugins in `src/main/java` (the associated `.class` files are output to `ImageJ/plugins`).
 * To update, run Maven `clean` and `install`.
