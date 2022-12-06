@@ -23,7 +23,7 @@ public class List_Test_Images implements PlugIn {
 			
 //			ImagePlus im = new Opener().openImage(url.toString());
 //			ImagePlus im = IJ.openImage(url.toString());
-			ImagePlus im = res.getImage();
+			ImagePlus im = res.getImagePlus();
 			im.show();
 		}
 
