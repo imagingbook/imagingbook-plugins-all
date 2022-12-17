@@ -11,7 +11,7 @@ get started.
 
 ## How to Use:
 
-* Clone this repository.
+* Download the [**latest release of this repository**](https://github.com/imagingbook/imagingbook-plugins-all/releases/latest).
 * Open/import as a Maven project in your favorite IDE.
 * Run `ImageJ`.
 * Edit your own plugins in `src/main/java` (the associated `.class` files are output to `ImageJ/plugins`).
