@@ -11,7 +11,7 @@
 		<groupId>com.imagingbook</groupId>
 		<artifactId>imagingbook-parent-pom</artifactId>
 		<!-- see https://central.sonatype.dev/namespace/com.imagingbook for latest versions! -->
-		<version>7.0.0</version>
+		<version>7.0.1-SNAPSHOT</version>
 		<relativePath />
 	</parent>
 	
