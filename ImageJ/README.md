@@ -1,16 +1,12 @@
-This is a local ImageJ installation set up for testing the
-plugins contained in this subproject. Note that the other
-plugin collections hold only copies of the plugins contained here
-and no other collection has a dedicated ImageJ setup.
+# README
 
-* The default output folder is set to ImageJ/plugins/ (by <outputDirectory>
-  in the project's pom.xml file), which makes Eclipse set the default output folder
-  accordingly.
-  
-* The required imagingbook libraries are imported as a Maven dependency and
-  copied to Image/jars.
-  
-* All other required jar files (dependencies) are copied to ImageJ/jars/ by Maven.
+This is a ready-to-go Maven project that includes the `imagingbook library and plugin sets, all
+packaged in a complete ImageJ runtime setup.
 
-* The specified version of ImageJ itself is copied to ImageJ/ij.jar.
+* The project's output folder (for compiled `.class` files) is set to `ImageJ/plugins/` (by the `<outputDirectory>` property
+  in the project's `pom.xml` file).
+  
+* The required `imagingbook` libraries and other dependencies are automatically copied to `Image/jars/` during the Maven build.
+
+* The current version of ImageJ itself (specified in `pom.xml`) is copied to `ImageJ/ij.jar`.
   
