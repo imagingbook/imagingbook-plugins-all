@@ -1,3 +1,4 @@
 /ImageJ.cfg
 /plugins/plugins.config
 *.class
+/plugins/
