@@ -2,3 +2,5 @@
 /plugins/plugins.config
 *.class
 /plugins/
+/jars/
+
